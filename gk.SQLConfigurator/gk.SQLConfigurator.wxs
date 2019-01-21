@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="Windows-1252"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <ComponentGroup Id="gk.SQLConfiguratorFiles">
+      <ComponentRef Id="gk.Log.dll"/>
+      <ComponentRef Id="gk.Log.pdb"/>
+      <ComponentRef Id="gk.SQLConfigurator.dll"/>
+      <ComponentRef Id="gk.SQLConfigurator.dll.config"/>
+      <ComponentRef Id="gk.SQLConfigurator.dll.manifest"/>
+      <ComponentRef Id="gk.SQLConfigurator.pdb"/>
+      <ComponentRef Id="gk.SQLConfigurator.vsto"/>
+      <ComponentRef Id="ICSharpCode.TextEditor.dll"/>
+      <ComponentRef Id="log4net.dll"/>
+      <ComponentRef Id="Microsoft.Office.Tools.Common.v4.0.Utilities.dll"/>
+      <ComponentRef Id="Microsoft.Office.Tools.Excel.dll"/>
+      <ComponentRef Id="Microsoft.Office.Tools.v4.0.Framework.dll"/>
+      <ComponentRef Id="Microsoft.VisualStudio.Tools.Applications.Runtime.dll"/>
+
+
+      <ComponentRef Id="SQLMode.xshd"/>
+      <ComponentRef Id="SQLItems.xml"/>
+    </ComponentGroup>
+  </Fragment>
+  
+    <Fragment>
+    <DirectoryRef Id="INSTALLFOLDER" FileSource="$(var.gk.SQLConfigurator.TargetDir)">
+      <Component Id="gk.Log.dll" Guid="*">
+        <File Name="gk.Log.dll"/>
+      </Component>
+      <Component Id="gk.Log.pdb" Guid="*">
+        <File Name="gk.Log.pdb"/>
+      </Component>
+      <Component Id="gk.SQLConfigurator.dll" Guid="*">
+        <File Name="gk.SQLConfigurator.dll"/>
+      </Component>
+      <Component Id="gk.SQLConfigurator.dll.config" Guid="*">
+        <File Name="gk.SQLConfigurator.dll.config"/>
+      </Component>
+      <Component Id="gk.SQLConfigurator.dll.manifest" Guid="*">
+        <File Name="gk.SQLConfigurator.dll.manifest"/>
+      </Component>
+      <Component Id="gk.SQLConfigurator.pdb" Guid="*">
+        <File Name="gk.SQLConfigurator.pdb"/>
+      </Component>
+      <Component Id="gk.SQLConfigurator.vsto" Guid="*">
+        <File Name="gk.SQLConfigurator.vsto"/>
+      </Component>
+      <Component Id="ICSharpCode.TextEditor.dll" Guid="*">
+        <File Name="ICSharpCode.TextEditor.dll"/>
+      </Component>
+      <Component Id="log4net.dll" Guid="*">
+        <File Name="log4net.dll"/>
+      </Component>
+      <Component Id="Microsoft.Office.Tools.Common.v4.0.Utilities.dll" Guid="*">
+        <File Name="Microsoft.Office.Tools.Common.v4.0.Utilities.dll"/>
+      </Component>
+      <Component Id="Microsoft.Office.Tools.Excel.dll" Guid="*">
+        <File Name="Microsoft.Office.Tools.Excel.dll"/>
+      </Component>
+      <Component Id="Microsoft.Office.Tools.v4.0.Framework.dll" Guid="*">
+        <File Name="Microsoft.Office.Tools.v4.0.Framework.dll"/>
+      </Component>
+      <Component Id="Microsoft.VisualStudio.Tools.Applications.Runtime.dll" Guid="*">
+        <File Name="Microsoft.VisualStudio.Tools.Applications.Runtime.dll"/>
+      </Component>
+    </DirectoryRef>
+
+
+    <DirectoryRef Id="ResDir" FileSource="$(var.gk.SQLConfigurator.TargetDir)Resources">
+      <Component Id="SQLMode.xshd" Guid="*">
+        <File Name="SQL-Mode.xshd" Id="SQLMode.xshd"/>
+      </Component>
+      <Component Id="SQLItems.xml" Guid="*">
+        <File Name="SQLItems.xml" Id="SQLItems.xml"/>
+      </Component>
+    </DirectoryRef>
+  </Fragment>
+</Wix>

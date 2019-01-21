@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?define ProductName="gk.SQLConfigurator" ?>
+  <?define ProductVersion="!(bind.FileVersion.gk.SQLConfigurator.dll)" ?>
+  <?define ProductCode="8E41648F-F8E5-460E-B7E6-779C9A3F0ADE"?>
+  <?define UpgradeCode="77A8B37C-B34D-4944-B070-06F5DAEECF24"?>
+  <?define Manufacturer="InduSoft"?>
+  
+  <Product Id="$(var.ProductCode)" Name="$(var.ProductName)" Language="1049" Version="$(var.ProductVersion)" Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">		
+    <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+    <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+
+    <UIRef Id="WixUI_InstallDir"/>
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." Schedule="afterInstallExecute"/>
+    <Feature Id="ProductFeature" Title="gk.SQLConfigurator" Level="1">
+      <ComponentGroupRef Id="gk.SQLConfiguratorFiles" />
+      <ComponentGroupRef Id="RegistryEntries" />
+    </Feature>
+
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+  </Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+        <Directory Id="IndusoftFolder" Name="Indusoft">
+          <Directory Id="INSTALLFOLDER" Name="gk.SQLConfigurator">
+            <Directory Id="ResDir" Name="Resources" />
+          </Directory>
+        </Directory>
+      </Directory>
+  
+    </Directory>
+
+
+	</Fragment>
+
+	<Fragment>
+    <ComponentGroup Id="RegistryEntries" >      
+      <Component Id="_4EA1363B_55EF_4AC1_83A0_95209E20A3F9" Guid="01EC594D-FA6C-460B-9D0B-69C1AD0F01D1" Transitive="no" Directory="TARGETDIR">
+        <RegistryKey Root="HKLM" Key="Software" ForceCreateOnInstall="no" ForceDeleteOnUninstall="no"  />
+      </Component>
+      <Component Id="_27090E26_135B_4446_B6CB_D4E8A0E83E7A" Guid="C673974E-B087-4479-ADD5-E20CA4BEECB6" Transitive="no" Directory="TARGETDIR">
+        <RegistryKey Root="HKLM" Key="Software\Microsoft" ForceCreateOnInstall="no" ForceDeleteOnUninstall="no" />
+      </Component>
+      <Component Id="_22FAC847_8D5B_4E94_A10F_A0034BAA004E" Guid="CD7C8DC9-5CA5-42AB-8E3B-D2D04FD411C5" Transitive="no" Directory="TARGETDIR">
+        <RegistryKey Root="HKLM" Key="Software\Microsoft\Office" ForceCreateOnInstall="no" ForceDeleteOnUninstall="no" />
+      </Component>
+      <Component Id="_23CEE035_FF04_4CD3_ABD4_95C34F82F3B4" Guid="EF7F3EA9-7ECD-4ECD-AD30-8F97B22B9F4D" Transitive="no" Directory="TARGETDIR">
+        <RegistryKey Root="HKLM" Key="Software\Microsoft\Office\Excel" ForceCreateOnInstall="no" ForceDeleteOnUninstall="no" />
+      </Component>
+      <Component Id="_5A17C739_2227_4945_AD3E_D7BBD7ADCBD8" Guid="8E6F96F9-3385-42FF-A85C-3A6BE6767D1B" Transitive="no" Directory="TARGETDIR">
+        <RegistryKey Root="HKLM" Key="Software\Microsoft\Office\Excel\Addins" ForceCreateOnInstall="no" ForceDeleteOnUninstall="no" />
+      </Component>
+      <Component Id="_E97549C4_B550_46EA_B4E0_7E3CB8E1FA8C" Guid="55B53002-E416-4A75-A844-B79D3ECB7060" Transitive="no" Directory="TARGETDIR">
+        <RegistryKey Root="HKLM" Key="Software\Microsoft\Office\Excel\Addins\gk.SQLConfigurator" ForceCreateOnInstall="yes" ForceDeleteOnUninstall="yes" />
+      </Component>
+      <Component Id="_2673487D_B1BB_4759_9D19_DB239F35D117" Guid="43742D80-2166-405C-A886-05A69888E5ED" Transitive="no" Directory="TARGETDIR">
+        <RegistryValue Root="HKLM" Key="Software\Microsoft\Office\Excel\Addins\gk.SQLConfigurator" Type="string" Name="Manifest" Value="[INSTALLFOLDER]gk.SQLConfigurator.vsto|vstolocal" />
+      </Component>
+      <Component Id="_7B2057B6_6FDD_4F2C_875E_B8F67045B27F" Guid="4589BBF3-2C8C-414E-8B8B-43D71F8EBE5A" Transitive="no" Directory="TARGETDIR">
+        <RegistryValue Root="HKLM" Key="Software\Microsoft\Office\Excel\Addins\gk.SQLConfigurator" Type="string" Name="Description" Value="gk.SQLConfigurator" />
+      </Component>
+      <Component Id="_57A0575D_425D_427C_B9B2_DFF3FEE5BDDE" Guid="64FBD9F1-111E-4BAB-9D2B-B59904E0EAB1" Transitive="no" Directory="TARGETDIR">
+        <RegistryValue Root="HKLM" Key="Software\Microsoft\Office\Excel\Addins\gk.SQLConfigurator" Type="string" Name="FriendlyName" Value="gk.SQLConfigurator" />
+      </Component>
+      <Component Id="_7A7682C6_622F_4960_929B_599D96E5AA10" Guid="5A590511-8A29-4054-B054-85CEF79968A8" Transitive="no" Directory="TARGETDIR" >
+        <RegistryValue Root="HKLM" Key="Software\Microsoft\Office\Excel\Addins\gk.SQLConfigurator" Type="integer" Name="LoadBehavior" Value="3" />
+      </Component>
+
+      <Component Id="__0F793028_4687_48D0_810D_DFD10A2912F1" Guid="BC55FA2D-ACA8-4D49-97F3-2D0F4D47A911" Transitive="no" Directory="TARGETDIR">
+        <RegistryKey Root="HKCU" Key="Software" ForceCreateOnInstall="no" ForceDeleteOnUninstall="no" />
+      </Component>
+      <Component Id="__27090E26_135B_4446_B6CB_D4E8A0E83E7A" Guid="5F0D58AA-F082-4B0D-A0F9-852D3151D6AF" Transitive="no" Directory="TARGETDIR">
+        <RegistryKey Root="HKCU" Key="Software\Microsoft" ForceCreateOnInstall="no" ForceDeleteOnUninstall="no" />
+      </Component>
+      <Component Id="__22FAC847_8D5B_4E94_A10F_A0034BAA004E" Guid="001D7965-2304-4E8D-B8F4-85CC5443FAAB" Transitive="no" Directory="TARGETDIR">
+        <RegistryKey Root="HKCU" Key="Software\Microsoft\Office" ForceCreateOnInstall="no" ForceDeleteOnUninstall="no" />
+      </Component>
+      <Component Id="__23CEE035_FF04_4CD3_ABD4_95C34F82F3B4" Guid="A18A0ECE-AEC7-4920-B0C1-C884C6D109C5" Transitive="no" Directory="TARGETDIR">
+        <RegistryKey Root="HKCU" Key="Software\Microsoft\Office\Excel" ForceCreateOnInstall="no" ForceDeleteOnUninstall="no" />
+      </Component>
+      <Component Id="__5A17C739_2227_4945_AD3E_D7BBD7ADCBD8" Guid="8DFEEF0B-CCDA-427F-B7F7-796151D18AD3" Transitive="no" Directory="TARGETDIR">
+        <RegistryKey Root="HKCU" Key="Software\Microsoft\Office\Excel\Addins" ForceCreateOnInstall="no" ForceDeleteOnUninstall="no" />
+      </Component>
+      <Component Id="__E97549C4_B550_46EA_B4E0_7E3CB8E1FA8C" Guid="F05443FD-A104-4004-9CF8-81FC87AF18EC" Transitive="no" Directory="TARGETDIR">
+        <RegistryKey Root="HKCU" Key="Software\Microsoft\Office\Excel\Addins\gk.SQLConfigurator" ForceCreateOnInstall="no" ForceDeleteOnUninstall="no" />
+      </Component>
+      <Component Id="__2673487D_B1BB_4759_9D19_DB239F35D117" Guid="B1295604-F053-4F44-A62B-1EAE5A2F6487" Transitive="no" Directory="TARGETDIR">
+        <RegistryValue Root="HKCU" Key="Software\Microsoft\Office\Excel\Addins\gk.SQLConfigurator" Type="string" Name="Manifest" Value="[INSTALLFOLDER]gk.SQLConfigurator.vsto|vstolocal" />
+      </Component>
+      <Component Id="__7B2057B6_6FDD_4F2C_875E_B8F67045B27F" Guid="394D130A-559F-4329-8817-6023617C3C4F" Transitive="no" Directory="TARGETDIR">
+        <RegistryValue Root="HKCU" Key="Software\Microsoft\Office\Excel\Addins\gk.SQLConfigurator" Type="string" Name="Description" Value="gk.SQLConfigurator" />
+      </Component>
+      <Component Id="__57A0575D_425D_427C_B9B2_DFF3FEE5BDDE" Guid="FBEF8ABE-5D1D-4629-98EC-2F9406543E7F" Transitive="no" Directory="TARGETDIR">
+        <RegistryValue Root="HKCU" Key="Software\Microsoft\Office\Excel\Addins\gk.SQLConfigurator" Type="string" Name="FriendlyName" Value="gk.SQLConfigurator" />
+      </Component>
+      <Component Id="__7A7682C6_622F_4960_929B_599D96E5AA10" Guid="76E421DE-BE54-4C6B-82CE-61B1FB14A4A7" Transitive="no" Directory="TARGETDIR">
+        <RegistryValue Root="HKCU" Key="Software\Microsoft\Office\Excel\Addins\gk.SQLConfigurator" Type="integer" Name="LoadBehavior" Value="3" />
+      </Component>
+      <!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
+			<!-- <Component Id="ProductComponent"> -->
+				<!-- TODO: Insert files, registry keys, and other resources here. -->
+			<!-- </Component> -->
+		</ComponentGroup>
+	</Fragment>
+</Wix>
