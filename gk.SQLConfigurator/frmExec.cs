@@ -171,7 +171,7 @@ namespace gk.SQLConfigurator
                                 val = (wSheet.Cells[i, j].Value2 != null) ? wSheet.Cells[i, j].Value2.ToString() : wSheet.Cells[i, j].Value.ToString();
                                 val = ConvertValueToSqlString(val);
                                 if (val == "null")
-                                    sql = sql.Replace("'@" + pair.Key + "'", val);
+                                    sql = sql.Replace("N'@" + pair.Key + "'", val).Replace("'@" + pair.Key + "'", val);
                                 else
                                     sql = sql.Replace("@" + pair.Key, val);
 
