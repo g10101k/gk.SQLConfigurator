@@ -7,9 +7,10 @@
 	'x' as [Select(x)], 
 	* 
 from 
-	[product]
-where {0} </GetSQL>
-      <GetSQLWhereString>Name like '*'</GetSQLWhereString>
+	[product] 
+where 
+	{0}</GetSQL>
+      <GetSQLWhereString>Name like '*бензин*'</GetSQLWhereString>
       <CreateSql>insert into [product] values ('@ProductUid', '@Code', '@Name', @IsActive, @InAccrScope)	</CreateSql>
       <EditSql>update [Product] set 
 	Code = '@Code', 
@@ -35,8 +36,16 @@ from [dbo].[Subdivision]
 where 
 	{0}</GetSQL>
       <GetSQLWhereString>Name like '*'</GetSQLWhereString>
-      <CreateSql>raiserror (-1,-1, 'Not implemented');  </CreateSql>
-      <EditSql>raiserror (-1,-1, 'Not implemented');  </EditSql>
+      <CreateSql>declare @subdivisionId int  = -1
+declare @code nvarchar(50) = '@Code'
+declare @name nvarchar(150) = '@Name'
+declare @description nvarchar(255) = '@Description'
+EXECUTE [dbo].[Subdivision_Insert] @subdivisionId output, @code, @name, @description </CreateSql>
+      <EditSql>declare @subdivisionId int = @SubdivisionId
+declare @code nvarchar(50)  = '@Code'
+declare @name nvarchar(150) = '@Name'
+declare @description nvarchar(255) = '@Description'
+EXECUTE [dbo].[Subdivision_Update] @subdivisionId, @code, @name, @description </EditSql>
       <CreateoreditSql>raiserror (-1,-1, 'Not implemented');  </CreateoreditSql>
       <DeleteSql>raiserror (-1,-1, 'Not implemented');  </DeleteSql>
       <ImageBuffer>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</ImageBuffer>
@@ -474,18 +483,28 @@ inner join [dbo].[OrgUnitProps] oup on oup.OrgUnitId = ou.OrgUnitId
 where  {0}
 order by [RO.OrgUnitPath]
 </GetSQL>
-      <GetSQLWhereString>[OrgUnitPath] not like '*рнпк*'</GetSQLWhereString>
+      <GetSQLWhereString>[OrgUnitPath] like '*IP*'</GetSQLWhereString>
       <CreateSql>declare @parent int = (select [OrgUnitId] from [dbo].[OrgUnit] ou where ou.[Name] = '@ParentName')
+declare @orgUnitUidt nvarchar(max) = '@OrgUnitUid'
+declare @orgUnitUid uniqueidentifier = newid()
+
+if @orgUnitUidt &lt;&gt; '' 
+begin
+    set @orgUnitUid = convert(uniqueidentifier, @orgUnitUidt)
+end
 
 insert into [dbo].[OrgUnit]([Code], [Name], [Description], [ParentUnitId], [OrgUnitUid], [OrgUnitLevelId], [Flags]) 
-        values (N'@Code', N'@Name', N'@Description', @parent, '@OrgUnitUid', @OrgUnitLevelId, @Flags)
+        values (N'@Code', N'@Name', N'@Description', @parent, newid(), @OrgUnitLevelId, @Flags)
 </CreateSql>
-      <EditSql>update OrgUnit set 
-    Name = '@Name', 
-    Code = '@Code', 
-    Description = '@Description'
+      <EditSql>declare @parent int = (select top 1 [OrgUnitId] from [dbo].[OrgUnit] ou where ou.[Name] = '@ParentName')
+
+update [dbo].[OrgUnit] set 
+    [Name] = '@Name', 
+    [Code] = '@Code', 
+    [Description] = '@Description',
+    [ParentUnitId] = @parent
 where
-  OrgUnitUid= '@OrgUnitUid'
+    [OrgUnitUid] = '@OrgUnitUid'
 </EditSql>
       <CreateoreditSql>raiserror (-1,-1, 'Not implemented');  </CreateoreditSql>
       <DeleteSql>		
@@ -644,7 +663,36 @@ from
 where {0}
 </GetSQL>
       <GetSQLWhereString>[CP].[Name] like '*'</GetSQLWhereString>
-      <CreateSql>raiserror (-1,-1, 'Not implemented');  </CreateSql>
+      <CreateSql>BEGIN TRY  
+	DECLARE @cPUid uniqueidentifier = newid()
+	DECLARE @code nvarchar(50) = '@Code'
+	DECLARE @name nvarchar(150)  = '@Name'
+	DECLARE @useExtractionPoint bit = @UseExtractionPoint 
+	DECLARE @isActive bit = @IsActive 
+	DECLARE @allowNewEP bit = @AllowNewEP
+	DECLARE @ePIsRequired bit = @EPIsRequired 
+	DECLARE @description nvarchar(255) = '@Description'
+	DECLARE @orgUnitName nvarchar(255) = '@OrgUnitName'
+	
+	DECLARE @OrgUnitId int = (SELECT OrgUnitId FROM OrgUnit WHERE NAME = @orgUnitName)
+
+
+    IF (@OrgUnitId IS NULL)
+    BEGIN
+        RAISERROR (N'Error - OrgUnit with Name = &lt;%s&gt; not found!', 16, 1, @orgUnitName);
+    END
+    -- SELECT @OrgUnitId, @cPUid
+    EXECUTE [dbo].[CP_Insert] @cPUid, @code, @name, @useExtractionPoint, @isActive, @allowNewEP, @ePIsRequired, @description;
+    EXECUTE [dbo].[CPOrgUnit_Update] @cPUid, @OrgUnitId;
+END TRY  
+BEGIN CATCH
+    DECLARE @ErrorMessage NVARCHAR(4000);  
+    DECLARE @ErrorSeverity INT;  
+    DECLARE @ErrorState INT;  
+  
+    SELECT @ErrorMessage = ERROR_MESSAGE(), @ErrorSeverity = ERROR_SEVERITY(), @ErrorState = ERROR_STATE();
+    RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState ); 
+END CATCH;</CreateSql>
       <EditSql>raiserror (-1,-1, 'Not implemented');  </EditSql>
       <CreateoreditSql>declare @OrgUnitId int
 declare @CPUid uniqueidentifier
