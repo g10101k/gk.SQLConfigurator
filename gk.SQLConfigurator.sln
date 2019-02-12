@@ -43,19 +43,5 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 4
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = http://tfs2012:8080/tfs/indusoft
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = gk.SQLConfigurator\\gk.SQLConfigurator.csproj
-		SccProjectName1 = gk.SQLConfigurator
-		SccLocalPath1 = gk.SQLConfigurator
-		SccProjectUniqueName2 = gk.SQLConfigurator.SandBox\\gk.SQLConfigurator.SandBox.csproj
-		SccProjectName2 = gk.SQLConfigurator.SandBox
-		SccLocalPath2 = gk.SQLConfigurator.SandBox
-		SccProjectUniqueName3 = gk.SQLConfigurator.Setup\\gk.SQLConfigurator.Setup.wixproj
-		SccProjectName3 = gk.SQLConfigurator.Setup
-		SccLocalPath3 = gk.SQLConfigurator.Setup
-	EndGlobalSection
+
 EndGlobal
