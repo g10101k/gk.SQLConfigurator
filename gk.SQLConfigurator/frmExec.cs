@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
@@ -187,6 +187,7 @@ namespace gk.SQLConfigurator
                             try
                             {
                                 wSheet.Rows[i].Select();
+                                wSheet.Rows[i].Font.Color = System.Drawing.Color.Black;
                                 cmd.CommandTimeout = 360;
                                 int c = cmd.ExecuteNonQuery();
 
