@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ItemChangerList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<ItemChangerList xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Items>
     <ItemChanger>
       <Name>LDS.Продукты</Name>
@@ -7,10 +7,9 @@
 	'x' as [Select(x)], 
 	* 
 from 
-	[product] 
-where 
-	{0}</GetSQL>
-      <GetSQLWhereString>Name like '*бензин*'</GetSQLWhereString>
+	[product]
+where {0} </GetSQL>
+      <GetSQLWhereString>Name like '*'</GetSQLWhereString>
       <CreateSql>insert into [product] values ('@ProductUid', '@Code', '@Name', @IsActive, @InAccrScope)	</CreateSql>
       <EditSql>update [Product] set 
 	Code = '@Code', 
@@ -35,7 +34,7 @@ where
 from [dbo].[Subdivision]
 where 
 	{0}</GetSQL>
-      <GetSQLWhereString>Name like '*Находка*'</GetSQLWhereString>
+      <GetSQLWhereString>Name like '*'</GetSQLWhereString>
       <CreateSql>raiserror (-1,-1, 'Not implemented');  </CreateSql>
       <EditSql>raiserror (-1,-1, 'Not implemented');  </EditSql>
       <CreateoreditSql>raiserror (-1,-1, 'Not implemented');  </CreateoreditSql>
@@ -45,7 +44,7 @@ where
     <ItemChanger>
       <Name>LDS.Журналы</Name>
       <GetSQL>RAISERROR (-1,-1, 'Not implemented');  </GetSQL>
-      <GetSQLWhereString>Name like "*Тула*"</GetSQLWhereString>
+      <GetSQLWhereString>Name like "*"</GetSQLWhereString>
       <CreateSql>RAISERROR (-1,-1, 'Not implemented');  </CreateSql>
       <EditSql>RAISERROR (-1,-1, 'Not implemented');  </EditSql>
       <CreateoreditSql>RAISERROR (-1,-1, 'Not implemented');  </CreateoreditSql>
@@ -73,9 +72,16 @@ where
     ), 1, 1, '') GroupIds
 from [dbo].[User] u 
 where {0}</GetSQL>
-      <GetSQLWhereString>Name like '*Тюляк*'</GetSQLWhereString>
-      <CreateSql>INSERT INTO [dbo].[User]([Name], [FullName], [Hash], [Salt], [Description], [Enable], [UserUID]) 
-	VALUES(N'@Name', N'@FullName', @Hash, @Salt, N'@Description', @Enable, '@UserUID')
+      <GetSQLWhereString>Name like '*'</GetSQLWhereString>
+      <CreateSql>DECLARE @newPassword nvarchar(max) = N'@NewPassword'
+DECLARE @userUID nvarchar(max) = '@UserUID'
+IF @userUID = '' 
+BEGIN
+    SELECT @userUID=newid()
+END
+
+INSERT INTO [dbo].[User]([Name], [FullName], [Hash], [Salt], [Description], [Enable], [UserUID]) 
+	VALUES(N'@Name', N'@FullName', @Hash, @Salt, N'@Description', @Enable, @userUID)
 </CreateSql>
       <EditSql>update [User] set 
 	Name = '@Name', 
@@ -154,10 +160,15 @@ exec dbo.LDSExtension_SetUserPassword @userid, @newPassword</EditSql>
     </ItemChanger>
     <ItemChanger>
       <Name>LDS.Импортеры</Name>
-      <GetSQL>select 'x' as [Select(x)], [Name], [ImporterUid], [ImporterTypeUid], [Settings], [RV] from [Importer]
-where {0}
-</GetSQL>
-      <GetSQLWhereString>Name like "*Находка*"</GetSQLWhereString>
+      <GetSQL>SELECT 'x' as [Select(x)], 
+[Name], 
+[ImporterUid], 
+[ImporterTypeUid], 
+[Settings], 
+[RV] 
+FROM [Importer]
+WHERE {0}</GetSQL>
+      <GetSQLWhereString>Name like '*'</GetSQLWhereString>
       <CreateSql>raiserror (-1,-1, 'Not implemented');  </CreateSql>
       <EditSql>update [User] set 
 Name = '@Name', 
@@ -716,15 +727,1054 @@ end
       <ImageBuffer>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</ImageBuffer>
     </ItemChanger>
     <ItemChanger>
-      <Name>LDS.Удаление ОУ</Name>
+      <Name>LDS.ГГ</Name>
       <GetSQL>SELECT 
+	'x' as [Select(x)], 
+	[ClbrGraphUid], 
+	[SubdivisionId], 
+	[EqpUid], 
+	[TTRangeUid], 
+	[InTechTestUid], 
+	[InEngUnitId], 
+	[OutTechTestUid],
+	[OutEngUnitId], 
+	[AlgorithmUid], 
+	[ClbrGraphStatusUid],
+	[RV], 
+	[ClbrGraphName], 
+	[PeriodId], 
+	[EndDate], 
+	[Description], 
+	[Digits], 
+	[Flags], 
+	[ErrorDisplayMode]  
+FROM [dbo].[ClbrGraph]	 
+WHERE
+	{0}
+</GetSQL>
+      <GetSQLWhereString>[ClbrGraphName] like '*'</GetSQLWhereString>
+      <DeleteSql>declare @raiseError bit = 0
+declare @clbrGraphUid uniqueidentifier = '@ClbrGraphUid'
+declare @rV timestamp = @RV
+EXECUTE [dbo].[ClbrGraph_Delete] @raiseError, @clbrGraphUid, @rV 
+
+</DeleteSql>
+      <ImageBuffer>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</ImageBuffer>
+    </ItemChanger>
+    <ItemChanger>
+      <Name>LDS.ЖО</Name>
+      <GetSQL>SELECT 
+	'x' as [Select(x)],
+    [SampleLogId], 
+    [Code], 
+    [Name], 
+    [Description], 
+    [UserId], 
+    [IsClosed], 
+    [Common], 
+    [SampleLogType], 
+    [UseCode], 
+    [CodeMaskId], 
+    [SampleModel], 
+    [ReselectCodeMaskId], 
+    [AutorizationMode], 
+    [ShowPropertiesOnReceive], 
+    [PrintLabelOnSave], 
+    [PreviewLabelOnPrint], 
+    [DisableMaskedCodeEdit]
+FROM [dbo].[SampleLog]  
+WHERE 
+	{0}
+</GetSQL>
+      <GetSQLWhereString>[Name] like '*'</GetSQLWhereString>
+      <DeleteSql>DECLARE @sampleLogId int = @SampleLogId
+
+BEGIN TRANSACTION;
+BEGIN TRY
+    DELETE FROM CheckProcSeriesTask where CheckProcSeriesTaskUid in (select CheckProcSeriesTaskUid FROM CheckProcTask WHERE SampleLogId = @sampleLogId)
+    DELETE FROM CheckProcTask WHERE SampleLogId = @sampleLogId
+	DELETE FROM dbo.SampleLogProof WHERE SampleLogId = @sampleLogId
+    DELETE FROM dbo.SampleLogGroup WHERE SampleLogId = @sampleLogId
+    DELETE FROM dbo.SampleLogModel WHERE SampleLogId = @sampleLogId
+    DELETE FROM dbo.SampleLog WHERE SampleLogId = @sampleLogId
+END TRY
+BEGIN CATCH
+	DECLARE @MSG NVARCHAR(max) = (SELECT ERROR_MESSAGE())
+ raiserror (-1,-1, @MSG ); 
+	IF @@TRANCOUNT &gt; 0
+		ROLLBACK TRANSACTION;
+    
+		
+END CATCH
+
+IF @@TRANCOUNT &gt; 0
+	COMMIT TRANSACTION;
+</DeleteSql>
+      <ImageBuffer>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</ImageBuffer>
+    </ItemChanger>
+    <ItemChanger>
+      <Name>LDS.ОУ</Name>
+      <GetSQL>/* Не изменять!!!
+AEUid (Ключ ОУ) 
+AEBatchRequestUid (Ключ заявки)
+*/
+SELECT 
 	'x' AS [Select(x)], 
-	[AE].[AEUid], 
-	[AE].[Name] as aename
-from [AE]
-where {0}</GetSQL>
-      <GetSQLWhereString>[AE].name like '*'</GetSQLWhereString>
-      <DeleteSql>DECLARE @aeuid as uniqueidentifier = '@AEUid'
+	[AE].[AEUid] AS "AEUid (Ключ ОУ)",
+	[AE].[Name] AS "Наименование ОУ",
+	[AE].[Code] AS "Условное обозначение\Код ОУ",
+	[AE].[Description] AS "Описание ОУ",
+	STUFF((
+        SELECT ';' + CONVERT(NVARCHAR, [EntityType].[Name])
+        FROM [EntityType] 
+        INNER JOIN [AEType] ON [AEType].AEUid = [AE].AEUid
+        WHERE [EntityType].[EntityTypeUid] = [AEType].[EntityTypeUid]
+        FOR XML PATH ('')
+    ), 1, 1, '') AS "Тип ОУ", 
+    [Product].[Name] AS "Продукт ОУ",
+    [AEBatchRequest].[AEBatchRequestUid] AS "AEBatchRequestUid (Ключ заявки)",
+    [AEBatchRequest].[Code] AS "Код заявки",
+    [t8].[Name] AS "Местоположение. Склад",
+    [t9].[Name] AS "Местоположение. Потребитель",
+    [AEBatch].[Num] AS "Номер партии",
+    [AEBatch].[Code] AS "Код партии",
+    (SELECT CONVERT(VARCHAR(10),[AEBatch].[CreationDate],104)) AS "Дата производства",
+    (CASE WHEN (SELECT DATEDIFF(year, (SELECT CONVERT(VARCHAR(10),[AEBatch].[CreationDate],104)),
+		(SELECT CONVERT(VARCHAR(10),[AEBatch].[ShelfLifeDate], 104)))) &gt; 0 THEN (SELECT 'Год') ELSE 
+			CASE WHEN (SELECT DATEDIFF(month, (SELECT CONVERT(VARCHAR(10),[AEBatch].[CreationDate],104)),
+				(SELECT CONVERT(VARCHAR(10),[AEBatch].[ShelfLifeDate], 104)))) &gt; 0 THEN (SELECT 'Месяц') ELSE
+					CASE WHEN (SELECT DATEDIFF(day, (SELECT CONVERT(VARCHAR(10),[AEBatch].[CreationDate],104)),
+						(SELECT CONVERT(VARCHAR(10),[AEBatch].[ShelfLifeDate], 104)))) &gt; 0 THEN (SELECT 'День') ELSE
+							(SELECT 'День') END END END) AS "Срок хранения - тип интервала",
+	(CASE WHEN (SELECT DATEDIFF(year, (SELECT CONVERT(VARCHAR(10),[AEBatch].[CreationDate],104)),
+		(SELECT CONVERT(VARCHAR(10),[AEBatch].[ShelfLifeDate], 104)))) &gt; 0 THEN 
+			(SELECT DATEDIFF(year, (SELECT CONVERT(VARCHAR(10),[AEBatch].[CreationDate],104)),
+			(SELECT CONVERT(VARCHAR(10),[AEBatch].[ShelfLifeDate], 104)))) ELSE 
+				CASE WHEN (SELECT DATEDIFF(month, (SELECT CONVERT(VARCHAR(10),[AEBatch].[CreationDate],104)),
+					(SELECT CONVERT(VARCHAR(10),[AEBatch].[ShelfLifeDate], 104)))) &gt; 0 THEN
+						(SELECT DATEDIFF(month, (SELECT CONVERT(VARCHAR(10),[AEBatch].[CreationDate],104)),
+						(SELECT CONVERT(VARCHAR(10),[AEBatch].[ShelfLifeDate], 104)))) ELSE
+							CASE WHEN (SELECT DATEDIFF(day, (SELECT CONVERT(VARCHAR(10),[AEBatch].[CreationDate],104)),
+								(SELECT CONVERT(VARCHAR(10),[AEBatch].[ShelfLifeDate], 104)))) &gt; 0 THEN
+									(SELECT DATEDIFF(day, (SELECT CONVERT(VARCHAR(10),[AEBatch].[CreationDate],104)),
+									(SELECT CONVERT(VARCHAR(10),[AEBatch].[ShelfLifeDate], 104)))) ELSE
+										(SELECT 0) END END END) AS "Срок хранения - значение",	
+	(SELECT CONVERT(VARCHAR(10),[AEBatch].[ShelfLifeDate],104)) AS "Дата окончания срока хранения", 
+	CASE WHEN (([t2].[Address] IS NOT NULL) AND
+	([t1].[Name] IS NOT NULL)) THEN
+		(SELECT([t1].[Name] + ';' + [t2].[Address])) ELSE
+			CASE WHEN ([t1].[Name] IS NOT NULL) THEN 
+				([t1].[Name]) END END AS "Производитель, адрес",  				
+	CASE WHEN (([t4].[Address] IS NOT NULL) AND
+	([t3].[Name] IS NOT NULL)) THEN
+		(SELECT([t3].[Name] + ';' + [t4].[Address])) ELSE
+			CASE WHEN ([t3].[Name] IS NOT NULL) THEN 
+				([t3].[Name]) END END AS "Поставщик, адрес",			
+	CAST([AEBatch].[InAccrScope] AS int) AS "Входит в область аккредитации (0 - нет, 1 - да)",
+	[AEBatch].[StorageСonditions] AS "Требования к хранению",
+	[AEBatch].[DocNum] AS "Номер паспорта",
+	(SELECT CONVERT(VARCHAR(10),[AEBatch].[DocIssueDate],104)) AS "Дата паспорта",
+	[AEBatch].[AcceptanceNum] AS "Номер акта приемки",
+	(SELECT CONVERT(VARCHAR(10),[AEBatch].[AcceptanceDate], 104)) AS "Дата акта приемки",
+	[t6].LAbbreviation AS "Объем - ЕИ",
+	[t5].Volume AS "Объем - значение",
+	[t7].LAbbreviation AS "Масса - ЕИ",
+	[t5].Weight AS "Масса - значение",
+	[ObjectProp].[Name] AS "Количество - тип тары",
+	[t5].ItemCount AS "Количество мест - значение",
+	(SELECT CASE WHEN (SUM(1) IS NOT NULL) THEN 1 ELSE 0 END FROM [AEHazardClass]
+		INNER JOIN [AEClassifier] ON [AEHazardClass].[HazardClassId] = [AEClassifier].[ItemId]
+			INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] AND [Classifier].Name = 'Вещества чрезвычайно опасные'
+				WHERE [AEHazardClass].[AEUid] = [AE].[AEUid]) AS "Класс опасности (0 - нет, 1 - да). Вещества чрезвычайно опасные",
+	(SELECT CASE WHEN (SUM(1) IS NOT NULL) THEN 1 ELSE 0 END FROM [AEHazardClass]
+		INNER JOIN [AEClassifier] ON [AEHazardClass].[HazardClassId] = [AEClassifier].[ItemId]
+			INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] AND [Classifier].Name = 'Вещества высокоопасные'
+				WHERE [AEHazardClass].[AEUid] = [AE].[AEUid]) AS "Класс опасности (0 - нет, 1 - да). Вещества высокоопасные",
+	(SELECT CASE WHEN (SUM(1) IS NOT NULL) THEN 1 ELSE 0 END FROM [AEHazardClass]
+		INNER JOIN [AEClassifier] ON [AEHazardClass].[HazardClassId] = [AEClassifier].[ItemId]
+			INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] AND [Classifier].Name = 'Вещества умеренно опасные'
+				WHERE [AEHazardClass].[AEUid] = [AE].[AEUid]) AS "Класс опасности (0 - нет, 1 - да). Вещества умеренно опасные",
+	(SELECT CASE WHEN (SUM(1) IS NOT NULL) THEN 1 ELSE 0 END FROM [AEHazardClass]
+		INNER JOIN [AEClassifier] ON [AEHazardClass].[HazardClassId] = [AEClassifier].[ItemId]
+			INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] AND [Classifier].Name = 'Вещества малоопасные'
+				WHERE [AEHazardClass].[AEUid] = [AE].[AEUid]) AS "Класс опасности (0 - нет, 1 - да). Вещества малоопасные",	
+	(SELECT CASE WHEN (SUM(1) IS NOT NULL) THEN 1 ELSE 0 END FROM [AEHumanEffect]
+		INNER JOIN [AEClassifier] ON [AEHumanEffect].[HumanEffectId] = [AEClassifier].[ItemId]
+			INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] AND [Classifier].Name = 'Обще токсичные'
+				WHERE [AEHumanEffect].[AEUid] = [AE].[AEUid]) AS "Влияние на организм (0 - нет, 1 - да). Обще токсичные",
+	(SELECT CASE WHEN (SUM(1) IS NOT NULL) THEN 1 ELSE 0 END FROM [AEHumanEffect]
+		INNER JOIN [AEClassifier] ON [AEHumanEffect].[HumanEffectId] = [AEClassifier].[ItemId]
+			INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] AND [Classifier].Name = 'Раздражающие'
+				WHERE [AEHumanEffect].[AEUid] = [AE].[AEUid]) AS "Влияние на организм (0 - нет, 1 - да). Раздражающие",
+	(SELECT CASE WHEN (SUM(1) IS NOT NULL) THEN 1 ELSE 0 END FROM [AEHumanEffect]
+		INNER JOIN [AEClassifier] ON [AEHumanEffect].[HumanEffectId] = [AEClassifier].[ItemId]
+			INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] AND [Classifier].Name = 'Сенсибилизирующие'
+				WHERE [AEHumanEffect].[AEUid] = [AE].[AEUid]) AS "Влияние на организм (0 - нет, 1 - да). Сенсибилизирующие",
+	(SELECT CASE WHEN (SUM(1) IS NOT NULL) THEN 1 ELSE 0 END FROM [AEHumanEffect]
+		INNER JOIN [AEClassifier] ON [AEHumanEffect].[HumanEffectId] = [AEClassifier].[ItemId]
+			INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] AND [Classifier].Name = 'Канцерогенные'
+				WHERE [AEHumanEffect].[AEUid] = [AE].[AEUid]) AS "Влияние на организм (0 - нет, 1 - да). Канцерогенные",
+	(SELECT CASE WHEN (SUM(1) IS NOT NULL) THEN 1 ELSE 0 END FROM [AEHumanEffect]
+		INNER JOIN [AEClassifier] ON [AEHumanEffect].[HumanEffectId] = [AEClassifier].[ItemId]
+			INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] AND [Classifier].Name = 'Мутагенные'
+				WHERE [AEHumanEffect].[AEUid] = [AE].[AEUid]) AS "Влияние на организм (0 - нет, 1 - да). Мутагенные",
+	(SELECT CASE WHEN (SUM(1) IS NOT NULL) THEN 1 ELSE 0 END FROM [AEHumanEffect]
+		INNER JOIN [AEClassifier] ON [AEHumanEffect].[HumanEffectId] = [AEClassifier].[ItemId]
+			INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] AND [Classifier].Name = 'Влияющие на репродуктивную функцию'
+				WHERE [AEHumanEffect].[AEUid] = [AE].[AEUid]) AS "Влияние на организм (0 - нет, 1 - да). Влияющие на репродуктивную функцию",
+	(SELECT CASE WHEN (SUM(1) IS NOT NULL) THEN 1 ELSE 0 END FROM [AESpendingPurpose]
+		INNER JOIN [SpendingPurpose] ON [AESpendingPurpose].[SpendingPurposeUid] = [SpendingPurpose].[SpendingPurposeUid] AND [SpendingPurpose].Name = 'На градуировку'
+			WHERE [AESpendingPurpose].[AEUid] = [AE].[AEUid]) AS "Цели списания (0 - нет, 1 - да). На градуировку",
+	(SELECT CASE WHEN (SUM(1) IS NOT NULL) THEN 1 ELSE 0 END FROM [AESpendingPurpose]
+		INNER JOIN [SpendingPurpose] ON [AESpendingPurpose].[SpendingPurposeUid] = [SpendingPurpose].[SpendingPurposeUid] AND [SpendingPurpose].Name = 'На испытания'
+			WHERE [AESpendingPurpose].[AEUid] = [AE].[AEUid]) AS "Цели списания (0 - нет, 1 - да). На испытания",
+	(SELECT CASE WHEN (SUM(1) IS NOT NULL) THEN 1 ELSE 0 END FROM [AESpendingPurpose]
+		INNER JOIN [SpendingPurpose] ON [AESpendingPurpose].[SpendingPurposeUid] = [SpendingPurpose].[SpendingPurposeUid] AND [SpendingPurpose].Name = 'На контрольную процедуру'
+			WHERE [AESpendingPurpose].[AEUid] = [AE].[AEUid]) AS "Цели списания (0 - нет, 1 - да). На контрольную процедуру ВЛК",
+	(SELECT CASE WHEN (SUM(1) IS NOT NULL) THEN 1 ELSE 0 END FROM [AESpendingPurpose]
+		INNER JOIN [SpendingPurpose] ON [AESpendingPurpose].[SpendingPurposeUid] = [SpendingPurpose].[SpendingPurposeUid] AND [SpendingPurpose].Name = 'На общие нужды'
+			WHERE [AESpendingPurpose].[AEUid] = [AE].[AEUid]) AS "Цели списания (0 - нет, 1 - да). На общие нужды",
+	(SELECT CASE WHEN (SUM(1) IS NOT NULL) THEN 1 ELSE 0 END FROM [AESpendingPurpose]
+		INNER JOIN [SpendingPurpose] ON [AESpendingPurpose].[SpendingPurposeUid] = [SpendingPurpose].[SpendingPurposeUid] AND [SpendingPurpose].Name = 'На приготовление объектов учета'
+			WHERE [AESpendingPurpose].[AEUid] = [AE].[AEUid]) AS "Цели списания (0 - нет, 1 - да). На приготовление растворов"						
+	FROM  
+	[AE]
+	LEFT JOIN [Product] ON [AE].[ProductUid] = [Product].[ProductUid]
+	LEFT JOIN [AEBatchRequest] ON [AE].[AEUid] = [AEBatchRequest].[AEUid]	
+	LEFT JOIN [AEBatch] ON [AE].[AEUid] = [AEBatch].[AEUid] AND [AEBatchRequest].[AEBatchUid] = [AEBatch].[AEBatchUid]
+	LEFT JOIN [ObjectProp] ON [AE].[PckgTypeUid] = [ObjectProp].[ObjectPropUid]
+	LEFT JOIN [ContractCompany] [t1] ON [AEBatch].[ManufacturerUid] = [t1].[ContractCompanyUid]
+	LEFT JOIN [ContractAddress] [t2] ON [AEBatch].[ManufacturerAddressUid] = [t2].[ContractAddressUid]
+	LEFT JOIN [ContractCompany] [t3] ON [AEBatch].[SupplierUid] = [t3].[ContractCompanyUid]
+	LEFT JOIN [ContractAddress] [t4] ON [AEBatch].[SupplierAddressUid] = [t4].[ContractAddressUid]
+	LEFT JOIN [Dims] [t5] ON [AEBatch].[DimsId] = [t5].[DimsId]
+	LEFT JOIN [EngUnit] [t6] ON [t5].[VolumeEngUnitId] = [t6].[EngUnitId]
+	LEFT JOIN [EngUnit] [t7] ON [t5].[WeightEngUnitId] = [t7].[EngUnitId]
+	LEFT JOIN [OrgUnit] [t8] ON [AEBatchRequest].[StorageOrgUnitId] = [t8].[OrgUnitid]
+	LEFT JOIN [OrgUnit] [t9] ON [AEBatchRequest].[OwnerOrgUnitId] = [t9].[OrgUnitid]
+WHERE [AE].{0}</GetSQL>
+      <GetSQLWhereString>Name like '*'</GetSQLWhereString>
+      <CreateSql>DECLARE @NRV timestamp = NULL
+DECLARE @NAEUid uniqueidentifier = NULL
+DECLARE @NAEBatchRequestUid uniqueidentifier = NULL
+DECLARE @NAEBatchUid uniqueidentifier = NULL
+DECLARE @NAESpendingPurposeUid uniqueidentifier = NULL
+DECLARE @NSpendingPurposeUid uniqueidentifier = NULL
+DECLARE @NV1 int = NULL
+DECLARE @NHazardClassId int = NULL
+DECLARE @NHumanEffectId int = NULL
+DECLARE @NOwnerOrgUnitId int = NULL
+DECLARE @NStorageOrgUnitId int = NULL
+DECLARE @NGenerate nvarchar(10) = SUBSTRING(CONVERT(NVARCHAR(100), HASHBYTES('MD5', CAST(SYSDATETIME() AS NVARCHAR)), 2), 0, 12)
+DECLARE @NProductUid uniqueidentifier = (SELECT TOP 1 [Product].[ProductUid] FROM [Product] WHERE [Product].[Name] = N'@Продукт');
+DECLARE @NAEType TABLE (EntityTypeUid uniqueidentifier)
+DECLARE @NTypeOU nvarchar(100) = N'@Тип ОУ'
+DECLARE @NCreationDate datetime = NULL;
+DECLARE @NShelfLifeDate datetime = NULL;
+DECLARE @NUserName nvarchar(100) = 'Администратор'
+DECLARE @NUserId int = (SELECT TOP 1 [User].[UserId] FROM [User] WHERE [User].[Name] = @NUserName)
+DECLARE @NStatusId int = (SELECT TOP 1 [Status].[StatusId] FROM [Status] WHERE [Status].[Name] = 'Новая' AND [Status].[Code] = 'AEBatchRequestNew')
+DECLARE @NPriorityId int = (SELECT TOP 1 [Priority].[PriorityId] FROM [Priority] WHERE [Priority].[Name] = 'Срочно')
+DECLARE @NAEBatchStatudID int = (SELECT TOP 1 [Status].[StatusId] FROM [Status] WHERE [Status].[Name] = 'Новая' AND [Status].[Code] = 'AEBatchNew')
+
+SET @NAEUid = (SELECT TOP 1 [AE].[AEUid] FROM [AE] WHERE [AE].[Name] = N'@Наименование ОУ' AND [AE].[Code] = N'@Условное обозначение\Код ОУ');
+IF @NAEUid IS NULL BEGIN
+	SET @NAEUid = NEWID()
+	IF @NTypeOU IS NULL OR @NTypeOU = '' SET @NTypeOU = 'Стандартный образец'
+	INSERT INTO @NAEType 
+	SELECT [EntityType].[EntityTypeUid] FROM [EntityType]
+		WHERE [dbo].[EntityType].[Name] IN (SELECT CONVERT(NVARCHAR(100), Item) FROM [dbo].[spc_sys_ParseString](@NTypeOU, ';'))
+	DECLARE @NAEName NVARCHAR(150) = N'@Наименование ОУ'
+	IF (@NAEName IS NULL OR @NAEName = '') SET @NAEName = 'Новый объект учета - ' + @NGenerate 
+	DECLARE @NAECode NVARCHAR(50) = N'@Условное обозначение\Код ОУ'
+	IF (@NAECode IS NULL OR @NAECode = '') SET @NAECode = 'Новый код учета - ' + @NGenerate 	
+	EXEC [dbo].[AE_Insert] default, @NAEUid, @NAEName, @NAECode, N'@Описание ОУ', NULL, NULL,
+		NULL, NULL, @NProductUid, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL;
+	UPDATE [AE] SET
+		[AE].[PckgTypeUid] = (SELECT TOP 1 [PckgType].[PckgTypeUid] FROM [PckgType] INNER JOIN [ObjectProp] ON 
+			[PckgType].[PckgTypeUid] = [ObjectProp].[ObjectPropUid] WHERE [ObjectProp].[Name] =  N'@Количество - тип тары')
+	WHERE [AE].[AEUid] = @NAEUid
+	INSERT INTO [AEType]
+	SELECT NEWID(), @NAEUid, [@NAEType].[EntityTypeUid] FROM @NAEType
+	
+	IF '@Класс опасности (0 - нет, 1 - да). Вещества чрезвычайно опасные' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+	SET @NHazardClassId = (SELECT [AEClassifier].[ItemId] 
+		FROM [AEClassifier] INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] 
+			AND [Classifier].Name = 'Вещества чрезвычайно опасные')
+	IF (@NV1 = 0) BEGIN TRY EXEC [dbo].[AEHazardClass_Delete] default, @NAEUid, @NHazardClassId END TRY
+		BEGIN CATCH PRINT 'Запись была удалена ранее!' END CATCH
+	IF (@NV1 = 1) BEGIN TRY EXEC [dbo].[AEHazardClass_Insert] default, @NAEUid, @NHazardClassId END TRY
+		BEGIN CATCH PRINT 'Запись была добавлена ранее!' END CATCH
+
+	IF '@Класс опасности (0 - нет, 1 - да). Вещества высокоопасные' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+	SET @NHazardClassId = (SELECT [AEClassifier].[ItemId] 
+		FROM [AEClassifier] INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] 
+			AND [Classifier].Name = 'Вещества высокоопасные')
+	IF (@NV1 = 0) BEGIN TRY EXEC [dbo].[AEHazardClass_Delete] default, @NAEUid, @NHazardClassId END TRY
+		BEGIN CATCH PRINT 'Запись была удалена ранее!' END CATCH
+	IF (@NV1 = 1) BEGIN TRY EXEC [dbo].[AEHazardClass_Insert] default, @NAEUid, @NHazardClassId END TRY
+		BEGIN CATCH PRINT 'Запись была добавлена ранее!' END CATCH
+
+	IF '@Класс опасности (0 - нет, 1 - да). Вещества умеренно опасные' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+	SET @NHazardClassId = (SELECT [AEClassifier].[ItemId] 
+		FROM [AEClassifier] INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] 
+			AND [Classifier].Name = 'Вещества умеренно опасные')
+	IF (@NV1 = 0) BEGIN TRY EXEC [dbo].[AEHazardClass_Delete] default, @NAEUid, @NHazardClassId END TRY
+		BEGIN CATCH PRINT 'Запись была удалена ранее!' END CATCH
+	IF (@NV1 = 1) BEGIN TRY EXEC [dbo].[AEHazardClass_Insert] default, @NAEUid, @NHazardClassId END TRY
+		BEGIN CATCH PRINT 'Запись была добавлена ранее!' END CATCH
+
+	IF '@Класс опасности (0 - нет, 1 - да). Вещества малоопасные' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+	SET @NHazardClassId = (SELECT [AEClassifier].[ItemId] 
+		FROM [AEClassifier] INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] 
+			AND [Classifier].Name = 'Вещества малоопасные')
+	IF (@NV1 = 0) BEGIN TRY EXEC [dbo].[AEHazardClass_Delete] default, @NAEUid, @NHazardClassId END TRY
+		BEGIN CATCH PRINT 'Запись была удалена ранее!' END CATCH
+	IF (@NV1 = 1) BEGIN TRY EXEC [dbo].[AEHazardClass_Insert] default, @NAEUid, @NHazardClassId END TRY
+		BEGIN CATCH PRINT 'Запись была добавлена ранее!' END CATCH
+
+	IF '@Влияние на организм (0 - нет, 1 - да). Обще токсичные' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+	SET @NHumanEffectId = (SELECT [AEClassifier].[ItemId] 
+		FROM [AEClassifier] INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] 
+			AND [Classifier].Name = 'Обще токсичные')
+	IF (@NV1 = 0) BEGIN TRY EXEC [dbo].[AEHumanEffect_Delete] default, @NAEUid, @NHumanEffectId END TRY
+		BEGIN CATCH PRINT 'Запись была удалена ранее!' END CATCH
+	IF (@NV1 = 1) BEGIN TRY EXEC [dbo].[AEHumanEffect_Insert] default, @NAEUid, @NHumanEffectId END TRY
+		BEGIN CATCH PRINT 'Запись была добавлена ранее!' END CATCH
+
+	IF '@Влияние на организм (0 - нет, 1 - да). Раздражающие' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+	SET @NHumanEffectId = (SELECT [AEClassifier].[ItemId] 
+		FROM [AEClassifier] INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] 
+			AND [Classifier].Name = 'Раздражающие')
+	IF (@NV1 = 0) BEGIN TRY EXEC [dbo].[AEHumanEffect_Delete] default, @NAEUid, @NHumanEffectId END TRY
+		BEGIN CATCH PRINT 'Запись была удалена ранее!' END CATCH
+	IF (@NV1 = 1) BEGIN TRY EXEC [dbo].[AEHumanEffect_Insert] default, @NAEUid, @NHumanEffectId END TRY
+		BEGIN CATCH PRINT 'Запись была добавлена ранее!' END CATCH
+
+	IF '@Влияние на организм (0 - нет, 1 - да). Сенсибилизирующие' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+	SET @NHumanEffectId = (SELECT [AEClassifier].[ItemId] 
+		FROM [AEClassifier] INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] 
+			AND [Classifier].Name = 'Сенсибилизирующие')
+	IF (@NV1 = 0) BEGIN TRY EXEC [dbo].[AEHumanEffect_Delete] default, @NAEUid, @NHumanEffectId END TRY
+		BEGIN CATCH PRINT 'Запись была удалена ранее!' END CATCH
+	IF (@NV1 = 1) BEGIN TRY EXEC [dbo].[AEHumanEffect_Insert] default, @NAEUid, @NHumanEffectId END TRY
+		BEGIN CATCH PRINT 'Запись была добавлена ранее!' END CATCH
+
+	IF '@Влияние на организм (0 - нет, 1 - да). Канцерогенные' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+	SET @NHumanEffectId = (SELECT [AEClassifier].[ItemId] 
+		FROM [AEClassifier] INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] 
+			AND [Classifier].Name = 'Канцерогенные')
+	IF (@NV1 = 0) BEGIN TRY EXEC [dbo].[AEHumanEffect_Delete] default, @NAEUid, @NHumanEffectId END TRY
+		BEGIN CATCH PRINT 'Запись была удалена ранее!' END CATCH
+	IF (@NV1 = 1) BEGIN TRY EXEC [dbo].[AEHumanEffect_Insert] default, @NAEUid, @NHumanEffectId END TRY
+		BEGIN CATCH PRINT 'Запись была добавлена ранее!' END CATCH
+
+	IF '@Влияние на организм (0 - нет, 1 - да). Мутагенные' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+	SET @NHumanEffectId = (SELECT [AEClassifier].[ItemId] 
+		FROM [AEClassifier] INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] 
+			AND [Classifier].Name = 'Мутагенные')
+	IF (@NV1 = 0) BEGIN TRY EXEC [dbo].[AEHumanEffect_Delete] default, @NAEUid, @NHumanEffectId END TRY
+		BEGIN CATCH PRINT 'Запись была удалена ранее!' END CATCH
+	IF (@NV1 = 1) BEGIN TRY EXEC [dbo].[AEHumanEffect_Insert] default, @NAEUid, @NHumanEffectId END TRY
+		BEGIN CATCH PRINT 'Запись была добавлена ранее!' END CATCH
+
+	IF '@Влияние на организм (0 - нет, 1 - да). Влияющие на репродуктивную функцию' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+	SET @NHumanEffectId = (SELECT [AEClassifier].[ItemId] 
+		FROM [AEClassifier] INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] 
+			AND [Classifier].Name = 'Влияющие на репродуктивную функцию')
+	IF (@NV1 = 0) BEGIN TRY EXEC [dbo].[AEHumanEffect_Delete] default, @NAEUid, @NHumanEffectId END TRY
+		BEGIN CATCH PRINT 'Запись была удалена ранее!' END CATCH
+	IF (@NV1 = 1) BEGIN TRY EXEC [dbo].[AEHumanEffect_Insert] default, @NAEUid, @NHumanEffectId END TRY
+		BEGIN CATCH PRINT 'Запись была добавлена ранее!' END CATCH
+
+	IF '@Цели списания (0 - нет, 1 - да). На градуировку' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+	SET @NSpendingPurposeUid = (SELECT [SpendingPurposeUid] FROM [SpendingPurpose] WHERE [SpendingPurpose].Name = 'На градуировку')
+	IF (@NV1 = 0) BEGIN SET @NAESpendingPurposeUid = (SELECT [AESpendingPurpose].[AESpendingPurposeUid] FROM [AESpendingPurpose] WHERE 
+		[AESpendingPurpose].[AEUid] = @NAEUid AND [AESpendingPurpose].[SpendingPurposeUid] = @NSpendingPurposeUid)
+		IF @NAESpendingPurposeUid IS NOT NULL EXEC [dbo].[AESpendingPurpose_Delete] default, @NAESpendingPurposeUid, @NAEUid, @NSpendingPurposeUid
+		END
+	
+	IF (@NV1 = 1) BEGIN SET @NAESpendingPurposeUid = (SELECT [AESpendingPurpose].[AESpendingPurposeUid] FROM [AESpendingPurpose] WHERE 
+		[AESpendingPurpose].[AEUid] = @NAEUid AND [AESpendingPurpose].[SpendingPurposeUid] = @NSpendingPurposeUid)
+		IF @NAESpendingPurposeUid IS NULL BEGIN SET @NAESpendingPurposeUid = NEWID();
+			EXEC [dbo].[AESpendingPurpose_Insert] default, @NAESpendingPurposeUid, @NAEUid, @NSpendingPurposeUid END
+		END	
+
+	IF '@Цели списания (0 - нет, 1 - да). На испытания' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+	SET @NSpendingPurposeUid = (SELECT [SpendingPurposeUid] FROM [SpendingPurpose] WHERE [SpendingPurpose].Name = 'На испытания')
+	IF (@NV1 = 0) BEGIN SET @NAESpendingPurposeUid = (SELECT [AESpendingPurpose].[AESpendingPurposeUid] FROM [AESpendingPurpose] WHERE 
+		[AESpendingPurpose].[AEUid] = @NAEUid AND [AESpendingPurpose].[SpendingPurposeUid] = @NSpendingPurposeUid)
+		IF @NAESpendingPurposeUid IS NOT NULL EXEC [dbo].[AESpendingPurpose_Delete] default, @NAESpendingPurposeUid, @NAEUid, @NSpendingPurposeUid
+		END
+	IF (@NV1 = 1) BEGIN SET @NAESpendingPurposeUid = (SELECT [AESpendingPurpose].[AESpendingPurposeUid] FROM [AESpendingPurpose] WHERE 
+		[AESpendingPurpose].[AEUid] = @NAEUid AND [AESpendingPurpose].[SpendingPurposeUid] = @NSpendingPurposeUid)
+		IF @NAESpendingPurposeUid IS NULL BEGIN SET @NAESpendingPurposeUid = NEWID();
+			EXEC [dbo].[AESpendingPurpose_Insert] default, @NAESpendingPurposeUid, @NAEUid, @NSpendingPurposeUid END
+		END
+
+	IF '@Цели списания (0 - нет, 1 - да). На контрольную процедуру ВЛК' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+	SET @NSpendingPurposeUid = (SELECT [SpendingPurposeUid] FROM [SpendingPurpose] WHERE [SpendingPurpose].Name = 'На контрольную процедуру')
+	IF (@NV1 = 0) BEGIN SET @NAESpendingPurposeUid = (SELECT [AESpendingPurpose].[AESpendingPurposeUid] FROM [AESpendingPurpose] WHERE 
+		[AESpendingPurpose].[AEUid] = @NAEUid AND [AESpendingPurpose].[SpendingPurposeUid] = @NSpendingPurposeUid)
+		IF @NAESpendingPurposeUid IS NOT NULL EXEC [dbo].[AESpendingPurpose_Delete] default, @NAESpendingPurposeUid, @NAEUid, @NSpendingPurposeUid
+		END
+	IF (@NV1 = 1) BEGIN SET @NAESpendingPurposeUid = (SELECT [AESpendingPurpose].[AESpendingPurposeUid] FROM [AESpendingPurpose] WHERE 
+		[AESpendingPurpose].[AEUid] = @NAEUid AND [AESpendingPurpose].[SpendingPurposeUid] = @NSpendingPurposeUid)
+		IF @NAESpendingPurposeUid IS NULL BEGIN SET @NAESpendingPurposeUid = NEWID();
+			EXEC [dbo].[AESpendingPurpose_Insert] default, @NAESpendingPurposeUid, @NAEUid, @NSpendingPurposeUid END
+		END
+
+	IF '@Цели списания (0 - нет, 1 - да). На общие нужды' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+	SET @NSpendingPurposeUid = (SELECT [SpendingPurposeUid] FROM [SpendingPurpose] WHERE [SpendingPurpose].Name = 'На общие нужды')
+	IF (@NV1 = 0) BEGIN SET @NAESpendingPurposeUid = (SELECT [AESpendingPurpose].[AESpendingPurposeUid] FROM [AESpendingPurpose] WHERE 
+		[AESpendingPurpose].[AEUid] = @NAEUid AND [AESpendingPurpose].[SpendingPurposeUid] = @NSpendingPurposeUid)
+		IF @NAESpendingPurposeUid IS NOT NULL EXEC [dbo].[AESpendingPurpose_Delete] default, @NAESpendingPurposeUid, @NAEUid, @NSpendingPurposeUid
+		END
+	IF (@NV1 = 1) BEGIN SET @NAESpendingPurposeUid = (SELECT [AESpendingPurpose].[AESpendingPurposeUid] FROM [AESpendingPurpose] WHERE 
+		[AESpendingPurpose].[AEUid] = @NAEUid AND [AESpendingPurpose].[SpendingPurposeUid] = @NSpendingPurposeUid)
+		IF @NAESpendingPurposeUid IS NULL BEGIN SET @NAESpendingPurposeUid = NEWID();
+			EXEC [dbo].[AESpendingPurpose_Insert] default, @NAESpendingPurposeUid, @NAEUid, @NSpendingPurposeUid END
+		END
+
+	IF '@Цели списания (0 - нет, 1 - да). На приготовление растворов' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+	SET @NSpendingPurposeUid = (SELECT [SpendingPurposeUid] FROM [SpendingPurpose] WHERE [SpendingPurpose].Name = 'На приготовление объектов учета')
+	IF (@NV1 = 0) BEGIN SET @NAESpendingPurposeUid = (SELECT [AESpendingPurpose].[AESpendingPurposeUid] FROM [AESpendingPurpose] WHERE 
+		[AESpendingPurpose].[AEUid] = @NAEUid AND [AESpendingPurpose].[SpendingPurposeUid] = @NSpendingPurposeUid)
+		IF @NAESpendingPurposeUid IS NOT NULL EXEC [dbo].[AESpendingPurpose_Delete] default, @NAESpendingPurposeUid, @NAEUid, @NSpendingPurposeUid
+		END
+	IF (@NV1 = 1) BEGIN SET @NAESpendingPurposeUid = (SELECT [AESpendingPurpose].[AESpendingPurposeUid] FROM [AESpendingPurpose] WHERE 
+		[AESpendingPurpose].[AEUid] = @NAEUid AND [AESpendingPurpose].[SpendingPurposeUid] = @NSpendingPurposeUid)
+		IF @NAESpendingPurposeUid IS NULL BEGIN SET @NAESpendingPurposeUid = NEWID();
+			EXEC [dbo].[AESpendingPurpose_Insert] default, @NAESpendingPurposeUid, @NAEUid, @NSpendingPurposeUid END
+		END
+		
+	SET @NSpendingPurposeUid = (SELECT [SpendingPurposeUid] FROM [SpendingPurpose] WHERE [SpendingPurpose].Name = 'Корректировка остатков')
+	SET @NAESpendingPurposeUid = (SELECT [AESpendingPurpose].[AESpendingPurposeUid] FROM [AESpendingPurpose] WHERE 
+		[AESpendingPurpose].[AEUid] = @NAEUid AND [AESpendingPurpose].[SpendingPurposeUid] = @NSpendingPurposeUid)
+		IF @NAESpendingPurposeUid IS NULL BEGIN SET @NAESpendingPurposeUid = NEWID();
+			EXEC [dbo].[AESpendingPurpose_Insert] default, @NAESpendingPurposeUid, @NAEUid, @NSpendingPurposeUid END
+
+	
+	SET @NSpendingPurposeUid = (SELECT [SpendingPurposeUid] FROM [SpendingPurpose] WHERE [SpendingPurpose].Name = 'На партию')
+	SET @NAESpendingPurposeUid = (SELECT [AESpendingPurpose].[AESpendingPurposeUid] FROM [AESpendingPurpose] WHERE 
+		[AESpendingPurpose].[AEUid] = @NAEUid AND [AESpendingPurpose].[SpendingPurposeUid] = @NSpendingPurposeUid)
+		IF @NAESpendingPurposeUid IS NULL BEGIN SET @NAESpendingPurposeUid = NEWID();
+			EXEC [dbo].[AESpendingPurpose_Insert] default, @NAESpendingPurposeUid, @NAEUid, @NSpendingPurposeUid END
+		
+	SET @NSpendingPurposeUid = (SELECT [SpendingPurposeUid] FROM [SpendingPurpose] WHERE [SpendingPurpose].Name = 'Утилизация')
+	SET @NAESpendingPurposeUid = (SELECT [AESpendingPurpose].[AESpendingPurposeUid] FROM [AESpendingPurpose] WHERE 
+		[AESpendingPurpose].[AEUid] = @NAEUid AND [AESpendingPurpose].[SpendingPurposeUid] = @NSpendingPurposeUid)
+		IF @NAESpendingPurposeUid IS NULL BEGIN SET @NAESpendingPurposeUid = NEWID();
+			EXEC [dbo].[AESpendingPurpose_Insert] default, @NAESpendingPurposeUid, @NAEUid, @NSpendingPurposeUid END
+END
+
+SET @NAEBatchRequestUid = (SELECT TOP 1 [AEBatchRequest].[AEBatchRequestUid] FROM [AEBatchRequest] WHERE [AEBatchRequest].[AEUid] = @NAEUid AND [AEBatchRequest].[Code] = '@Код заявки')
+SET @NAEBatchUid = (SELECT TOP 1 [AEBatchRequest].[AEBatchUid] FROM [AEBatchRequest] WHERE [AEBatchRequest].[AEBatchRequestUid] = @NAEBatchRequestUid)
+
+IF @NAEBatchRequestUid IS NULL OR (@NAEBatchRequestUid IS NOT NULL AND @NAEBatchUid IS NOT NULL) BEGIN
+	SET @NAEBatchRequestUid = NEWID()
+	SET @NAEBatchUid = NULL
+	SET @NStorageOrgUnitId = (SELECT [OrgUnit].[OrgUnitId] FROM [OrgUnit] WHERE [OrgUnit].[Name] = N'@Местоположение. Склад')
+	IF (@NStorageOrgUnitId IS NULL) SET @NStorageOrgUnitId = (SELECT [OrgUnit].[OrgUnitId] FROM [OrgUnit] WHERE [OrgUnit].[Name] = 'Без лаборатории')
+	SET @NOwnerOrgUnitId = (SELECT [OrgUnit].[OrgUnitId] FROM [OrgUnit] WHERE [OrgUnit].[Name] = N'@Местоположение. Потребитель')
+	IF (@NOwnerOrgUnitId IS NULL) SET @NOwnerOrgUnitId = (SELECT [OrgUnit].[OrgUnitId] FROM [OrgUnit] WHERE [OrgUnit].[Name] = 'Без лаборатории')
+	SET @NCreationDate = GETDATE()
+	IF N'@Дата производства' &lt;&gt; '' AND N'@Дата производства' IS NOT NULL BEGIN
+		BEGIN TRY SET @NCreationDate = CONVERT(datetime, N'@Дата производства', 104)
+		IF @NCreationDate IS NULL SET @NCreationDate = GETDATE()
+		END TRY
+		BEGIN CATCH SET @NCreationDate = GETDATE()
+		END CATCH 
+	END
+	EXEC [dbo].[AEBatchRequest_Insert] default, @NAEBatchRequestUid, @NAEBatchUid, N'@Код заявки', @NAEUid, NULL, @NCreationDate,
+		@NUserId, @NUserName, @NOwnerOrgUnitId, @NStorageOrgUnitId, @NStatusId, @NPriorityId, NULL, NULL, 0 
+END
+
+IF @NAEBatchUid IS NULL BEGIN
+	SET @NAEBatchUid = NEWID()
+	DECLARE @NNum NVARCHAR(150) = N'@Номер партии'
+	IF (@NNum IS NULL OR @NNum = '') SET @NNum = 'Номер партии - ' + @NGenerate
+
+	DECLARE @NCode NVARCHAR(150) = N'@Код партии'
+	IF (@NCode IS NULL OR @NCode = '') SET @NCode = 'Код партии - ' + @NGenerate
+	
+	SET @NCreationDate = GETDATE()
+	IF N'@Дата производства' &lt;&gt; '' AND N'@Дата производства' IS NOT NULL BEGIN
+		BEGIN TRY SET @NCreationDate = CONVERT(datetime, '@Дата производства', 104)
+		IF @NCreationDate IS NULL SET @NCreationDate = GETDATE()
+		END TRY
+		BEGIN CATCH SET @NCreationDate = GETDATE()
+		END CATCH 
+	END
+	
+	DECLARE @TypeInterval NVARCHAR(10) = N'@Срок хранения - тип интервала'
+	DECLARE @IntervalInt int = NULL;
+	IF N'@Дата окончания срока хранения' &lt;&gt; '' AND N'@Дата окончания срока хранения' IS NOT NULL BEGIN
+		BEGIN TRY SET @NShelfLifeDate = CONVERT(datetime, N'@Дата окончания срока хранения', 104)
+		END TRY	
+		BEGIN CATCH	SET @NShelfLifeDate = NULL
+		END CATCH
+	END
+	IF N'@Дата окончания срока хранения' = '' OR N'@Дата окончания срока хранения' IS NULL BEGIN
+		IF (@TypeInterval IS NOT NULL) BEGIN
+			BEGIN TRY SET @IntervalInt = CAST(N'@Срок хранения - значение' AS INT)
+			END TRY
+			BEGIN CATCH SET @IntervalInt = NULL
+			END	CATCH 			
+			IF @TypeInterval = 'Год' SET @NShelfLifeDate = DATEADD(year, @IntervalInt, CONVERT(VARCHAR(10), @NCreationDate, 104))
+			IF @TypeInterval = 'Месяц' SET @NShelfLifeDate = DATEADD(month, @IntervalInt, CONVERT(VARCHAR(10), @NCreationDate, 104))
+			IF @TypeInterval = 'День' SET @NShelfLifeDate = DATEADD(day, @IntervalInt, CONVERT(VARCHAR(10), @NCreationDate, 104))	
+			IF @NShelfLifeDate IS NULL SET @NShelfLifeDate = DATEADD(MONTH, 1, CONVERT(VARCHAR(10), @NCreationDate, 104))
+			END
+	END
+	IF @NShelfLifeDate IS NULL SET @NShelfLifeDate = DATEADD(MONTH, 1, CONVERT(VARCHAR(10), @NCreationDate, 104))
+	DECLARE @NPeriodId int = (SELECT MAX([Period].[PeriodId] + 1) FROM [Period]) 
+	DECLARE @NPeriodTypeUid uniqueidentifier = (SELECT [PeriodType].[PeriodTypeUid] FROM [PeriodType] WHERE [PeriodType].[Order] = 
+		(SELECT (CASE WHEN (SELECT DATEDIFF(year, @NCreationDate, @NShelfLifeDate)) &gt; 0 THEN (SELECT 900) ELSE 
+			CASE WHEN (SELECT DATEDIFF(month, @NCreationDate, @NShelfLifeDate)) &gt; 0 THEN (SELECT 700) ELSE
+				CASE WHEN (SELECT DATEDIFF(day, @NCreationDate, @NShelfLifeDate)) &gt; 0 THEN (SELECT 400) ELSE
+					(SELECT 400) END END END)))
+	DECLARE @NPeriodLen float = (SELECT (CASE WHEN (SELECT DATEDIFF(year, @NCreationDate, @NShelfLifeDate)) &gt; 0 THEN 
+		(SELECT DATEDIFF(year, @NCreationDate, @NShelfLifeDate)) ELSE 
+			CASE WHEN (SELECT DATEDIFF(month, @NCreationDate, @NShelfLifeDate)) &gt; 0 THEN
+				(SELECT DATEDIFF(month, @NCreationDate, @NShelfLifeDate)) ELSE
+					CASE WHEN (SELECT DATEDIFF(day, @NCreationDate, @NShelfLifeDate)) &gt; 0 THEN
+						(SELECT DATEDIFF(day, @NCreationDate, @NShelfLifeDate)) ELSE
+							(SELECT 0) END END END))
+	EXEC [dbo].[Period_Insert] default, @NPeriodId, @NPeriodLen, @NPeriodTypeUid
+	
+	DECLARE @NR Table (CompanyIndex NVARCHAR(255), id INT) 
+	DECLARE @NRID INT = 0
+	DECLARE @NManufacturerUid uniqueidentifier = NULL;
+	DECLARE @NManufacturerAddressUid uniqueidentifier = NULL;
+	DECLARE @NSupplierUid uniqueidentifier = NULL;
+	DECLARE @NSupplierAddressUid uniqueidentifier = NULL;
+	DECLARE @NManufacturerName NVARCHAR(150)
+	DECLARE @NManufacturerAddressName NVARCHAR(255);
+	DECLARE @NSupplierName NVARCHAR(150)
+	DECLARE @NSupplierAddressName NVARCHAR(255);
+	INSERT INTO @NR 
+	SELECT CONVERT(NVARCHAR(255), Item), ROW_NUMBER() OVER (ORDER BY @NRID) AS id FROM [dbo].[spc_sys_ParseString](N'@Производитель, адрес', ';')
+	SET @NManufacturerName = (SELECT CompanyIndex FROM @NR WHERE id = 1);
+	SET @NManufacturerAddressName = (SELECT CompanyIndex FROM @NR WHERE id = 2)
+	SET @NManufacturerUid = (SELECT [ContractCompany].[ContractCompanyUid] FROM [ContractCompany]
+		WHERE [ContractCompany].[Name] = (SELECT CompanyIndex FROM @NR WHERE id = 1))
+	SET @NManufacturerAddressUid = (SELECT [ContractAddress].[ContractAddressUid] FROM [ContractAddress]
+		INNER JOIN [ContractCompanyAddress] ON [ContractAddress].[ContractAddressUid] = [ContractCompanyAddress].[AddressUid]
+			WHERE [ContractAddress].[Address] = (SELECT CompanyIndex FROM @NR WHERE id = 2) AND [ContractCompanyAddress].[CompanyUid] = @NManufacturerUid)	
+	/* Если имя компании есть, а найти ее не удалось, то добавляем ее */
+	IF @NManufacturerName IS NOT NULL AND @NManufacturerUid IS NULL BEGIN
+		SET @NManufacturerUid = NEWID()
+		EXEC [dbo].[ContractCompany_Insert] default, @NManufacturerUid, @NManufacturerName, NULL, 0, 1, 32
+		END	
+	/* Если адрес есть, а ключа нет, то добавляем адрес. */
+	IF @NManufacturerAddressName IS NOT NULL AND @NManufacturerAddressUid IS NULL BEGIN	
+		SET @NManufacturerAddressUid = NEWID()
+		DECLARE @NContractAddressTypeUid uniqueidentifier = (SELECT [ContractAddressType].[ContractAddressTypeUid] 
+			FROM [ContractAddressType] WHERE [ContractAddressType].[Name] = 'юридический')
+		DECLARE @LocationUid uniqueidentifier = (SELECT [ContractLocation].[ContractLocationUid] 
+			FROM [ContractLocation] WHERE [ContractLocation].[Name] = 'Российская Федерация');
+		EXEC [dbo].[ContractAddress_Insert] default, @NManufacturerAddressUid, @NContractAddressTypeUid, @LocationUid,
+			@NManufacturerAddressName, NULL, 0, 1, NULL
+		EXEC [dbo].[ContractCompanyAddress_Insert] default, @NManufacturerUid, @NManufacturerAddressUid, 0, 0
+		END
+	DELETE FROM @NR
+	INSERT INTO @NR 
+	SELECT CONVERT(NVARCHAR(255), Item), ROW_NUMBER() OVER (ORDER BY @NRID) AS id FROM [dbo].[spc_sys_ParseString](N'@Поставщик, адрес', ';')
+	SET @NSupplierName = (SELECT CompanyIndex FROM @NR WHERE id = 1);
+	SET @NSupplierAddressName = (SELECT CompanyIndex FROM @NR WHERE id = 2)
+	SET @NSupplierUid = (SELECT [ContractCompany].[ContractCompanyUid] FROM [ContractCompany]
+		WHERE [ContractCompany].[Name] = (SELECT CompanyIndex FROM @NR WHERE id = 1))
+	SET @NSupplierAddressUid = (SELECT [ContractAddress].[ContractAddressUid] FROM [ContractAddress]
+		INNER JOIN [ContractCompanyAddress] ON [ContractAddress].[ContractAddressUid] = [ContractCompanyAddress].[AddressUid]
+			WHERE [ContractAddress].[Address] = (SELECT CompanyIndex FROM @NR WHERE id = 2) AND [ContractCompanyAddress].[CompanyUid] = @NSupplierUid)	
+	/* Если имя компании есть, а найти ее не удалось, то добавляем ее */
+	IF @NSupplierName IS NOT NULL AND @NSupplierUid IS NULL BEGIN
+		SET @NSupplierUid = NEWID()
+		EXEC [dbo].[ContractCompany_Insert] default, @NSupplierUid, @NSupplierName, NULL, 0, 1, 32
+		END
+	/* Если адрес есть, а ключа нет, то добавляем адрес. */
+	IF @NSupplierAddressName IS NOT NULL AND @NSupplierAddressUid IS NULL BEGIN	
+		SET @NSupplierAddressUid = NEWID()
+		SET @NContractAddressTypeUid = (SELECT [ContractAddressType].[ContractAddressTypeUid] 
+			FROM [ContractAddressType] WHERE [ContractAddressType].[Name] = 'юридический')
+		SET @LocationUid = (SELECT [ContractLocation].[ContractLocationUid] 
+			FROM [ContractLocation] WHERE [ContractLocation].[Name] = 'Российская Федерация');
+		EXEC [dbo].[ContractAddress_Insert] default, @NSupplierAddressUid, @NContractAddressTypeUid, @LocationUid, 
+			@NSupplierAddressName, NULL, 0, 1, NULL
+		EXEC [dbo].[ContractCompanyAddress_Insert] default, @NSupplierUid, @NSupplierAddressUid, 0, 0
+		END
+	
+	DECLARE @NInAccrScope bit = 0
+	IF '@Входит в область аккредитации (0 - нет, 1 - да)' = '1' SET @NInAccrScope = 1
+	
+	DECLARE @NDocIssueDate datetime = NULL
+	DECLARE @NAcceptanceDate datetime = NULL
+	IF N'@Дата паспорта' IS NOT NULL AND N'@Дата паспорта' &lt;&gt; '' BEGIN
+		BEGIN TRY
+			SET @NDocIssueDate = CONVERT(datetime, N'@Дата паспорта', 104)
+		END TRY
+		BEGIN CATCH
+			SET @NDocIssueDate = NULL;
+		END CATCH
+		END
+	IF N'@Дата акта приемки' IS NOT NULL AND N'@Дата акта приемки' &lt;&gt; '' BEGIN
+		BEGIN TRY
+			SET @NAcceptanceDate = CONVERT(datetime, N'@Дата акта приемки', 104)
+		END TRY
+		BEGIN CATCH
+			SET @NAcceptanceDate = NULL;
+		END CATCH
+		END
+	
+	DECLARE @NDimsId int = (SELECT MAX([Dims].[DimsId]) + 1 FROM [Dims])
+	DECLARE @NVolume FLOAT = NULL
+	DECLARE @NWeight FLOAT = NULL
+	DECLARE @NItemCount INT = NULL
+	IF N'@Объем - значение' &lt;&gt; '' BEGIN
+		BEGIN TRY
+			SET @NVolume = CONVERT(FLOAT, N'@Объем - значение', 0)
+		END TRY
+		BEGIN CATCH
+			PRINT 'Ошибка преобразования значения объема в FLOAT!' 
+		END CATCH
+	END
+	IF N'@Масса - значение' &lt;&gt; '' BEGIN
+		BEGIN TRY
+			SET @NWeight = CONVERT(FLOAT, N'@Масса - значение', 0)
+		END TRY
+		BEGIN CATCH
+			PRINT 'Ошибка преобразования значения массы в FLOAT!' 
+		END CATCH
+	END
+	IF N'@Количество мест - значение' &lt;&gt; '' BEGIN
+		BEGIN TRY
+			SET @NItemCount = CONVERT(INT, N'@Количество мест - значение', 0)
+		END TRY
+		BEGIN CATCH
+			PRINT 'Ошибка преобразования значения количества мест в INT!' 
+		END CATCH
+	END
+	DECLARE @NVolumeEngUnitId int = (SELECT TOP 1 [EngUnit].[EngUnitId] FROM [EngUnit] WHERE [EngUnit].[LAbbreviation] = N'@Объем - ЕИ')
+	IF @NVolumeEngUnitId IS NULL SET @NVolumeEngUnitId = 48 /* метр кубический */
+	DECLARE	@NWeightEngUnitId int = (SELECT TOP 1 [EngUnit].[EngUnitId] FROM [EngUnit] WHERE [EngUnit].[LAbbreviation] = N'@Масса - ЕИ')
+	IF @NWeightEngUnitId IS NULL SET @NWeightEngUnitId = 52 /* килограмм */
+	EXEC [dbo].[Dims_Insert] default, @NDimsId, @NWeight, NULL, @NWeightEngUnitId, @NVolume, @NVolumeEngUnitId, NULL, NULL, NULL, NULL,
+		@NItemCount, 0
+
+	EXEC [dbo].[AEBatch_Insert] default, @NAEBatchUid, @NAEUid, @NCode, @NNum, NULL, @NAEBatchStatudID, @NDimsId, @NManufacturerUid, @NManufacturerAddressUid,
+		@NSupplierUid, @NSupplierAddressUid, N'@Номер паспорта', @NDocIssueDate, N'@Номер акта приемки', @NAcceptanceDate, @NCreationDate, @NPeriodId,
+		@NPeriodLen, @NPeriodTypeUid, @NStorageOrgUnitId, NULL, @NOwnerOrgUnitId, NULL, @NUserId, 0, N'@Требования к хранению', @NCreationDate, @NInAccrScope,
+		@NShelfLifeDate
+	
+	UPDATE [AEBatchRequest]	SET 
+		[AEBatchRequest].AEBatchUid = @NAEBatchUid
+	WHERE [AEBatchRequest].[AEBatchRequestUid] = @NAEBatchRequestUid
+END</CreateSql>
+      <EditSql>/* Следующие ключи изменять вручную запрещено!!!
+AEUid (Ключ ОУ) 
+AEBatchRequestUid (Ключ заявки)
+*/
+DECLARE @NRV timestamp
+DECLARE @NAEUid uniqueidentifier = '@AEUid (Ключ ОУ)'
+DECLARE @NAEBatchRequestUid uniqueidentifier = '@AEBatchRequestUid (Ключ заявки)'
+DECLARE @NAEBatchUid uniqueidentifier = NULL
+DECLARE @NAESpendingPurposeUid uniqueidentifier = NULL
+DECLARE @NSpendingPurposeUid uniqueidentifier = NULL
+DECLARE @NV1 int = NULL
+DECLARE @NHazardClassId int = NULL
+DECLARE @NHumanEffectId int = NULL
+DECLARE @NOwnerOrgUnitId int = NULL
+DECLARE @NStorageOrgUnitId int = NULL
+DECLARE @NGenerate nvarchar(10) = SUBSTRING(CONVERT(NVARCHAR(100), HASHBYTES('MD5', CAST(SYSDATETIME() AS NVARCHAR)), 2), 0, 12)
+
+IF (@NAEBatchRequestUid IS NOT NULL) 
+	SET @NAEBatchUid = (SELECT [AEBatchRequest].[AEBatchUid] FROM [AEBatchRequest] WHERE [AEBatchRequest].AEBatchRequestUid = @NAEBatchRequestUid AND [AEBatchRequest].[AEUid] = @NAEUid)
+
+DECLARE @NAEName NVARCHAR(150) = N'@Наименование ОУ'
+IF (@NAEName IS NULL OR @NAEName = '') SET @NAEName = 'Новый объект учета - ' + @NGenerate 
+
+DECLARE @NAECode NVARCHAR(50) = N'@Условное обозначение\Код ОУ'
+IF (@NAECode IS NULL OR @NAECode = '') SET @NAECode = 'Новый код учета - ' + @NGenerate 
+
+/* Правка по ОУ */
+UPDATE [AE] SET 
+	[AE].[Name] = @NAEName,
+	[AE].[Code] = @NAECode, 
+	[AE].[Description] = N'@Описание ОУ',
+	[AE].[ProductUid] = (SELECT [Product].[ProductUid] FROM [Product] WHERE [Product].[Name] = N'@Продукт ОУ'),
+	[AE].[PckgTypeUid] = (SELECT [PckgType].[PckgTypeUid] FROM [PckgType] INNER JOIN [ObjectProp] ON 
+		[PckgType].[PckgTypeUid] = [ObjectProp].[ObjectPropUid] WHERE [ObjectProp].[Name] =  N'@Количество - тип тары')
+WHERE
+	[AE].[AEUid] = @NAEUid
+DECLARE @NAEType TABLE (EntityTypeUid uniqueidentifier)
+INSERT INTO @NAEType
+SELECT [EntityType].[EntityTypeUid] FROM [EntityType]
+WHERE [dbo].[EntityType].[Name] in (SELECT CONVERT(NVARCHAR, Item) FROM [dbo].[spc_sys_ParseString](N'@Тип ОУ', ';'));
+DELETE FROM [AEType] WHERE [AEType].[EntityTypeUid] NOT IN (SELECT EntityTypeUid FROM @NAEType) AND [AEType].[AEUid] = @NAEUid
+INSERT INTO [AEType]
+SELECT NEWID(), @NAEUid, [@NAEType].[EntityTypeUid] FROM @NAEType
+WHERE [@NAEType].[EntityTypeUid] NOT IN (SELECT EntityTypeUid FROM [AEType] WHERE [AEType].[AEUid] = @NAEUid)
+
+IF '@Класс опасности (0 - нет, 1 - да). Вещества чрезвычайно опасные' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+SET @NHazardClassId = (SELECT [AEClassifier].[ItemId] 
+	FROM [AEClassifier] INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] 
+		AND [Classifier].Name = 'Вещества чрезвычайно опасные')
+IF (@NV1 = 0) BEGIN TRY EXEC [dbo].[AEHazardClass_Delete] default, @NAEUid, @NHazardClassId END TRY
+	BEGIN CATCH PRINT 'Запись была удалена ранее!' END CATCH
+IF (@NV1 = 1) BEGIN TRY EXEC [dbo].[AEHazardClass_Insert] default, @NAEUid, @NHazardClassId END TRY
+	BEGIN CATCH PRINT 'Запись была добавлена ранее!' END CATCH
+
+IF '@Класс опасности (0 - нет, 1 - да). Вещества высокоопасные' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+SET @NHazardClassId = (SELECT [AEClassifier].[ItemId] 
+	FROM [AEClassifier] INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] 
+		AND [Classifier].Name = 'Вещества высокоопасные')
+IF (@NV1 = 0) BEGIN TRY EXEC [dbo].[AEHazardClass_Delete] default, @NAEUid, @NHazardClassId END TRY
+	BEGIN CATCH PRINT 'Запись была удалена ранее!' END CATCH
+IF (@NV1 = 1) BEGIN TRY EXEC [dbo].[AEHazardClass_Insert] default, @NAEUid, @NHazardClassId END TRY
+	BEGIN CATCH PRINT 'Запись была добавлена ранее!' END CATCH
+
+IF '@Класс опасности (0 - нет, 1 - да). Вещества умеренно опасные' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+SET @NHazardClassId = (SELECT [AEClassifier].[ItemId] 
+	FROM [AEClassifier] INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] 
+		AND [Classifier].Name = 'Вещества умеренно опасные')
+IF (@NV1 = 0) BEGIN TRY EXEC [dbo].[AEHazardClass_Delete] default, @NAEUid, @NHazardClassId END TRY
+	BEGIN CATCH PRINT 'Запись была удалена ранее!' END CATCH
+IF (@NV1 = 1) BEGIN TRY EXEC [dbo].[AEHazardClass_Insert] default, @NAEUid, @NHazardClassId END TRY
+	BEGIN CATCH PRINT 'Запись была добавлена ранее!' END CATCH
+
+IF '@Класс опасности (0 - нет, 1 - да). Вещества малоопасные' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+SET @NHazardClassId = (SELECT [AEClassifier].[ItemId] 
+	FROM [AEClassifier] INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] 
+		AND [Classifier].Name = 'Вещества малоопасные')
+IF (@NV1 = 0) BEGIN TRY EXEC [dbo].[AEHazardClass_Delete] default, @NAEUid, @NHazardClassId END TRY
+	BEGIN CATCH PRINT 'Запись была удалена ранее!' END CATCH
+IF (@NV1 = 1) BEGIN TRY EXEC [dbo].[AEHazardClass_Insert] default, @NAEUid, @NHazardClassId END TRY
+	BEGIN CATCH PRINT 'Запись была добавлена ранее!' END CATCH
+
+IF '@Влияние на организм (0 - нет, 1 - да). Обще токсичные' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+SET @NHumanEffectId = (SELECT [AEClassifier].[ItemId] 
+	FROM [AEClassifier] INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] 
+		AND [Classifier].Name = 'Обще токсичные')
+IF (@NV1 = 0) BEGIN TRY EXEC [dbo].[AEHumanEffect_Delete] default, @NAEUid, @NHumanEffectId END TRY
+	BEGIN CATCH PRINT 'Запись была удалена ранее!' END CATCH
+IF (@NV1 = 1) BEGIN TRY EXEC [dbo].[AEHumanEffect_Insert] default, @NAEUid, @NHumanEffectId END TRY
+	BEGIN CATCH PRINT 'Запись была добавлена ранее!' END CATCH
+
+IF '@Влияние на организм (0 - нет, 1 - да). Раздражающие' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+SET @NHumanEffectId = (SELECT [AEClassifier].[ItemId] 
+	FROM [AEClassifier] INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] 
+		AND [Classifier].Name = 'Раздражающие')
+IF (@NV1 = 0) BEGIN TRY EXEC [dbo].[AEHumanEffect_Delete] default, @NAEUid, @NHumanEffectId END TRY
+	BEGIN CATCH PRINT 'Запись была удалена ранее!' END CATCH
+IF (@NV1 = 1) BEGIN TRY EXEC [dbo].[AEHumanEffect_Insert] default, @NAEUid, @NHumanEffectId END TRY
+	BEGIN CATCH PRINT 'Запись была добавлена ранее!' END CATCH
+
+IF '@Влияние на организм (0 - нет, 1 - да). Сенсибилизирующие' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+SET @NHumanEffectId = (SELECT [AEClassifier].[ItemId] 
+	FROM [AEClassifier] INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] 
+		AND [Classifier].Name = 'Сенсибилизирующие')
+IF (@NV1 = 0) BEGIN TRY EXEC [dbo].[AEHumanEffect_Delete] default, @NAEUid, @NHumanEffectId END TRY
+	BEGIN CATCH PRINT 'Запись была удалена ранее!' END CATCH
+IF (@NV1 = 1) BEGIN TRY EXEC [dbo].[AEHumanEffect_Insert] default, @NAEUid, @NHumanEffectId END TRY
+	BEGIN CATCH PRINT 'Запись была добавлена ранее!' END CATCH
+
+IF '@Влияние на организм (0 - нет, 1 - да). Канцерогенные' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+SET @NHumanEffectId = (SELECT [AEClassifier].[ItemId] 
+	FROM [AEClassifier] INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] 
+		AND [Classifier].Name = 'Канцерогенные')
+IF (@NV1 = 0) BEGIN TRY EXEC [dbo].[AEHumanEffect_Delete] default, @NAEUid, @NHumanEffectId END TRY
+	BEGIN CATCH PRINT 'Запись была удалена ранее!' END CATCH
+IF (@NV1 = 1) BEGIN TRY EXEC [dbo].[AEHumanEffect_Insert] default, @NAEUid, @NHumanEffectId END TRY
+	BEGIN CATCH PRINT 'Запись была добавлена ранее!' END CATCH
+
+IF '@Влияние на организм (0 - нет, 1 - да). Мутагенные' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+SET @NHumanEffectId = (SELECT [AEClassifier].[ItemId] 
+	FROM [AEClassifier] INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] 
+		AND [Classifier].Name = 'Мутагенные')
+IF (@NV1 = 0) BEGIN TRY EXEC [dbo].[AEHumanEffect_Delete] default, @NAEUid, @NHumanEffectId END TRY
+	BEGIN CATCH PRINT 'Запись была удалена ранее!' END CATCH
+IF (@NV1 = 1) BEGIN TRY EXEC [dbo].[AEHumanEffect_Insert] default, @NAEUid, @NHumanEffectId END TRY
+	BEGIN CATCH PRINT 'Запись была добавлена ранее!' END CATCH
+
+IF '@Влияние на организм (0 - нет, 1 - да). Влияющие на репродуктивную функцию' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+SET @NHumanEffectId = (SELECT [AEClassifier].[ItemId] 
+	FROM [AEClassifier] INNER JOIN [Classifier] ON [AEClassifier].[ItemId] = [Classifier].[ItemId] 
+		AND [Classifier].Name = 'Влияющие на репродуктивную функцию')
+IF (@NV1 = 0) BEGIN TRY EXEC [dbo].[AEHumanEffect_Delete] default, @NAEUid, @NHumanEffectId END TRY
+	BEGIN CATCH PRINT 'Запись была удалена ранее!' END CATCH
+IF (@NV1 = 1) BEGIN TRY EXEC [dbo].[AEHumanEffect_Insert] default, @NAEUid, @NHumanEffectId END TRY
+	BEGIN CATCH PRINT 'Запись была добавлена ранее!' END CATCH
+
+IF '@Цели списания (0 - нет, 1 - да). На градуировку' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+SET @NSpendingPurposeUid = (SELECT [SpendingPurposeUid] FROM [SpendingPurpose] WHERE [SpendingPurpose].Name = 'На градуировку')
+IF (@NV1 = 0) BEGIN SET @NAESpendingPurposeUid = (SELECT [AESpendingPurpose].[AESpendingPurposeUid] FROM [AESpendingPurpose] WHERE 
+	[AESpendingPurpose].[AEUid] = @NAEUid AND [AESpendingPurpose].[SpendingPurposeUid] = @NSpendingPurposeUid)
+	IF @NAESpendingPurposeUid IS NOT NULL EXEC [dbo].[AESpendingPurpose_Delete] default, @NAESpendingPurposeUid, @NAEUid, @NSpendingPurposeUid
+	END
+IF (@NV1 = 1) BEGIN SET @NAESpendingPurposeUid = (SELECT [AESpendingPurpose].[AESpendingPurposeUid] FROM [AESpendingPurpose] WHERE 
+	[AESpendingPurpose].[AEUid] = @NAEUid AND [AESpendingPurpose].[SpendingPurposeUid] = @NSpendingPurposeUid)
+	IF @NAESpendingPurposeUid IS NULL BEGIN SET @NAESpendingPurposeUid = NEWID();
+		EXEC [dbo].[AESpendingPurpose_Insert] default, @NAESpendingPurposeUid, @NAEUid, @NSpendingPurposeUid END
+	END	
+
+IF '@Цели списания (0 - нет, 1 - да). На испытания' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+SET @NSpendingPurposeUid = (SELECT [SpendingPurposeUid] FROM [SpendingPurpose] WHERE [SpendingPurpose].Name = 'На испытания')
+IF (@NV1 = 0) BEGIN SET @NAESpendingPurposeUid = (SELECT [AESpendingPurpose].[AESpendingPurposeUid] FROM [AESpendingPurpose] WHERE 
+	[AESpendingPurpose].[AEUid] = @NAEUid AND [AESpendingPurpose].[SpendingPurposeUid] = @NSpendingPurposeUid)
+	IF @NAESpendingPurposeUid IS NOT NULL EXEC [dbo].[AESpendingPurpose_Delete] default, @NAESpendingPurposeUid, @NAEUid, @NSpendingPurposeUid
+	END
+IF (@NV1 = 1) BEGIN SET @NAESpendingPurposeUid = (SELECT [AESpendingPurpose].[AESpendingPurposeUid] FROM [AESpendingPurpose] WHERE 
+	[AESpendingPurpose].[AEUid] = @NAEUid AND [AESpendingPurpose].[SpendingPurposeUid] = @NSpendingPurposeUid)
+	IF @NAESpendingPurposeUid IS NULL BEGIN SET @NAESpendingPurposeUid = NEWID();
+		EXEC [dbo].[AESpendingPurpose_Insert] default, @NAESpendingPurposeUid, @NAEUid, @NSpendingPurposeUid END
+	END
+
+IF '@Цели списания (0 - нет, 1 - да). На контрольную процедуру ВЛК' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+SET @NSpendingPurposeUid = (SELECT [SpendingPurposeUid] FROM [SpendingPurpose] WHERE [SpendingPurpose].Name = 'На контрольную процедуру')
+IF (@NV1 = 0) BEGIN SET @NAESpendingPurposeUid = (SELECT [AESpendingPurpose].[AESpendingPurposeUid] FROM [AESpendingPurpose] WHERE 
+	[AESpendingPurpose].[AEUid] = @NAEUid AND [AESpendingPurpose].[SpendingPurposeUid] = @NSpendingPurposeUid)
+	IF @NAESpendingPurposeUid IS NOT NULL EXEC [dbo].[AESpendingPurpose_Delete] default, @NAESpendingPurposeUid, @NAEUid, @NSpendingPurposeUid
+	END
+IF (@NV1 = 1) BEGIN SET @NAESpendingPurposeUid = (SELECT [AESpendingPurpose].[AESpendingPurposeUid] FROM [AESpendingPurpose] WHERE 
+	[AESpendingPurpose].[AEUid] = @NAEUid AND [AESpendingPurpose].[SpendingPurposeUid] = @NSpendingPurposeUid)
+	IF @NAESpendingPurposeUid IS NULL BEGIN SET @NAESpendingPurposeUid = NEWID();
+		EXEC [dbo].[AESpendingPurpose_Insert] default, @NAESpendingPurposeUid, @NAEUid, @NSpendingPurposeUid END
+	END
+
+IF '@Цели списания (0 - нет, 1 - да). На общие нужды' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+SET @NSpendingPurposeUid = (SELECT [SpendingPurposeUid] FROM [SpendingPurpose] WHERE [SpendingPurpose].Name = 'На общие нужды')
+IF (@NV1 = 0) BEGIN SET @NAESpendingPurposeUid = (SELECT [AESpendingPurpose].[AESpendingPurposeUid] FROM [AESpendingPurpose] WHERE 
+	[AESpendingPurpose].[AEUid] = @NAEUid AND [AESpendingPurpose].[SpendingPurposeUid] = @NSpendingPurposeUid)
+	IF @NAESpendingPurposeUid IS NOT NULL EXEC [dbo].[AESpendingPurpose_Delete] default, @NAESpendingPurposeUid, @NAEUid, @NSpendingPurposeUid
+	END
+IF (@NV1 = 1) BEGIN SET @NAESpendingPurposeUid = (SELECT [AESpendingPurpose].[AESpendingPurposeUid] FROM [AESpendingPurpose] WHERE 
+	[AESpendingPurpose].[AEUid] = @NAEUid AND [AESpendingPurpose].[SpendingPurposeUid] = @NSpendingPurposeUid)
+	IF @NAESpendingPurposeUid IS NULL BEGIN SET @NAESpendingPurposeUid = NEWID();
+		EXEC [dbo].[AESpendingPurpose_Insert] default, @NAESpendingPurposeUid, @NAEUid, @NSpendingPurposeUid END
+	END
+
+IF '@Цели списания (0 - нет, 1 - да). На приготовление растворов' = '1' SET @NV1 = 1 ELSE SET @NV1 = 0
+SET @NSpendingPurposeUid = (SELECT [SpendingPurposeUid] FROM [SpendingPurpose] WHERE [SpendingPurpose].Name = 'На приготовление объектов учета')
+IF (@NV1 = 0) BEGIN SET @NAESpendingPurposeUid = (SELECT [AESpendingPurpose].[AESpendingPurposeUid] FROM [AESpendingPurpose] WHERE 
+	[AESpendingPurpose].[AEUid] = @NAEUid AND [AESpendingPurpose].[SpendingPurposeUid] = @NSpendingPurposeUid)
+	IF @NAESpendingPurposeUid IS NOT NULL EXEC [dbo].[AESpendingPurpose_Delete] default, @NAESpendingPurposeUid, @NAEUid, @NSpendingPurposeUid
+	END
+IF (@NV1 = 1) BEGIN SET @NAESpendingPurposeUid = (SELECT [AESpendingPurpose].[AESpendingPurposeUid] FROM [AESpendingPurpose] WHERE 
+	[AESpendingPurpose].[AEUid] = @NAEUid AND [AESpendingPurpose].[SpendingPurposeUid] = @NSpendingPurposeUid)
+	IF @NAESpendingPurposeUid IS NULL BEGIN SET @NAESpendingPurposeUid = NEWID();
+		EXEC [dbo].[AESpendingPurpose_Insert] default, @NAESpendingPurposeUid, @NAEUid, @NSpendingPurposeUid END
+	END
+
+/* Правка заявки на партию ОУ */
+SET @NStorageOrgUnitId = (SELECT [OrgUnit].[OrgUnitId] FROM [OrgUnit] WHERE [OrgUnit].[Name] = N'@Местоположение. Склад');
+IF (@NStorageOrgUnitId IS NULL) SET @NStorageOrgUnitId = (SELECT [OrgUnit].[OrgUnitId] FROM [OrgUnit] WHERE [OrgUnit].[Name] = 'Без лаборатории');
+SET @NOwnerOrgUnitId = (SELECT [OrgUnit].[OrgUnitId] FROM [OrgUnit] WHERE [OrgUnit].[Name] = N'@Местоположение. Потребитель');
+IF (@NOwnerOrgUnitId IS NULL) SET @NOwnerOrgUnitId = (SELECT [OrgUnit].[OrgUnitId] FROM [OrgUnit] WHERE [OrgUnit].[Name] = 'Без лаборатории');
+UPDATE [AEBatchRequest] SET 
+	[AEBatchRequest].Code = N'@Код заявки',
+	[AEBatchRequest].[StorageOrgUnitId] = @NStorageOrgUnitId,
+	[AEBatchRequest].[OwnerOrgUnitId] = @NOwnerOrgUnitId
+WHERE
+	[AEBatchRequest].[AEBatchRequestUid] = @NAEBatchRequestUid AND [AEBatchRequest].[AEUid] = @NAEUid
+
+/* Правка партии на ОУ по заявке */
+IF @NAEBatchUid IS NOT NULL BEGIN
+	DECLARE @NNum NVARCHAR(150) = N'@Номер партии'
+	IF (@NNum IS NULL OR @NNum = '') SET @NNum = 'Номер партии - ' + @NGenerate
+	
+	DECLARE @NCode NVARCHAR(150) = N'@Код партии'
+	IF (@NCode IS NULL OR @NCode = '') SET @NCode = 'Код партии - ' + @NGenerate	
+	
+	DECLARE @NCreationDate datetime = GETDATE()
+	IF N'@Дата производства' &lt;&gt; '' AND N'@Дата производства' IS NOT NULL BEGIN
+		BEGIN TRY SET @NCreationDate = CONVERT(datetime, N'@Дата производства', 104)
+		IF @NCreationDate IS NULL SET @NCreationDate = GETDATE()
+		END TRY
+		BEGIN CATCH SET @NCreationDate = GETDATE()
+		END CATCH 
+	END
+	
+	DECLARE @NShelfLifeDate datetime = DATEADD(MONTH, 1, CONVERT(VARCHAR(10), @NCreationDate, 104))
+	DECLARE @TypeInterval NVARCHAR(10) = N'@Срок хранения - тип интервала'
+	DECLARE @IntervalInt int = NULL;
+	IF N'@Дата окончания срока хранения' &lt;&gt; '' AND N'@Дата окончания срока хранения' IS NOT NULL BEGIN
+		BEGIN TRY SET @NShelfLifeDate = CONVERT(datetime, N'@Дата окончания срока хранения', 104)
+		END TRY	
+		BEGIN CATCH	SET @NShelfLifeDate = NULL
+		END CATCH
+	END
+	IF N'@Дата окончания срока хранения' = '' OR N'@Дата окончания срока хранения' IS NULL BEGIN
+		IF (@TypeInterval IS NOT NULL) BEGIN
+			BEGIN TRY SET @IntervalInt = CAST(N'@Срок хранения - значение' AS INT)
+			END TRY
+			BEGIN CATCH SET @IntervalInt = NULL
+			END	CATCH 			
+			IF @TypeInterval = 'Год' SET @NShelfLifeDate = DATEADD(year, @IntervalInt, CONVERT(VARCHAR(10), @NCreationDate, 104))
+			IF @TypeInterval = 'Месяц' SET @NShelfLifeDate = DATEADD(month, @IntervalInt, CONVERT(VARCHAR(10), @NCreationDate, 104))
+			IF @TypeInterval = 'День' SET @NShelfLifeDate = DATEADD(day, @IntervalInt, CONVERT(VARCHAR(10), @NCreationDate, 104))	
+			IF @NShelfLifeDate IS NULL SET @NShelfLifeDate = DATEADD(MONTH, 1, CONVERT(VARCHAR(10), @NCreationDate, 104))
+			END
+	END
+	
+	DECLARE @NPeriodId int = (SELECT [Period].[PeriodId] FROM [Period] INNER JOIN [AEBatch] ON 
+		[AEBatch].[ShelfLifePeriodId] = [Period].[PeriodId] WHERE [AEBatch].[AEBatchUid] = @NAEBatchUid)
+	DECLARE @NPeriodTypeUid uniqueidentifier = (SELECT [PeriodType].[PeriodTypeUid] FROM [PeriodType] WHERE [PeriodType].[Order] = 
+		(SELECT (CASE WHEN (SELECT DATEDIFF(year, @NCreationDate, @NShelfLifeDate)) &gt; 0 THEN (SELECT 900) ELSE 
+			CASE WHEN (SELECT DATEDIFF(month, @NCreationDate, @NShelfLifeDate)) &gt; 0 THEN (SELECT 700) ELSE
+				CASE WHEN (SELECT DATEDIFF(day, @NCreationDate, @NShelfLifeDate)) &gt; 0 THEN (SELECT 400) ELSE
+					(SELECT 400) END END END)))
+	DECLARE @NPeriodLen float = (SELECT (CASE WHEN (SELECT DATEDIFF(year, @NCreationDate, @NShelfLifeDate)) &gt; 0 THEN 
+		(SELECT DATEDIFF(year, @NCreationDate, @NShelfLifeDate)) ELSE 
+			CASE WHEN (SELECT DATEDIFF(month, @NCreationDate, @NShelfLifeDate)) &gt; 0 THEN
+				(SELECT DATEDIFF(month, @NCreationDate, @NShelfLifeDate)) ELSE
+					CASE WHEN (SELECT DATEDIFF(day, @NCreationDate, @NShelfLifeDate)) &gt; 0 THEN
+						(SELECT DATEDIFF(day, @NCreationDate, @NShelfLifeDate)) ELSE
+							(SELECT 0) END END END))
+	UPDATE [Period] SET
+		[Period].PeriodTypeUid = @NPeriodTypeUid,
+		[Period].[Len] = @NPeriodLen
+	WHERE [Period].PeriodId = @NPeriodId	
+
+	DECLARE @NR Table (CompanyIndex NVARCHAR(255), id INT) 
+	DECLARE @NRID INT = 0
+	DECLARE @NManufacturerUid uniqueidentifier = NULL;
+	DECLARE @NManufacturerAddressUid uniqueidentifier = NULL;
+	DECLARE @NSupplierUid uniqueidentifier = NULL;
+	DECLARE @NSupplierAddressUid uniqueidentifier = NULL;
+	DECLARE @NManufacturerName NVARCHAR(150)
+	DECLARE @NManufacturerAddressName NVARCHAR(255);
+	DECLARE @NSupplierName NVARCHAR(150)
+	DECLARE @NSupplierAddressName NVARCHAR(255);
+	INSERT INTO @NR 
+	SELECT CONVERT(NVARCHAR(255), Item), ROW_NUMBER() OVER (ORDER BY @NRID) AS id FROM [dbo].[spc_sys_ParseString](N'@Производитель, адрес', ';')
+	SET @NManufacturerName = (SELECT CompanyIndex FROM @NR WHERE id = 1);
+	SET @NManufacturerAddressName = (SELECT CompanyIndex FROM @NR WHERE id = 2)
+	SET @NManufacturerUid = (SELECT [ContractCompany].[ContractCompanyUid] FROM [ContractCompany]
+		WHERE [ContractCompany].[Name] = (SELECT CompanyIndex FROM @NR WHERE id = 1))
+	SET @NManufacturerAddressUid = (SELECT [ContractAddress].[ContractAddressUid] FROM [ContractAddress]
+		INNER JOIN [ContractCompanyAddress] ON [ContractAddress].[ContractAddressUid] = [ContractCompanyAddress].[AddressUid]
+			WHERE [ContractAddress].[Address] = (SELECT CompanyIndex FROM @NR WHERE id = 2) AND [ContractCompanyAddress].[CompanyUid] = @NManufacturerUid)	
+	/* Если имя компании есть, а найти ее не удалось, то добавляем ее */
+	IF @NManufacturerName IS NOT NULL AND @NManufacturerUid IS NULL BEGIN
+		SET @NManufacturerUid = NEWID()
+		EXEC [dbo].[ContractCompany_Insert] default, @NManufacturerUid, @NManufacturerName, NULL, 0, 1, 32
+		END	
+	/* Если адрес есть, а ключа нет, то добавляем адрес. */
+	IF @NManufacturerAddressName IS NOT NULL AND @NManufacturerAddressUid IS NULL BEGIN	
+		SET @NManufacturerAddressUid = NEWID()
+		DECLARE @NContractAddressTypeUid uniqueidentifier = (SELECT [ContractAddressType].[ContractAddressTypeUid] 
+			FROM [ContractAddressType] WHERE [ContractAddressType].[Name] = 'юридический')
+		DECLARE @LocationUid uniqueidentifier = (SELECT [ContractLocation].[ContractLocationUid] 
+			FROM [ContractLocation] WHERE [ContractLocation].[Name] = 'Российская Федерация');
+		EXEC [dbo].[ContractAddress_Insert] default, @NManufacturerAddressUid, @NContractAddressTypeUid, @LocationUid,
+			@NManufacturerAddressName, NULL, 0, 1, NULL
+		EXEC [dbo].[ContractCompanyAddress_Insert] default, @NManufacturerUid, @NManufacturerAddressUid, 0, 0
+		END
+	DELETE FROM @NR
+	INSERT INTO @NR 
+	SELECT CONVERT(NVARCHAR(255), Item), ROW_NUMBER() OVER (ORDER BY @NRID) AS id FROM [dbo].[spc_sys_ParseString](N'@Поставщик, адрес', ';')
+	SET @NSupplierName = (SELECT CompanyIndex FROM @NR WHERE id = 1);
+	SET @NSupplierAddressName = (SELECT CompanyIndex FROM @NR WHERE id = 2)
+	SET @NSupplierUid = (SELECT [ContractCompany].[ContractCompanyUid] FROM [ContractCompany]
+		WHERE [ContractCompany].[Name] = (SELECT CompanyIndex FROM @NR WHERE id = 1))
+	SET @NSupplierAddressUid = (SELECT [ContractAddress].[ContractAddressUid] FROM [ContractAddress]
+		INNER JOIN [ContractCompanyAddress] ON [ContractAddress].[ContractAddressUid] = [ContractCompanyAddress].[AddressUid]
+			WHERE [ContractAddress].[Address] = (SELECT CompanyIndex FROM @NR WHERE id = 2) AND [ContractCompanyAddress].[CompanyUid] = @NSupplierUid)	
+	/* Если имя компании есть, а найти ее не удалось, то добавляем ее */
+	IF @NSupplierName IS NOT NULL AND @NSupplierUid IS NULL BEGIN
+		SET @NSupplierUid = NEWID()
+		EXEC [dbo].[ContractCompany_Insert] default, @NSupplierUid, @NSupplierName, NULL, 0, 1, 32
+		END
+	/* Если адрес есть, а ключа нет, то добавляем адрес. */
+	IF @NSupplierAddressName IS NOT NULL AND @NSupplierAddressUid IS NULL BEGIN	
+		SET @NSupplierAddressUid = NEWID()
+		SET @NContractAddressTypeUid = (SELECT [ContractAddressType].[ContractAddressTypeUid] 
+			FROM [ContractAddressType] WHERE [ContractAddressType].[Name] = 'юридический')
+		SET @LocationUid = (SELECT [ContractLocation].[ContractLocationUid] 
+			FROM [ContractLocation] WHERE [ContractLocation].[Name] = 'Российская Федерация');
+		EXEC [dbo].[ContractAddress_Insert] default, @NSupplierAddressUid, @NContractAddressTypeUid, @LocationUid, 
+			@NSupplierAddressName, NULL, 0, 1, NULL
+		EXEC [dbo].[ContractCompanyAddress_Insert] default, @NSupplierUid, @NSupplierAddressUid, 0, 0
+		END	
+		
+	DECLARE @NInAccrScope bit = 0
+	IF '@Входит в область аккредитации (0 - нет, 1 - да)' = '1' SET @NInAccrScope = 1
+	
+	DECLARE @NDocIssueDate datetime = NULL
+	DECLARE @NAcceptanceDate datetime = NULL
+	IF N'@Дата паспорта' IS NOT NULL AND N'@Дата паспорта' &lt;&gt; '' BEGIN
+		BEGIN TRY
+			SET @NDocIssueDate = CONVERT(datetime, N'@Дата паспорта', 104)
+		END TRY
+		BEGIN CATCH
+			SET @NDocIssueDate = NULL;
+		END CATCH
+		END
+	IF N'@Дата акта приемки' IS NOT NULL AND N'@Дата акта приемки' &lt;&gt; '' BEGIN
+		BEGIN TRY
+			SET @NAcceptanceDate = CONVERT(datetime, N'@Дата акта приемки', 104)
+		END TRY
+		BEGIN CATCH
+			SET @NAcceptanceDate = NULL;
+		END CATCH
+		END
+		
+	DECLARE @NDimsId int = (SELECT [AEBatch].[DimsId] FROM [AEBatch] WHERE [AEBatch].[AEBatchUid] = @NAEBatchUid)
+	DECLARE @NVolume FLOAT = NULL
+	DECLARE @NWeight FLOAT = NULL
+	DECLARE @NItemCount INT = NULL
+	IF N'@Объем - значение' &lt;&gt; '' BEGIN
+		BEGIN TRY
+			SET @NVolume = CONVERT(FLOAT, N'@Объем - значение', 0)
+		END TRY
+		BEGIN CATCH
+			PRINT 'Ошибка преобразования значения объема в FLOAT!' 
+		END CATCH
+	END
+	IF N'@Масса - значение' &lt;&gt; '' BEGIN
+		BEGIN TRY
+			SET @NWeight = CONVERT(FLOAT, N'@Масса - значение', 0)
+		END TRY
+		BEGIN CATCH
+			PRINT 'Ошибка преобразования значения массы в FLOAT!' 
+		END CATCH
+	END
+	IF N'@Количество мест - значение' &lt;&gt; '' BEGIN
+		BEGIN TRY
+			SET @NItemCount = CONVERT(INT, N'@Количество мест - значение', 0)
+		END TRY
+		BEGIN CATCH
+			PRINT 'Ошибка преобразования значения количества мест в INT!' 
+		END CATCH
+	END
+	UPDATE [Dims]
+		SET [Dims].[VolumeEngUnitId] = (SELECT TOP 1 [EngUnit].[EngUnitId] FROM [EngUnit] WHERE [EngUnit].[LAbbreviation] = N'@Объем - ЕИ'),
+			[Dims].[Volume] = @NVolume,
+			[Dims].[WeightEngUnitId] = (SELECT TOP 1 [EngUnit].[EngUnitId] FROM [EngUnit] WHERE [EngUnit].[LAbbreviation] = N'@Масса - ЕИ'),
+			[Dims].[Weight] = @NWeight,
+			[Dims].ItemCount = @NItemCount
+	WHERE [Dims].[DimsId] = @NDimsId	
+	
+	UPDATE [AEBatch]
+		SET [AEBatch].[Code] = @NCode,
+			[AEBatch].[Num] = @NNum,
+			[AEBatch].[CreationDate] = @NCreationDate,
+			[AEBatch].[ShelfLifeDate] = @NShelfLifeDate,
+			[AEBatch].[ManufacturerUid] = @NManufacturerUid,
+			[AEBatch].[ManufacturerAddressUid] = @NManufacturerAddressUid,
+			[AEBatch].[SupplierUid] = @NSupplierUid,
+			[AEBatch].[SupplierAddressUid] = @NSupplierAddressUid,
+			[AEBatch].[DocNum] = N'@Номер паспорта',
+			[AEBatch].[DocIssueDate] = @NDocIssueDate,
+			[AEBatch].[AcceptanceNum] = N'@Номер акта приемки',
+			[AEBatch].[AcceptanceDate] = @NAcceptanceDate,
+			[AEBatch].[IssueDate] = @NCreationDate,
+			[AEBatch].[StorageСonditions] = N'@Требования к хранению',
+			[AEBatch].[InAccrScope] = @NInAccrScope
+	WHERE [AEBatch].[AEBatchUid] = @NAEBatchUid
+END</EditSql>
+      <DeleteSql>DECLARE @aeuid as uniqueidentifier = '@AEUid (Ключ ОУ)'
 
 BEGIN TRANSACTION;
 BEGIN TRY
@@ -817,156 +1867,400 @@ IF @@TRANCOUNT &gt; 0
       <ImageBuffer>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</ImageBuffer>
     </ItemChanger>
     <ItemChanger>
-      <Name>LDS.ГГ</Name>
-      <GetSQL>SELECT 
-	'x' as [Select(x)], 
-	[ClbrGraphUid], 
-	[SubdivisionId], 
-	[EqpUid], 
-	[TTRangeUid], 
-	[InTechTestUid], 
-	[InEngUnitId], 
-	[OutTechTestUid],
-	[OutEngUnitId], 
-	[AlgorithmUid], 
-	[ClbrGraphStatusUid],
-	[RV], 
-	[ClbrGraphName], 
-	[PeriodId], 
-	[EndDate], 
-	[Description], 
-	[Digits], 
-	[Flags], 
-	[ErrorDisplayMode]  
-FROM [dbo].[ClbrGraph]	 
-WHERE
-	{0}
-</GetSQL>
-      <GetSQLWhereString>[ClbrGraphName] like '*'</GetSQLWhereString>
-      <DeleteSql>declare @raiseError bit = 0
-declare @clbrGraphUid uniqueidentifier = '@ClbrGraphUid'
-declare @rV timestamp = @RV
-EXECUTE [dbo].[ClbrGraph_Delete] @raiseError, @clbrGraphUid, @rV 
+      <Name>LDS.ОУ_Характеристика</Name>
+      <GetSQL>/* Не изменять и не удалять!!!
+AEBatchTestUid (Ключ хар-ки партии ОУ) 
+*/
+SELECT 
+	'x' AS [Select(x)],
+	[AEBatchTest].[AEBatchTestUid] AS "AEBatchTestUid (Ключ хар-ки партии ОУ)",
+	CASE WHEN [AE].[Name] IS NULL AND [StdDoc].[Name] IS NULL AND [GradeVer].[Name] IS NULL AND [AEBatch].[Num] IS NULL THEN NULL ELSE
+		(CASE WHEN [AE].[Name] IS NULL THEN ';' ELSE ([AE].[Name] + ';') END + 
+			CASE WHEN [StdDoc].[Name] IS NULL THEN ';' ELSE ([StdDoc].[Name] + ';') END + 
+				CASE WHEN [GradeVer].[Name] IS NULL THEN ';' ELSE ([GradeVer].[Name] + ';') END +
+					CASE WHEN [AEBatch].[Num] IS NULL THEN '' ELSE [AEBatch].[Num] END) END AS "Партия ОУ",
+	[Test].[Name] AS "Показатель",
+	CAST([AEBatchTest].[IsAttested] AS INT) "Аттестованное (0 - нет, 1 - да)",
+	[EngUnit].[LAbbreviation] AS "Единица измерения",
+	[AEBatchTestAnalog].Value AS "Значение",
+	[AEBatchTestAnalog].AbsErr AS "Абсол. погрешность значения",
+	[AEBatchTestAnalog].RelErr AS "Относит. погрешность значения, %",
+	CASE WHEN [DigitalSet].[Name] IS NULL AND [AEBatchTestDigit].[Value] IS NULL THEN NULL ELSE
+		(CASE WHEN [DigitalSet].[Name] IS NULL THEN ';' ELSE ([DigitalSet].[Name] + ';') END +
+			CASE WHEN [AEBatchTestDigit].[Value] IS NULL THEN '' ELSE [AEBatchTestDigit].[Value] END)
+				END AS "Значение дискретного набора"
+	FROM [AE]
+	LEFT JOIN [SpecVer] ON [AE].[SpecVerId] = [SpecVer].[SpecVerId]
+	LEFT JOIN [StdDoc] ON [SpecVer].[SpecUid] = [StdDoc].[StdDocUid]
+	LEFT JOIN [AEGrade] ON [AE].[AEUid] = [AEGrade].[AEUid]
+	LEFT JOIN [GradeVer] ON [AEGrade].[GradeVerId] = [GradeVer].[GradeVerId]
+	LEFT JOIN [AEBatch] ON [AE].[AEUid] = [AEBatch].[AEUid]
+	INNER JOIN [AEBatchTest] ON [AEBatch].AEBatchUid = [AEBatchTest].[AEBatchUid]
+	INNER JOIN [Test] ON [AEBatchTest].[TestId] = [Test].[Testid]
+	LEFT JOIN [AEBatchTestAnalog] ON [AEBatchTest].[AEBatchTestUid] = [AEBatchTestAnalog].[AEBatchTestUid]
+	LEFT JOIN [EngUnit] ON [AEBatchTestAnalog].[EngUnitId] = [EngUnit].[EngUnitId]
+	LEFT JOIN [AEBatchTestDigit] ON [AEBatchTest].[AEBatchTestUid] = [AEBatchTestDigit].[AEBatchTestUid]
+	LEFT JOIN [DigitalSet] ON [AEBatchTestDigit].[DigitalSetId] = [DigitalSet].[DigitalSetId]
+WHERE [AEBatch].{0}</GetSQL>
+      <GetSQLWhereString>AEBatchUid like '*'</GetSQLWhereString>
+      <CreateSql>DECLARE @NPartyOU NVARCHAR(600) = N'@Партия ОУ'
+DECLARE @NAEName NVARCHAR(150) = NULL
+DECLARE @NStdDocName NVARCHAR(150) = NULL
+DECLARE @NGradeVerName NVARCHAR(150) = NULL
+DECLARE @NAEBatchNum NVARCHAR(150) = NULL
+DECLARE @NRID INT = 0
+DECLARE @NR TABLE (PartyIndex NVARCHAR(255), id INT) 
+INSERT INTO @NR 
+SELECT CONVERT(NVARCHAR(255), Item), ROW_NUMBER() OVER (ORDER BY @NRID) AS id FROM [dbo].[spc_sys_ParseString](@NPartyOU, ';')
+SET @NAEName = (SELECT CASE WHEN PartyIndex = '' THEN NULL ELSE PartyIndex END FROM @NR WHERE id = 1)
+SET @NStdDocName = (SELECT CASE WHEN PartyIndex = '' THEN NULL ELSE PartyIndex END FROM @NR WHERE id = 2)
+SET @NGradeVerName = (SELECT CASE WHEN PartyIndex = '' THEN NULL ELSE PartyIndex END FROM @NR WHERE id = 3)
+SET @NAEBatchNum = (SELECT CASE WHEN PartyIndex = '' THEN NULL ELSE PartyIndex END FROM @NR WHERE id = 4)
+DECLARE @NAEBatchUid uniqueidentifier = NULL
+DECLARE @NUserName NVARCHAR(100) = N'Администратор'
+DECLARE @NUserId INT = (SELECT TOP 1 [User].[UserId] FROM [User] WHERE [User].[Name] = @NUserName)
+DECLARE @NAEBatchTestUid uniqueidentifier = NEWID()
+DECLARE @NLAbbreviation NVARCHAR(50) = N'@Единица измерения'
 
-</DeleteSql>
-      <ImageBuffer>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</ImageBuffer>
-    </ItemChanger>
-    <ItemChanger>
-      <Name>LDS.ЖО</Name>
-      <GetSQL>SELECT 
-	'x' as [Select(x)],
-    [SampleLogId], 
-    [Code], 
-    [Name], 
-    [Description], 
-    [UserId], 
-    [IsClosed], 
-    [Common], 
-    [SampleLogType], 
-    [UseCode], 
-    [CodeMaskId], 
-    [SampleModel], 
-    [ReselectCodeMaskId], 
-    [AutorizationMode], 
-    [ShowPropertiesOnReceive], 
-    [PrintLabelOnSave], 
-    [PreviewLabelOnPrint], 
-    [DisableMaskedCodeEdit]
-FROM [dbo].[SampleLog]  
-WHERE 
-	{0}
-</GetSQL>
-      <GetSQLWhereString>[Name] like '*'</GetSQLWhereString>
-      <DeleteSql>DECLARE @sampleLogId int = @SampleLogId
-
-BEGIN TRANSACTION;
+DECLARE @NValue FLOAT = NULL
 BEGIN TRY
-    DELETE FROM CheckProcSeriesTask where CheckProcSeriesTaskUid in (select CheckProcSeriesTaskUid FROM CheckProcTask WHERE SampleLogId = @sampleLogId)
-    DELETE FROM CheckProcTask WHERE SampleLogId = @sampleLogId
-	DELETE FROM dbo.SampleLogProof WHERE SampleLogId = @sampleLogId
-    DELETE FROM dbo.SampleLogGroup WHERE SampleLogId = @sampleLogId
-    DELETE FROM dbo.SampleLogModel WHERE SampleLogId = @sampleLogId
-    DELETE FROM dbo.SampleLog WHERE SampleLogId = @sampleLogId
+	SET @NValue = CONVERT(FLOAT, N'@Значение')
 END TRY
 BEGIN CATCH
-	DECLARE @MSG NVARCHAR(max) = (SELECT ERROR_MESSAGE())
- raiserror (-1,-1, @MSG ); 
-	IF @@TRANCOUNT &gt; 0
-		ROLLBACK TRANSACTION;
-    
+	SET @NValue = NULL
+END CATCH
+	
+DECLARE @NAbsErr FLOAT = NULL
+BEGIN TRY
+	SET @NAbsErr = CONVERT(FLOAT, N'@Абсол. погрешность значения')
+END TRY
+BEGIN CATCH
+	SET @NAbsErr = NULL
+END CATCH
+	
+DECLARE @NRelErr FLOAT = NULL
+BEGIN TRY
+	SET @NRelErr = CONVERT(FLOAT, N'@Относит. погрешность значения, %')
+END TRY
+BEGIN CATCH
+	SET @NRelErr = NULL
+END CATCH
+	
+DECLARE @NDigitTable Table (DigitIndex NVARCHAR(255), id INT) 
+SET @NRID = 0
+INSERT INTO @NDigitTable 
+SELECT CONVERT(NVARCHAR(255), Item), ROW_NUMBER() OVER (ORDER BY @NRID) AS id FROM [dbo].[spc_sys_ParseString](N'@Значение дискретного набора', ';')
+DECLARE @NDigitalSetName NVARCHAR(150) = (SELECT TOP 1 DigitIndex FROM @NDigitTable WHERE id = 1)
+DECLARE @NDigitalValue NVARCHAR(50) = (SELECT TOP 1 DigitIndex FROM @NDigitTable WHERE id = 2)
+DECLARE @NDigitalSetId INT = NULL
+
+BEGIN TRANSACTION
+BEGIN TRY
+
+IF @NAEName IS NULL BEGIN
+	RAISERROR(N'Ошибка в данных "Партия ОУ"! Наименование ОУ не может быть NULL или пустым.', 16, 1)
+	END
+
+IF @NAEBatchNum IS NULL BEGIN
+	RAISERROR(N'Ошибка в данных "Партия ОУ"! Номер партии ОУ не может быть NULL или пустым.', 16, 1)
+	END	
+
+SET @NAEBatchUid = (SELECT [AEBatch].[AEBatchUid] FROM [AEBatch]
+INNER JOIN [AE] ON [AEBatch].[AEUid] = [AE].[AEUid]
+LEFT JOIN [SpecVer] ON [AE].[SpecVerId] = [SpecVer].[SpecVerId]
+LEFT JOIN [StdDoc] ON [SpecVer].[SpecUid] = [StdDoc].[StdDocUid]
+LEFT JOIN [AEGrade] ON [AE].[AEUid] = [AEGrade].[AEUid]
+LEFT JOIN [GradeVer] ON [AEGrade].[GradeVerId] = [GradeVer].[GradeVerId]
+WHERE [AE].[Name] = @NAEName AND ([StdDoc].Name = @NStdDocName OR (@NStdDocName IS NULL AND [AE].[SpecVerId] IS NULL)) AND
+	([GradeVer].[Name] = @NGradeVerName OR (@NGradeVerName IS NULL AND [AEGrade].[AEGradeUid] IS NULL)) AND [AEBatch].[Num] = @NAEBatchNum)
+
+IF @NAEBatchUid IS NULL BEGIN
+	RAISERROR(N'Ошибка в данных "Партия ОУ"! Уникальный ключ партии AEBatchUid не найден по параметрам "Партия ОУ"', 16, 1)
+	END ELSE BEGIN
+	
+	DECLARE @NTestType INT = 0;
+	IF @NDigitalSetName IS NOT NULL OR @NDigitalValue IS NOT NULL BEGIN
+		SET @NTestType = 1
+		SET @NDigitalSetId = (SELECT TOP 1 [DigitalSet].[DigitalSetId] FROM [DigitalSet] WHERE [DigitalSet].[Name] = @NDigitalSetName)
+		IF @NDigitalSetId IS NULL BEGIN
+			RAISERROR(N'Ошибка в данных "Значение дискретного набора"! В базе данных ЛИМС такой дискретный набор отсутствует.', 16, 1)
+		END
+	IF @NDigitalValue IS NOT NULL AND (SELECT SUM(1) FROM [DigitalSetValue] WHERE [DigitalSetValue].[Value] = @NDigitalValue AND 
+			[DigitalSetValue].[DigitalSetId] = @NDigitalSetId) IS NULL BEGIN 
+			RAISERROR(N'Ошибка в данных "Значение дискретного набора"! В базе данных ЛИМС такого значения для дискретного набора не существует.', 16, 1)			
+		END
+	END 
+	
+	DECLARE @NTestId INT = NULL
+	SET @NTestId = (SELECT TOP 1 [Test].[TestId] FROM [Test] WHERE [Test].[Name] = N'@Показатель' AND [Test].[TestType] = @NTestType)
+	IF @NTestId IS NULL BEGIN
+		RAISERROR(N'Ошибка в данных "Показатель"! В базе данных ЛИМС он отсутствует.', 16, 1)		
+	END
+	    
+	IF @NTestType = 0 AND (@NLAbbreviation IS NOT NULL OR @NLAbbreviation &lt;&gt; '') AND 
+		(SELECT SUM(1) FROM [EngUnit] INNER JOIN [Test] ON [EngUnit].[ClassId] = [Test].[EngUnitClassId]
+			WHERE [Test].TestId = @NTestId AND [EngUnit].[LAbbreviation] = @NLAbbreviation) IS NULL BEGIN 
+				RAISERROR(N'Ошибка в данных "Единица измерения"! В базе данных ЛИМС такой ед. измерения не существует для текущего показателя: @Показатель.', 16, 1)			
+			END
+	
+	DECLARE @NOrder INT = NULL
+	SET @NOrder = (SELECT MAX([AEBatchTest].[Order]) + 1 FROM [AEBatchTest] WHERE [AEBatchUid] = @NAEBatchUid)
+	IF @NOrder IS NULL SET @NOrder = 1
+	
+	DECLARE @NIsAttested BIT = 0
+	IF N'@Аттестованное (0 - нет, 1 - да)' = '1' SET @NIsAttested = 1
+	
+	DECLARE @NPTS datetime = GETDATE()
+	IF @NTestId IS NOT NULL
+		EXEC [dbo].[AEBatchTest_Insert] default, @NAEBatchTestUid, @NAEBatchUid, @NTestId, NULL, @NOrder, NULL, @NIsAttested, 0, @NUserId, @NUserName, @NPTS, @NPTS, NULL, NULL
+	END
+	
+	/* Добавление записи по аналоговому типу показателя */
+	IF @NTestId IS NOT NULL AND @NTestType = 0 BEGIN
+		DECLARE @NEngUnitId INT = NULL
+		SET @NEngUnitId = (SELECT TOP 1 [EngUnit].[EngUnitId] FROM [EngUnit] WHERE [EngUnit].LAbbreviation = @NLAbbreviation)
+		IF @NEngUnitId IS NULL BEGIN
+			RAISERROR(N'Ошибка в данных "Единица измерения"! В базе данных ЛИМС такие единицы измерения отсутствует.', 16, 1)
+			END
 		
+		EXEC [dbo].[AEBatchTestAnalog_Insert] default, @NAEBatchTestUid, @NValue, NULL, @NEngUnitId, @NAbsErr, NULL, @NRelErr, NULL, 0, NULL, NULL, @NPTS
+		
+		UPDATE [AEBatchTest] SET
+			[AEBatchTest].[ReportValue] = @NValue
+		WHERE [AEBatchTest].AEBatchTestUid = @NAEBatchTestUid
+		END
+	
+	/* Добавление записи по дискретному типу показателя */		
+	IF @NTestId IS NOT NULL AND @NTestType = 1 BEGIN
+		EXEC [dbo].[AEBatchTestDigit_Insert] default, @NAEBatchTestUid, @NDigitalSetId, @NDigitalValue, 0, @NPTS 
+		UPDATE [AEBatchTest] SET
+			[AEBatchTest].[ReportValue] = @NDigitalValue
+		WHERE [AEBatchTest].AEBatchTestUid = @NAEBatchTestUid	
+		
+	END
+END TRY
+
+BEGIN CATCH
+	IF @@TRANCOUNT &gt; 0
+		BEGIN
+			ROLLBACK TRANSACTION
+			PRINT N'Откат транзакции.'
+			DECLARE @NERRORMESSAGE NVARCHAR(1000) = ERROR_MESSAGE()
+			RAISERROR(@NERRORMESSAGE, 16, 1);            	
+		END
 END CATCH
 
 IF @@TRANCOUNT &gt; 0
-	COMMIT TRANSACTION;
-</DeleteSql>
-      <ImageBuffer>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</ImageBuffer>
-    </ItemChanger>
-    <ItemChanger>
-      <Name>LDS. Методики</Name>
-      <GetSQL>SELECT 
-    'x' as [Select(x)], 
-    --sd.[StdDocUid], 
-    sd.[Code], 
-    sd.[Name], 
-    --sd.[StdDocType], 
-    --sd.[DeveloperUid], 
-    sd.[GovRegulation], 
-    --sd.[OrderNum], 
-    sd.[InAccrScope], 
-    sdv.Code,
-    sdv.Name,
-    sdv.Description,
-    sdv.FullName
-FROM [dbo].[StdDoc] sd
-INNER JOIN [dbo].[StdDocVer] sdv ON sdv.[StdDocUid] = sd.[StdDocUid] 
---INNER JOIN [dbo].[Version] v on v.[VersionId] = sdv.StdDocVerId and v.[StartDate] &lt; GETDATE() AND GETDATE() &lt; v.[StopDate]
-WHERE sd.StdDocType = 0 AND {0}</GetSQL>
-      <GetSQLWhereString>sdv.[Name] like 'ГОСТ *'</GetSQLWhereString>
-      <EditSql>UPDATE [dbo].[StdDoc] 
-SET 
-	[Code]=N'@Code', 
-	[Name]=N'@Name', 
-	--[DeveloperUid]=NEWID(), 
-	[GovRegulation]=@GovRegulation, 
-	--[OrderNum]=N'', 
-	[InAccrScope]=@InAccrScope
-WHERE [StdDocUid] = '@StdDocUid'</EditSql>
-      <ImageBuffer>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</ImageBuffer>
-    </ItemChanger>
-    <ItemChanger>
-      <Name>LDS.Спецификации</Name>
-      <GetSQL>SELECT 
-    'x' as [Select(x)], 
-    sd.[StdDocUid], 
-    sd.[Code], 
-    sd.[Name], 
-    --sd.[StdDocType], 
-    --sd.[DeveloperUid], 
-    sd.[GovRegulation], 
-    --sd.[OrderNum], 
-    sd.[InAccrScope], 
-    sdv.Code,
-    sdv.Name,
-    sdv.Description,
-    sdv.FullName,
-	stuff((
-        SELECT ',' + convert(nvarchar, sd2.[Name])
-        FROM [dbo].[SpecDigest] sd2
-		INNER JOIN [dbo].[SpecDigestContent] sdc ON sdc.SpecDigestId = sd2.SpecDigestId
-        WHERE sdc.SpecUid = sd.StdDocUid
-        FOR XML PATH ('')
-    ), 1, 1, '') SpecDigest
+	BEGIN
+		COMMIT TRANSACTION
+		PRINT N'Применение транзакции.'
+	END</CreateSql>
+      <EditSql>DECLARE @NRID INT = 0
+DECLARE @NAEBatchUid uniqueidentifier = NULL
+DECLARE @NAEBatchTestUid uniqueidentifier = '@AEBatchTestUid (Ключ хар-ки партии ОУ)'
+DECLARE @NLAbbreviation NVARCHAR(50) = N'@Единица измерения'
+
+DECLARE @NValue FLOAT = NULL
+BEGIN TRY
+	SET @NValue = CONVERT(FLOAT, N'@Значение')
+END TRY
+BEGIN CATCH
+	SET @NValue = NULL
+END CATCH
 	
-FROM [dbo].[StdDoc] sd
-INNER JOIN [dbo].[StdDocVer] sdv ON sdv.[StdDocUid] = sd.[StdDocUid] 
---INNER JOIN [dbo].[Version] v on v.[VersionId] = sdv.StdDocVerId and v.[StartDate] &lt; GETDATE() AND GETDATE() &lt; v.[StopDate]
-WHERE sd.StdDocType = 1 AND {0}</GetSQL>
-      <GetSQLWhereString>sdv.[Name] like '*'</GetSQLWhereString>
-      <DeleteSql>exec dbo.Spec_Delete '@StdDocUid'</DeleteSql>
+DECLARE @NAbsErr FLOAT = NULL
+BEGIN TRY
+	SET @NAbsErr = CONVERT(FLOAT, N'@Абсол. погрешность значения')
+END TRY
+BEGIN CATCH
+	SET @NAbsErr = NULL
+END CATCH
+	
+DECLARE @NRelErr FLOAT = NULL
+BEGIN TRY
+	SET @NRelErr = CONVERT(FLOAT, N'@Относит. погрешность значения, %')
+END TRY
+BEGIN CATCH
+	SET @NRelErr = NULL
+END CATCH
+	
+DECLARE @NDigitTable Table (DigitIndex NVARCHAR(255), id INT) 
+SET @NRID = 0
+INSERT INTO @NDigitTable 
+SELECT CONVERT(NVARCHAR(255), Item), ROW_NUMBER() OVER (ORDER BY @NRID) AS id FROM [dbo].[spc_sys_ParseString](N'@Значение дискретного набора', ';')
+DECLARE @NDigitalSetName NVARCHAR(150) = (SELECT TOP 1 DigitIndex FROM @NDigitTable WHERE id = 1)
+DECLARE @NDigitalValue NVARCHAR(50) = (SELECT TOP 1 DigitIndex FROM @NDigitTable WHERE id = 2)
+DECLARE @NDigitalSetId INT = NULL
+
+BEGIN TRANSACTION
+BEGIN TRY
+
+IF @NAEBatchTestUid IS NULL BEGIN
+	RAISERROR(N'Ошибка в данных "Партия ОУ"! Уникальный ключ партии AEBatchUid не может быть NULL или пустым."', 16, 1)
+	END ELSE BEGIN
+	
+	SET @NAEBatchUid = (SELECT [AEBatchTest].[AEBatchUid] FROM [AEBatchTest] WHERE [AEBatchTest].[AEBatchTestUid] = @NAEBatchTestUid)
+	
+	DECLARE @NTestType INT = 0;
+	IF @NDigitalSetName IS NOT NULL OR @NDigitalValue IS NOT NULL BEGIN
+		SET @NTestType = 1
+		SET @NDigitalSetId = (SELECT TOP 1 [DigitalSet].[DigitalSetId] FROM [DigitalSet] WHERE [DigitalSet].[Name] = @NDigitalSetName)
+		IF @NDigitalSetId IS NULL BEGIN
+			RAISERROR(N'Ошибка в данных "Значение дискретного набора"! В базе данных ЛИМС такой дискретный набор отсутствует.', 16, 1)
+		END
+	IF @NDigitalValue IS NOT NULL AND (SELECT SUM(1) FROM [DigitalSetValue] WHERE [DigitalSetValue].[Value] = @NDigitalValue AND 
+			[DigitalSetValue].[DigitalSetId] = @NDigitalSetId) IS NULL BEGIN 
+			RAISERROR(N'Ошибка в данных "Значение дискретного набора"! В базе данных ЛИМС такого значения для дискретного набора не существует.', 16, 1)			
+		END
+	END 
+	
+	DECLARE @NTestId INT = NULL
+	SET @NTestId = (SELECT TOP 1 [Test].[TestId] FROM [Test] WHERE [Test].[Name] = N'@Показатель' AND [Test].[TestType] = @NTestType)
+	IF @NTestId IS NULL BEGIN
+		RAISERROR(N'Ошибка в данных "Показатель"! В базе данных ЛИМС он отсутствует.', 16, 1)		
+	END
+	    
+	IF @NTestType = 0 AND (@NLAbbreviation IS NOT NULL OR @NLAbbreviation &lt;&gt; '') AND 
+		(SELECT SUM(1) FROM [EngUnit] INNER JOIN [Test] ON [EngUnit].[ClassId] = [Test].[EngUnitClassId]
+			WHERE [Test].TestId = @NTestId AND [EngUnit].[LAbbreviation] = @NLAbbreviation) IS NULL BEGIN 
+				RAISERROR(N'Ошибка в данных "Единица измерения"! В базе данных ЛИМС такой ед. измерения не существует для текущего показателя.', 16, 1)			
+			END
+
+	DECLARE @NIsAttested BIT = 0
+	IF N'@Аттестованное (0 - нет, 1 - да)' = '1' SET @NIsAttested = 1
+	
+	DECLARE @NPTS datetime = GETDATE()
+		
+	/* Удаление записей по показателям */	
+	IF @NTestId IS NOT NULL BEGIN 
+		IF (SELECT SUM(1) FROM [AEBatchTestAnalog] WHERE [AEBatchTestAnalog].[AEBatchTestUid] = @NAEBatchTestUid) &gt; 0
+			DELETE FROM [AEBatchTestAnalog] WHERE [AEBatchTestAnalog].[AEBatchTestUid] = @NAEBatchTestUid
+		IF (SELECT SUM(1) FROM [AEBatchTestDigit] WHERE [AEBatchTestDigit].[AEBatchTestUid] = @NAEBatchTestUid) &gt; 0
+			DELETE FROM [AEBatchTestDigit] WHERE [AEBatchTestDigit].[AEBatchTestUid] = @NAEBatchTestUid
+		END
+	
+	/* Добавление записи по аналоговому типу показателя */
+	IF @NTestId IS NOT NULL AND @NTestType = 0 BEGIN
+		DECLARE @NEngUnitId INT = NULL
+		SET @NEngUnitId = (SELECT TOP 1 [EngUnit].[EngUnitId] FROM [EngUnit] WHERE [EngUnit].LAbbreviation = @NLAbbreviation)
+		IF @NEngUnitId IS NULL BEGIN
+			RAISERROR(N'Ошибка в данных "Единица измерения"! В базе данных ЛИМС такие единицы измерения отсутствует.', 16, 1)
+			END
+		EXEC [dbo].[AEBatchTestAnalog_Insert] default, @NAEBatchTestUid, @NValue, NULL, @NEngUnitId, @NAbsErr, NULL, @NRelErr, NULL, 0, NULL, NULL, @NPTS
+		UPDATE [AEBatchTest] SET
+			[AEBatchTest].[ReportValue] = @NValue,
+			[AEBatchTest].[ChangeDate] = @NPTS,
+			[AEBatchTest].[IsAttested] = @NIsAttested,
+			[AEBatchTest].[TestId] = @NTestId			
+		WHERE [AEBatchTest].AEBatchTestUid = @NAEBatchTestUid
+		END
+	
+	/* Добавление записи по дискретному типу показателя */		
+	IF @NTestId IS NOT NULL AND @NTestType = 1 BEGIN
+		EXEC [dbo].[AEBatchTestDigit_Insert] default, @NAEBatchTestUid, @NDigitalSetId, @NDigitalValue, 0, @NPTS 
+		UPDATE [AEBatchTest] SET
+			[AEBatchTest].[ReportValue] = @NDigitalValue,
+			[AEBatchTest].[ChangeDate] = @NPTS,
+			[AEBatchTest].[IsAttested] = @NIsAttested,
+			[AEBatchTest].[TestId] = @NTestId
+		WHERE [AEBatchTest].AEBatchTestUid = @NAEBatchTestUid	
+		END
+	END
+END TRY
+
+BEGIN CATCH
+	IF @@TRANCOUNT &gt; 0
+		BEGIN
+			ROLLBACK TRANSACTION
+			PRINT N'Откат транзакции.'
+			DECLARE @NERRORMESSAGE NVARCHAR(1000) = ERROR_MESSAGE()
+			RAISERROR(@NERRORMESSAGE, 16, 1);            	
+		END
+END CATCH
+
+IF @@TRANCOUNT &gt; 0
+	BEGIN
+		COMMIT TRANSACTION
+		PRINT N'Применение транзакции.'
+	END</EditSql>
+      <DeleteSql>DECLARE @NAEBatchTestUid AS uniqueidentifier = '@AEBatchTestUid (Ключ хар-ки партии ОУ)'
+
+BEGIN TRANSACTION
+BEGIN TRY
+	IF (SELECT SUM(1) FROM [AEBatchTest] WHERE [AEBatchTest].[AEBatchTestUid] = @NAEBatchTestUid) &gt; 0 BEGIN
+		PRINT N'[AEBatchTestAnalog]:'
+		DELETE FROM [AEBatchTestAnalog] WHERE [AEBatchTestAnalog].[AEBatchTestUid] = @NAEBatchTestUid
+	
+		PRINT N'[AEBatchTestDigit]:'
+		DELETE FROM [AEBatchTestDigit] WHERE [AEBatchTestDigit].[AEBatchTestUid] = @NAEBatchTestUid
+
+		PRINT N'[AEBatchTest]:'
+		DELETE FROM [AEBatchTest] WHERE [AEBatchTest].[AEBatchTestUid] = @NAEBatchTestUid
+		END ELSE PRINT N'Запись с ключом хар-ки партии ОУ "' + CAST(@NAEBatchTestUid AS NVARCHAR(100)) + '" не найдена!'
+END TRY
+
+BEGIN CATCH
+	IF @@TRANCOUNT &gt; 0
+		BEGIN
+			ROLLBACK TRANSACTION
+			PRINT N'Откат транзакции.'
+			DECLARE @NERRORMESSAGE NVARCHAR(1000) = ERROR_MESSAGE()
+			RAISERROR(@NERRORMESSAGE, 16, 1);            	
+		END
+END CATCH
+
+IF @@TRANCOUNT &gt; 0
+	BEGIN
+		COMMIT TRANSACTION
+		--PRINT N'Применение транзакции'
+	END</DeleteSql>
+      <ImageBuffer>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</ImageBuffer>
+    </ItemChanger>
+    <ItemChanger>
+      <Name>LDS.Персонал</Name>
+      <GetSQL>DECLARE @FIOPersonal Table (UserUID uniqueidentifier, F NVARCHAR(255), I NVARCHAR(255), O NVARCHAR(255), NameShort NVARCHAR(150)) 
+DECLARE @NR Table (CompanyIndex NVARCHAR(255), id INT)
+DECLARE @NRID INT = 0
+DECLARE @NUserUID uniqueidentifier
+DECLARE @NFullName NVARCHAR(255)
+DECLARE @NNameShort NVARCHAR(150)
+DECLARE @CURSOR CURSOR
+SET @CURSOR = CURSOR LOCAL FAST_FORWARD READ_ONLY FOR
+SELECT [User].[Name], [User].[FullName], [User].[UserUID] FROM [User]
+OPEN @CURSOR
+FETCH NEXT FROM @CURSOR INTO @NNameShort, @NFullName, @NUserUID
+WHILE @@FETCH_STATUS = 0
+	BEGIN
+		INSERT INTO @NR 
+		SELECT CONVERT(NVARCHAR(255), Item), ROW_NUMBER() OVER (ORDER BY @NRID) AS id FROM [dbo].[spc_sys_ParseString](@NFullName, ' ')
+		INSERT INTO @FIOPersonal
+		SELECT @NUserUID, (SELECT CompanyIndex FROM @NR WHERE id = 1), (SELECT CompanyIndex FROM @NR WHERE id = 2), 
+		(STUFF((SELECT ' ' + CONVERT(NVARCHAR, [@NR].[CompanyIndex]) FROM @NR WHERE [@NR].[id] &gt; 2 
+			FOR XML PATH ('')), 1, 1, '')), @NNameShort
+		DELETE @NR
+		SET @NRID = 0
+		FETCH NEXT FROM @CURSOR INTO @NNameShort, @NFullName, @NUserUID
+	END
+CLOSE @CURSOR
+DEALLOCATE @CURSOR
+
+SELECT 
+	[User].[UserUID] AS "UserUID (Ключ персонала)",
+	[User].[Name] AS "Имя пользователя",
+	[@FIOPersonal].[F] AS "Фамилия",
+	[@FIOPersonal].[I] AS "Имя",
+	[@FIOPersonal].[O] AS "Отчество",
+	CASE WHEN [UserProp].[Sex] = 1 THEN 'М' ELSE
+		CASE WHEN [UserProp].[Sex] = 2 THEN 'Ж' ELSE NULL END END AS "Пол",
+	(SELECT CONVERT(VARCHAR(10),[UserProp].[Birthday], 104)) AS "Дата рождения"
+FROM [User]
+	INNER JOIN @FIOPersonal ON [User].[UserUID] = [@FIOPersonal].[UserUID]
+	LEFT JOIN [UserProp] ON [User].[UserId] = [UserProp].[UserId]
+WHERE [User].{0}</GetSQL>
+      <GetSQLWhereString>FullName like '*'</GetSQLWhereString>
       <ImageBuffer>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</ImageBuffer>
     </ItemChanger>
   </Items>
-  <SelectedObjectIndex>3</SelectedObjectIndex>
+  <SelectedObjectIndex>13</SelectedObjectIndex>
   <EditorType>0</EditorType>
 </ItemChangerList>
