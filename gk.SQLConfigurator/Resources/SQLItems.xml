@@ -7,10 +7,9 @@
 	'x' as [Select(x)], 
 	* 
 from 
-	[product] 
-where 
-	{0}</GetSQL>
-      <GetSQLWhereString>Name like '*бензин*'</GetSQLWhereString>
+	[product]
+where {0} </GetSQL>
+      <GetSQLWhereString>Name like '*'</GetSQLWhereString>
       <CreateSql>insert into [product] values ('@ProductUid', '@Code', '@Name', @IsActive, @InAccrScope)	</CreateSql>
       <EditSql>update [Product] set 
 	Code = '@Code', 
@@ -36,16 +35,8 @@ from [dbo].[Subdivision]
 where 
 	{0}</GetSQL>
       <GetSQLWhereString>Name like '*'</GetSQLWhereString>
-      <CreateSql>declare @subdivisionId int  = -1
-declare @code nvarchar(50) = '@Code'
-declare @name nvarchar(150) = '@Name'
-declare @description nvarchar(255) = '@Description'
-EXECUTE [dbo].[Subdivision_Insert] @subdivisionId output, @code, @name, @description </CreateSql>
-      <EditSql>declare @subdivisionId int = @SubdivisionId
-declare @code nvarchar(50)  = '@Code'
-declare @name nvarchar(150) = '@Name'
-declare @description nvarchar(255) = '@Description'
-EXECUTE [dbo].[Subdivision_Update] @subdivisionId, @code, @name, @description </EditSql>
+      <CreateSql>raiserror (-1,-1, 'Not implemented');  </CreateSql>
+      <EditSql>raiserror (-1,-1, 'Not implemented');  </EditSql>
       <CreateoreditSql>raiserror (-1,-1, 'Not implemented');  </CreateoreditSql>
       <DeleteSql>raiserror (-1,-1, 'Not implemented');  </DeleteSql>
       <ImageBuffer>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</ImageBuffer>
@@ -483,28 +474,18 @@ inner join [dbo].[OrgUnitProps] oup on oup.OrgUnitId = ou.OrgUnitId
 where  {0}
 order by [RO.OrgUnitPath]
 </GetSQL>
-      <GetSQLWhereString>[OrgUnitPath] like '*IP*'</GetSQLWhereString>
+      <GetSQLWhereString>[OrgUnitPath] not like '*рнпк*'</GetSQLWhereString>
       <CreateSql>declare @parent int = (select [OrgUnitId] from [dbo].[OrgUnit] ou where ou.[Name] = '@ParentName')
-declare @orgUnitUidt nvarchar(max) = '@OrgUnitUid'
-declare @orgUnitUid uniqueidentifier = newid()
-
-if @orgUnitUidt &lt;&gt; '' 
-begin
-    set @orgUnitUid = convert(uniqueidentifier, @orgUnitUidt)
-end
 
 insert into [dbo].[OrgUnit]([Code], [Name], [Description], [ParentUnitId], [OrgUnitUid], [OrgUnitLevelId], [Flags]) 
-        values (N'@Code', N'@Name', N'@Description', @parent, newid(), @OrgUnitLevelId, @Flags)
+        values (N'@Code', N'@Name', N'@Description', @parent, '@OrgUnitUid', @OrgUnitLevelId, @Flags)
 </CreateSql>
-      <EditSql>declare @parent int = (select top 1 [OrgUnitId] from [dbo].[OrgUnit] ou where ou.[Name] = '@ParentName')
-
-update [dbo].[OrgUnit] set 
-    [Name] = '@Name', 
-    [Code] = '@Code', 
-    [Description] = '@Description',
-    [ParentUnitId] = @parent
+      <EditSql>update OrgUnit set 
+    Name = '@Name', 
+    Code = '@Code', 
+    Description = '@Description'
 where
-    [OrgUnitUid] = '@OrgUnitUid'
+  OrgUnitUid= '@OrgUnitUid'
 </EditSql>
       <CreateoreditSql>raiserror (-1,-1, 'Not implemented');  </CreateoreditSql>
       <DeleteSql>		
@@ -663,36 +644,7 @@ from
 where {0}
 </GetSQL>
       <GetSQLWhereString>[CP].[Name] like '*'</GetSQLWhereString>
-      <CreateSql>BEGIN TRY  
-	DECLARE @cPUid uniqueidentifier = newid()
-	DECLARE @code nvarchar(50) = '@Code'
-	DECLARE @name nvarchar(150)  = '@Name'
-	DECLARE @useExtractionPoint bit = @UseExtractionPoint 
-	DECLARE @isActive bit = @IsActive 
-	DECLARE @allowNewEP bit = @AllowNewEP
-	DECLARE @ePIsRequired bit = @EPIsRequired 
-	DECLARE @description nvarchar(255) = '@Description'
-	DECLARE @orgUnitName nvarchar(255) = '@OrgUnitName'
-	
-	DECLARE @OrgUnitId int = (SELECT OrgUnitId FROM OrgUnit WHERE NAME = @orgUnitName)
-
-
-    IF (@OrgUnitId IS NULL)
-    BEGIN
-        RAISERROR (N'Error - OrgUnit with Name = &lt;%s&gt; not found!', 16, 1, @orgUnitName);
-    END
-    -- SELECT @OrgUnitId, @cPUid
-    EXECUTE [dbo].[CP_Insert] @cPUid, @code, @name, @useExtractionPoint, @isActive, @allowNewEP, @ePIsRequired, @description;
-    EXECUTE [dbo].[CPOrgUnit_Update] @cPUid, @OrgUnitId;
-END TRY  
-BEGIN CATCH
-    DECLARE @ErrorMessage NVARCHAR(4000);  
-    DECLARE @ErrorSeverity INT;  
-    DECLARE @ErrorState INT;  
-  
-    SELECT @ErrorMessage = ERROR_MESSAGE(), @ErrorSeverity = ERROR_SEVERITY(), @ErrorState = ERROR_STATE();
-    RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState ); 
-END CATCH;</CreateSql>
+      <CreateSql>raiserror (-1,-1, 'Not implemented');  </CreateSql>
       <EditSql>raiserror (-1,-1, 'Not implemented');  </EditSql>
       <CreateoreditSql>declare @OrgUnitId int
 declare @CPUid uniqueidentifier
@@ -1014,9 +966,9 @@ DECLARE @NHumanEffectId int = NULL
 DECLARE @NOwnerOrgUnitId int = NULL
 DECLARE @NStorageOrgUnitId int = NULL
 DECLARE @NGenerate nvarchar(10) = SUBSTRING(CONVERT(NVARCHAR(100), HASHBYTES('MD5', CAST(SYSDATETIME() AS NVARCHAR)), 2), 0, 12)
-DECLARE @NProductUid uniqueidentifier = (SELECT TOP 1 [Product].[ProductUid] FROM [Product] WHERE [Product].[Name] = '@Продукт');
+DECLARE @NProductUid uniqueidentifier = (SELECT TOP 1 [Product].[ProductUid] FROM [Product] WHERE [Product].[Name] = N'@Продукт');
 DECLARE @NAEType TABLE (EntityTypeUid uniqueidentifier)
-DECLARE @NTypeOU nvarchar(100) = '@Тип ОУ'
+DECLARE @NTypeOU nvarchar(100) = N'@Тип ОУ'
 DECLARE @NCreationDate datetime = NULL;
 DECLARE @NShelfLifeDate datetime = NULL;
 DECLARE @NUserName nvarchar(100) = 'Администратор'
@@ -1025,22 +977,22 @@ DECLARE @NStatusId int = (SELECT TOP 1 [Status].[StatusId] FROM [Status] WHERE [
 DECLARE @NPriorityId int = (SELECT TOP 1 [Priority].[PriorityId] FROM [Priority] WHERE [Priority].[Name] = 'Срочно')
 DECLARE @NAEBatchStatudID int = (SELECT TOP 1 [Status].[StatusId] FROM [Status] WHERE [Status].[Name] = 'Новая' AND [Status].[Code] = 'AEBatchNew')
 
-SET @NAEUid = (SELECT TOP 1 [AE].[AEUid] FROM [AE] WHERE [AE].[Name] = '@Наименование ОУ' AND [AE].[Code] = '@Условное обозначение\Код ОУ');
+SET @NAEUid = (SELECT TOP 1 [AE].[AEUid] FROM [AE] WHERE [AE].[Name] = N'@Наименование ОУ' AND [AE].[Code] = N'@Условное обозначение\Код ОУ');
 IF @NAEUid IS NULL BEGIN
 	SET @NAEUid = NEWID()
 	IF @NTypeOU IS NULL OR @NTypeOU = '' SET @NTypeOU = 'Стандартный образец'
 	INSERT INTO @NAEType 
 	SELECT [EntityType].[EntityTypeUid] FROM [EntityType]
 		WHERE [dbo].[EntityType].[Name] IN (SELECT CONVERT(NVARCHAR(100), Item) FROM [dbo].[spc_sys_ParseString](@NTypeOU, ';'))
-	DECLARE @NAEName NVARCHAR(150) = '@Наименование ОУ'
+	DECLARE @NAEName NVARCHAR(150) = N'@Наименование ОУ'
 	IF (@NAEName IS NULL OR @NAEName = '') SET @NAEName = 'Новый объект учета - ' + @NGenerate 
-	DECLARE @NAECode NVARCHAR(50) = '@Условное обозначение\Код ОУ'
+	DECLARE @NAECode NVARCHAR(50) = N'@Условное обозначение\Код ОУ'
 	IF (@NAECode IS NULL OR @NAECode = '') SET @NAECode = 'Новый код учета - ' + @NGenerate 	
-	EXEC [dbo].[AE_Insert] default, @NAEUid, @NAEName, @NAECode, '@Описание ОУ', NULL, NULL,
+	EXEC [dbo].[AE_Insert] default, @NAEUid, @NAEName, @NAECode, N'@Описание ОУ', NULL, NULL,
 		NULL, NULL, @NProductUid, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL;
 	UPDATE [AE] SET
 		[AE].[PckgTypeUid] = (SELECT TOP 1 [PckgType].[PckgTypeUid] FROM [PckgType] INNER JOIN [ObjectProp] ON 
-			[PckgType].[PckgTypeUid] = [ObjectProp].[ObjectPropUid] WHERE [ObjectProp].[Name] =  '@Количество - тип тары')
+			[PckgType].[PckgTypeUid] = [ObjectProp].[ObjectPropUid] WHERE [ObjectProp].[Name] =  N'@Количество - тип тары')
 	WHERE [AE].[AEUid] = @NAEUid
 	INSERT INTO [AEType]
 	SELECT NEWID(), @NAEUid, [@NAEType].[EntityTypeUid] FROM @NAEType
@@ -1222,32 +1174,32 @@ SET @NAEBatchUid = (SELECT TOP 1 [AEBatchRequest].[AEBatchUid] FROM [AEBatchRequ
 IF @NAEBatchRequestUid IS NULL OR (@NAEBatchRequestUid IS NOT NULL AND @NAEBatchUid IS NOT NULL) BEGIN
 	SET @NAEBatchRequestUid = NEWID()
 	SET @NAEBatchUid = NULL
-	SET @NStorageOrgUnitId = (SELECT [OrgUnit].[OrgUnitId] FROM [OrgUnit] WHERE [OrgUnit].[Name] = '@Местоположение. Склад')
+	SET @NStorageOrgUnitId = (SELECT [OrgUnit].[OrgUnitId] FROM [OrgUnit] WHERE [OrgUnit].[Name] = N'@Местоположение. Склад')
 	IF (@NStorageOrgUnitId IS NULL) SET @NStorageOrgUnitId = (SELECT [OrgUnit].[OrgUnitId] FROM [OrgUnit] WHERE [OrgUnit].[Name] = 'Без лаборатории')
-	SET @NOwnerOrgUnitId = (SELECT [OrgUnit].[OrgUnitId] FROM [OrgUnit] WHERE [OrgUnit].[Name] = '@Местоположение. Потребитель')
+	SET @NOwnerOrgUnitId = (SELECT [OrgUnit].[OrgUnitId] FROM [OrgUnit] WHERE [OrgUnit].[Name] = N'@Местоположение. Потребитель')
 	IF (@NOwnerOrgUnitId IS NULL) SET @NOwnerOrgUnitId = (SELECT [OrgUnit].[OrgUnitId] FROM [OrgUnit] WHERE [OrgUnit].[Name] = 'Без лаборатории')
 	SET @NCreationDate = GETDATE()
-	IF '@Дата производства' &lt;&gt; '' AND '@Дата производства' IS NOT NULL BEGIN
-		BEGIN TRY SET @NCreationDate = CONVERT(datetime, '@Дата производства', 104)
+	IF N'@Дата производства' &lt;&gt; '' AND N'@Дата производства' IS NOT NULL BEGIN
+		BEGIN TRY SET @NCreationDate = CONVERT(datetime, N'@Дата производства', 104)
 		IF @NCreationDate IS NULL SET @NCreationDate = GETDATE()
 		END TRY
 		BEGIN CATCH SET @NCreationDate = GETDATE()
 		END CATCH 
 	END
-	EXEC [dbo].[AEBatchRequest_Insert] default, @NAEBatchRequestUid, @NAEBatchUid, '@Код заявки', @NAEUid, NULL, @NCreationDate,
+	EXEC [dbo].[AEBatchRequest_Insert] default, @NAEBatchRequestUid, @NAEBatchUid, N'@Код заявки', @NAEUid, NULL, @NCreationDate,
 		@NUserId, @NUserName, @NOwnerOrgUnitId, @NStorageOrgUnitId, @NStatusId, @NPriorityId, NULL, NULL, 0 
 END
 
 IF @NAEBatchUid IS NULL BEGIN
 	SET @NAEBatchUid = NEWID()
-	DECLARE @NNum NVARCHAR(150) = '@Номер партии'
+	DECLARE @NNum NVARCHAR(150) = N'@Номер партии'
 	IF (@NNum IS NULL OR @NNum = '') SET @NNum = 'Номер партии - ' + @NGenerate
 
-	DECLARE @NCode NVARCHAR(150) = '@Код партии'
+	DECLARE @NCode NVARCHAR(150) = N'@Код партии'
 	IF (@NCode IS NULL OR @NCode = '') SET @NCode = 'Код партии - ' + @NGenerate
 	
 	SET @NCreationDate = GETDATE()
-	IF '@Дата производства' &lt;&gt; '' AND '@Дата производства' IS NOT NULL BEGIN
+	IF N'@Дата производства' &lt;&gt; '' AND N'@Дата производства' IS NOT NULL BEGIN
 		BEGIN TRY SET @NCreationDate = CONVERT(datetime, '@Дата производства', 104)
 		IF @NCreationDate IS NULL SET @NCreationDate = GETDATE()
 		END TRY
@@ -1255,17 +1207,17 @@ IF @NAEBatchUid IS NULL BEGIN
 		END CATCH 
 	END
 	
-	DECLARE @TypeInterval NVARCHAR(10) = '@Срок хранения - тип интервала'
+	DECLARE @TypeInterval NVARCHAR(10) = N'@Срок хранения - тип интервала'
 	DECLARE @IntervalInt int = NULL;
-	IF '@Дата окончания срока хранения' &lt;&gt; '' AND '@Дата окончания срока хранения' IS NOT NULL BEGIN
-		BEGIN TRY SET @NShelfLifeDate = CONVERT(datetime, '@Дата окончания срока хранения', 104)
+	IF N'@Дата окончания срока хранения' &lt;&gt; '' AND N'@Дата окончания срока хранения' IS NOT NULL BEGIN
+		BEGIN TRY SET @NShelfLifeDate = CONVERT(datetime, N'@Дата окончания срока хранения', 104)
 		END TRY	
 		BEGIN CATCH	SET @NShelfLifeDate = NULL
 		END CATCH
 	END
-	IF '@Дата окончания срока хранения' = '' OR '@Дата окончания срока хранения' IS NULL BEGIN
+	IF N'@Дата окончания срока хранения' = '' OR N'@Дата окончания срока хранения' IS NULL BEGIN
 		IF (@TypeInterval IS NOT NULL) BEGIN
-			BEGIN TRY SET @IntervalInt = CAST('@Срок хранения - значение' AS INT)
+			BEGIN TRY SET @IntervalInt = CAST(N'@Срок хранения - значение' AS INT)
 			END TRY
 			BEGIN CATCH SET @IntervalInt = NULL
 			END	CATCH 			
@@ -1302,7 +1254,7 @@ IF @NAEBatchUid IS NULL BEGIN
 	DECLARE @NSupplierName NVARCHAR(150)
 	DECLARE @NSupplierAddressName NVARCHAR(255);
 	INSERT INTO @NR 
-	SELECT CONVERT(NVARCHAR(255), Item), ROW_NUMBER() OVER (ORDER BY @NRID) AS id FROM [dbo].[spc_sys_ParseString]('@Производитель, адрес', ';')
+	SELECT CONVERT(NVARCHAR(255), Item), ROW_NUMBER() OVER (ORDER BY @NRID) AS id FROM [dbo].[spc_sys_ParseString](N'@Производитель, адрес', ';')
 	SET @NManufacturerName = (SELECT CompanyIndex FROM @NR WHERE id = 1);
 	SET @NManufacturerAddressName = (SELECT CompanyIndex FROM @NR WHERE id = 2)
 	SET @NManufacturerUid = (SELECT [ContractCompany].[ContractCompanyUid] FROM [ContractCompany]
@@ -1328,7 +1280,7 @@ IF @NAEBatchUid IS NULL BEGIN
 		END
 	DELETE FROM @NR
 	INSERT INTO @NR 
-	SELECT CONVERT(NVARCHAR(255), Item), ROW_NUMBER() OVER (ORDER BY @NRID) AS id FROM [dbo].[spc_sys_ParseString]('@Поставщик, адрес', ';')
+	SELECT CONVERT(NVARCHAR(255), Item), ROW_NUMBER() OVER (ORDER BY @NRID) AS id FROM [dbo].[spc_sys_ParseString](N'@Поставщик, адрес', ';')
 	SET @NSupplierName = (SELECT CompanyIndex FROM @NR WHERE id = 1);
 	SET @NSupplierAddressName = (SELECT CompanyIndex FROM @NR WHERE id = 2)
 	SET @NSupplierUid = (SELECT [ContractCompany].[ContractCompanyUid] FROM [ContractCompany]
@@ -1358,17 +1310,17 @@ IF @NAEBatchUid IS NULL BEGIN
 	
 	DECLARE @NDocIssueDate datetime = NULL
 	DECLARE @NAcceptanceDate datetime = NULL
-	IF '@Дата паспорта' IS NOT NULL AND '@Дата паспорта' &lt;&gt; '' BEGIN
+	IF N'@Дата паспорта' IS NOT NULL AND N'@Дата паспорта' &lt;&gt; '' BEGIN
 		BEGIN TRY
-			SET @NDocIssueDate = CONVERT(datetime, '@Дата паспорта', 104)
+			SET @NDocIssueDate = CONVERT(datetime, N'@Дата паспорта', 104)
 		END TRY
 		BEGIN CATCH
 			SET @NDocIssueDate = NULL;
 		END CATCH
 		END
-	IF '@Дата акта приемки' IS NOT NULL AND '@Дата акта приемки' &lt;&gt; '' BEGIN
+	IF N'@Дата акта приемки' IS NOT NULL AND N'@Дата акта приемки' &lt;&gt; '' BEGIN
 		BEGIN TRY
-			SET @NAcceptanceDate = CONVERT(datetime, '@Дата акта приемки', 104)
+			SET @NAcceptanceDate = CONVERT(datetime, N'@Дата акта приемки', 104)
 		END TRY
 		BEGIN CATCH
 			SET @NAcceptanceDate = NULL;
@@ -1379,40 +1331,40 @@ IF @NAEBatchUid IS NULL BEGIN
 	DECLARE @NVolume FLOAT = NULL
 	DECLARE @NWeight FLOAT = NULL
 	DECLARE @NItemCount INT = NULL
-	IF '@Объем - значение' &lt;&gt; '' BEGIN
+	IF N'@Объем - значение' &lt;&gt; '' BEGIN
 		BEGIN TRY
-			SET @NVolume = CONVERT(FLOAT, '@Объем - значение', 0)
+			SET @NVolume = CONVERT(FLOAT, N'@Объем - значение', 0)
 		END TRY
 		BEGIN CATCH
 			PRINT 'Ошибка преобразования значения объема в FLOAT!' 
 		END CATCH
 	END
-	IF '@Масса - значение' &lt;&gt; '' BEGIN
+	IF N'@Масса - значение' &lt;&gt; '' BEGIN
 		BEGIN TRY
-			SET @NWeight = CONVERT(FLOAT, '@Масса - значение', 0)
+			SET @NWeight = CONVERT(FLOAT, N'@Масса - значение', 0)
 		END TRY
 		BEGIN CATCH
 			PRINT 'Ошибка преобразования значения массы в FLOAT!' 
 		END CATCH
 	END
-	IF '@Количество мест - значение' &lt;&gt; '' BEGIN
+	IF N'@Количество мест - значение' &lt;&gt; '' BEGIN
 		BEGIN TRY
-			SET @NItemCount = CONVERT(INT, '@Количество мест - значение', 0)
+			SET @NItemCount = CONVERT(INT, N'@Количество мест - значение', 0)
 		END TRY
 		BEGIN CATCH
 			PRINT 'Ошибка преобразования значения количества мест в INT!' 
 		END CATCH
 	END
-	DECLARE @NVolumeEngUnitId int = (SELECT TOP 1 [EngUnit].[EngUnitId] FROM [EngUnit] WHERE [EngUnit].[LAbbreviation] = '@Объем - ЕИ')
+	DECLARE @NVolumeEngUnitId int = (SELECT TOP 1 [EngUnit].[EngUnitId] FROM [EngUnit] WHERE [EngUnit].[LAbbreviation] = N'@Объем - ЕИ')
 	IF @NVolumeEngUnitId IS NULL SET @NVolumeEngUnitId = 48 /* метр кубический */
-	DECLARE	@NWeightEngUnitId int = (SELECT TOP 1 [EngUnit].[EngUnitId] FROM [EngUnit] WHERE [EngUnit].[LAbbreviation] = '@Масса - ЕИ')
+	DECLARE	@NWeightEngUnitId int = (SELECT TOP 1 [EngUnit].[EngUnitId] FROM [EngUnit] WHERE [EngUnit].[LAbbreviation] = N'@Масса - ЕИ')
 	IF @NWeightEngUnitId IS NULL SET @NWeightEngUnitId = 52 /* килограмм */
 	EXEC [dbo].[Dims_Insert] default, @NDimsId, @NWeight, NULL, @NWeightEngUnitId, @NVolume, @NVolumeEngUnitId, NULL, NULL, NULL, NULL,
 		@NItemCount, 0
 
 	EXEC [dbo].[AEBatch_Insert] default, @NAEBatchUid, @NAEUid, @NCode, @NNum, NULL, @NAEBatchStatudID, @NDimsId, @NManufacturerUid, @NManufacturerAddressUid,
-		@NSupplierUid, @NSupplierAddressUid, '@Номер паспорта', @NDocIssueDate, '@Номер акта приемки', @NAcceptanceDate, @NCreationDate, @NPeriodId,
-		@NPeriodLen, @NPeriodTypeUid, @NStorageOrgUnitId, NULL, @NOwnerOrgUnitId, NULL, @NUserId, 0, '@Требования к хранению', @NCreationDate, @NInAccrScope,
+		@NSupplierUid, @NSupplierAddressUid, N'@Номер паспорта', @NDocIssueDate, N'@Номер акта приемки', @NAcceptanceDate, @NCreationDate, @NPeriodId,
+		@NPeriodLen, @NPeriodTypeUid, @NStorageOrgUnitId, NULL, @NOwnerOrgUnitId, NULL, @NUserId, 0, N'@Требования к хранению', @NCreationDate, @NInAccrScope,
 		@NShelfLifeDate
 	
 	UPDATE [AEBatchRequest]	SET 
@@ -1439,26 +1391,26 @@ DECLARE @NGenerate nvarchar(10) = SUBSTRING(CONVERT(NVARCHAR(100), HASHBYTES('MD
 IF (@NAEBatchRequestUid IS NOT NULL) 
 	SET @NAEBatchUid = (SELECT [AEBatchRequest].[AEBatchUid] FROM [AEBatchRequest] WHERE [AEBatchRequest].AEBatchRequestUid = @NAEBatchRequestUid AND [AEBatchRequest].[AEUid] = @NAEUid)
 
-DECLARE @NAEName NVARCHAR(150) = '@Наименование ОУ'
+DECLARE @NAEName NVARCHAR(150) = N'@Наименование ОУ'
 IF (@NAEName IS NULL OR @NAEName = '') SET @NAEName = 'Новый объект учета - ' + @NGenerate 
 
-DECLARE @NAECode NVARCHAR(50) = '@Условное обозначение\Код ОУ'
+DECLARE @NAECode NVARCHAR(50) = N'@Условное обозначение\Код ОУ'
 IF (@NAECode IS NULL OR @NAECode = '') SET @NAECode = 'Новый код учета - ' + @NGenerate 
 
 /* Правка по ОУ */
 UPDATE [AE] SET 
 	[AE].[Name] = @NAEName,
 	[AE].[Code] = @NAECode, 
-	[AE].[Description] = '@Описание ОУ',
-	[AE].[ProductUid] = (SELECT [Product].[ProductUid] FROM [Product] WHERE [Product].[Name] = '@Продукт ОУ'),
+	[AE].[Description] = N'@Описание ОУ',
+	[AE].[ProductUid] = (SELECT [Product].[ProductUid] FROM [Product] WHERE [Product].[Name] = N'@Продукт ОУ'),
 	[AE].[PckgTypeUid] = (SELECT [PckgType].[PckgTypeUid] FROM [PckgType] INNER JOIN [ObjectProp] ON 
-		[PckgType].[PckgTypeUid] = [ObjectProp].[ObjectPropUid] WHERE [ObjectProp].[Name] =  '@Количество - тип тары')
+		[PckgType].[PckgTypeUid] = [ObjectProp].[ObjectPropUid] WHERE [ObjectProp].[Name] =  N'@Количество - тип тары')
 WHERE
 	[AE].[AEUid] = @NAEUid
 DECLARE @NAEType TABLE (EntityTypeUid uniqueidentifier)
 INSERT INTO @NAEType
 SELECT [EntityType].[EntityTypeUid] FROM [EntityType]
-WHERE [dbo].[EntityType].[Name] in (SELECT CONVERT(NVARCHAR, Item) FROM [dbo].[spc_sys_ParseString]('@Тип ОУ', ';'));
+WHERE [dbo].[EntityType].[Name] in (SELECT CONVERT(NVARCHAR, Item) FROM [dbo].[spc_sys_ParseString](N'@Тип ОУ', ';'));
 DELETE FROM [AEType] WHERE [AEType].[EntityTypeUid] NOT IN (SELECT EntityTypeUid FROM @NAEType) AND [AEType].[AEUid] = @NAEUid
 INSERT INTO [AEType]
 SELECT NEWID(), @NAEUid, [@NAEType].[EntityTypeUid] FROM @NAEType
@@ -1615,12 +1567,12 @@ IF (@NV1 = 1) BEGIN SET @NAESpendingPurposeUid = (SELECT [AESpendingPurpose].[AE
 	END
 
 /* Правка заявки на партию ОУ */
-SET @NStorageOrgUnitId = (SELECT [OrgUnit].[OrgUnitId] FROM [OrgUnit] WHERE [OrgUnit].[Name] = '@Местоположение. Склад');
+SET @NStorageOrgUnitId = (SELECT [OrgUnit].[OrgUnitId] FROM [OrgUnit] WHERE [OrgUnit].[Name] = N'@Местоположение. Склад');
 IF (@NStorageOrgUnitId IS NULL) SET @NStorageOrgUnitId = (SELECT [OrgUnit].[OrgUnitId] FROM [OrgUnit] WHERE [OrgUnit].[Name] = 'Без лаборатории');
-SET @NOwnerOrgUnitId = (SELECT [OrgUnit].[OrgUnitId] FROM [OrgUnit] WHERE [OrgUnit].[Name] = '@Местоположение. Потребитель');
+SET @NOwnerOrgUnitId = (SELECT [OrgUnit].[OrgUnitId] FROM [OrgUnit] WHERE [OrgUnit].[Name] = N'@Местоположение. Потребитель');
 IF (@NOwnerOrgUnitId IS NULL) SET @NOwnerOrgUnitId = (SELECT [OrgUnit].[OrgUnitId] FROM [OrgUnit] WHERE [OrgUnit].[Name] = 'Без лаборатории');
 UPDATE [AEBatchRequest] SET 
-	[AEBatchRequest].Code = '@Код заявки',
+	[AEBatchRequest].Code = N'@Код заявки',
 	[AEBatchRequest].[StorageOrgUnitId] = @NStorageOrgUnitId,
 	[AEBatchRequest].[OwnerOrgUnitId] = @NOwnerOrgUnitId
 WHERE
@@ -1628,15 +1580,15 @@ WHERE
 
 /* Правка партии на ОУ по заявке */
 IF @NAEBatchUid IS NOT NULL BEGIN
-	DECLARE @NNum NVARCHAR(150) = '@Номер партии'
+	DECLARE @NNum NVARCHAR(150) = N'@Номер партии'
 	IF (@NNum IS NULL OR @NNum = '') SET @NNum = 'Номер партии - ' + @NGenerate
 	
-	DECLARE @NCode NVARCHAR(150) = '@Код партии'
+	DECLARE @NCode NVARCHAR(150) = N'@Код партии'
 	IF (@NCode IS NULL OR @NCode = '') SET @NCode = 'Код партии - ' + @NGenerate	
 	
 	DECLARE @NCreationDate datetime = GETDATE()
-	IF '@Дата производства' &lt;&gt; '' AND '@Дата производства' IS NOT NULL BEGIN
-		BEGIN TRY SET @NCreationDate = CONVERT(datetime, '@Дата производства', 104)
+	IF N'@Дата производства' &lt;&gt; '' AND N'@Дата производства' IS NOT NULL BEGIN
+		BEGIN TRY SET @NCreationDate = CONVERT(datetime, N'@Дата производства', 104)
 		IF @NCreationDate IS NULL SET @NCreationDate = GETDATE()
 		END TRY
 		BEGIN CATCH SET @NCreationDate = GETDATE()
@@ -1644,17 +1596,17 @@ IF @NAEBatchUid IS NOT NULL BEGIN
 	END
 	
 	DECLARE @NShelfLifeDate datetime = DATEADD(MONTH, 1, CONVERT(VARCHAR(10), @NCreationDate, 104))
-	DECLARE @TypeInterval NVARCHAR(10) = '@Срок хранения - тип интервала'
+	DECLARE @TypeInterval NVARCHAR(10) = N'@Срок хранения - тип интервала'
 	DECLARE @IntervalInt int = NULL;
-	IF '@Дата окончания срока хранения' &lt;&gt; '' AND '@Дата окончания срока хранения' IS NOT NULL BEGIN
-		BEGIN TRY SET @NShelfLifeDate = CONVERT(datetime, '@Дата окончания срока хранения', 104)
+	IF N'@Дата окончания срока хранения' &lt;&gt; '' AND N'@Дата окончания срока хранения' IS NOT NULL BEGIN
+		BEGIN TRY SET @NShelfLifeDate = CONVERT(datetime, N'@Дата окончания срока хранения', 104)
 		END TRY	
 		BEGIN CATCH	SET @NShelfLifeDate = NULL
 		END CATCH
 	END
-	IF '@Дата окончания срока хранения' = '' OR '@Дата окончания срока хранения' IS NULL BEGIN
+	IF N'@Дата окончания срока хранения' = '' OR N'@Дата окончания срока хранения' IS NULL BEGIN
 		IF (@TypeInterval IS NOT NULL) BEGIN
-			BEGIN TRY SET @IntervalInt = CAST('@Срок хранения - значение' AS INT)
+			BEGIN TRY SET @IntervalInt = CAST(N'@Срок хранения - значение' AS INT)
 			END TRY
 			BEGIN CATCH SET @IntervalInt = NULL
 			END	CATCH 			
@@ -1695,7 +1647,7 @@ IF @NAEBatchUid IS NOT NULL BEGIN
 	DECLARE @NSupplierName NVARCHAR(150)
 	DECLARE @NSupplierAddressName NVARCHAR(255);
 	INSERT INTO @NR 
-	SELECT CONVERT(NVARCHAR(255), Item), ROW_NUMBER() OVER (ORDER BY @NRID) AS id FROM [dbo].[spc_sys_ParseString]('@Производитель, адрес', ';')
+	SELECT CONVERT(NVARCHAR(255), Item), ROW_NUMBER() OVER (ORDER BY @NRID) AS id FROM [dbo].[spc_sys_ParseString](N'@Производитель, адрес', ';')
 	SET @NManufacturerName = (SELECT CompanyIndex FROM @NR WHERE id = 1);
 	SET @NManufacturerAddressName = (SELECT CompanyIndex FROM @NR WHERE id = 2)
 	SET @NManufacturerUid = (SELECT [ContractCompany].[ContractCompanyUid] FROM [ContractCompany]
@@ -1721,7 +1673,7 @@ IF @NAEBatchUid IS NOT NULL BEGIN
 		END
 	DELETE FROM @NR
 	INSERT INTO @NR 
-	SELECT CONVERT(NVARCHAR(255), Item), ROW_NUMBER() OVER (ORDER BY @NRID) AS id FROM [dbo].[spc_sys_ParseString]('@Поставщик, адрес', ';')
+	SELECT CONVERT(NVARCHAR(255), Item), ROW_NUMBER() OVER (ORDER BY @NRID) AS id FROM [dbo].[spc_sys_ParseString](N'@Поставщик, адрес', ';')
 	SET @NSupplierName = (SELECT CompanyIndex FROM @NR WHERE id = 1);
 	SET @NSupplierAddressName = (SELECT CompanyIndex FROM @NR WHERE id = 2)
 	SET @NSupplierUid = (SELECT [ContractCompany].[ContractCompanyUid] FROM [ContractCompany]
@@ -1751,17 +1703,17 @@ IF @NAEBatchUid IS NOT NULL BEGIN
 	
 	DECLARE @NDocIssueDate datetime = NULL
 	DECLARE @NAcceptanceDate datetime = NULL
-	IF '@Дата паспорта' IS NOT NULL AND '@Дата паспорта' &lt;&gt; '' BEGIN
+	IF N'@Дата паспорта' IS NOT NULL AND N'@Дата паспорта' &lt;&gt; '' BEGIN
 		BEGIN TRY
-			SET @NDocIssueDate = CONVERT(datetime, '@Дата паспорта', 104)
+			SET @NDocIssueDate = CONVERT(datetime, N'@Дата паспорта', 104)
 		END TRY
 		BEGIN CATCH
 			SET @NDocIssueDate = NULL;
 		END CATCH
 		END
-	IF '@Дата акта приемки' IS NOT NULL AND '@Дата акта приемки' &lt;&gt; '' BEGIN
+	IF N'@Дата акта приемки' IS NOT NULL AND N'@Дата акта приемки' &lt;&gt; '' BEGIN
 		BEGIN TRY
-			SET @NAcceptanceDate = CONVERT(datetime, '@Дата акта приемки', 104)
+			SET @NAcceptanceDate = CONVERT(datetime, N'@Дата акта приемки', 104)
 		END TRY
 		BEGIN CATCH
 			SET @NAcceptanceDate = NULL;
@@ -1772,34 +1724,34 @@ IF @NAEBatchUid IS NOT NULL BEGIN
 	DECLARE @NVolume FLOAT = NULL
 	DECLARE @NWeight FLOAT = NULL
 	DECLARE @NItemCount INT = NULL
-	IF '@Объем - значение' &lt;&gt; '' BEGIN
+	IF N'@Объем - значение' &lt;&gt; '' BEGIN
 		BEGIN TRY
-			SET @NVolume = CONVERT(FLOAT, '@Объем - значение', 0)
+			SET @NVolume = CONVERT(FLOAT, N'@Объем - значение', 0)
 		END TRY
 		BEGIN CATCH
 			PRINT 'Ошибка преобразования значения объема в FLOAT!' 
 		END CATCH
 	END
-	IF '@Масса - значение' &lt;&gt; '' BEGIN
+	IF N'@Масса - значение' &lt;&gt; '' BEGIN
 		BEGIN TRY
-			SET @NWeight = CONVERT(FLOAT, '@Масса - значение', 0)
+			SET @NWeight = CONVERT(FLOAT, N'@Масса - значение', 0)
 		END TRY
 		BEGIN CATCH
 			PRINT 'Ошибка преобразования значения массы в FLOAT!' 
 		END CATCH
 	END
-	IF '@Количество мест - значение' &lt;&gt; '' BEGIN
+	IF N'@Количество мест - значение' &lt;&gt; '' BEGIN
 		BEGIN TRY
-			SET @NItemCount = CONVERT(INT, '@Количество мест - значение', 0)
+			SET @NItemCount = CONVERT(INT, N'@Количество мест - значение', 0)
 		END TRY
 		BEGIN CATCH
 			PRINT 'Ошибка преобразования значения количества мест в INT!' 
 		END CATCH
 	END
 	UPDATE [Dims]
-		SET [Dims].[VolumeEngUnitId] = (SELECT TOP 1 [EngUnit].[EngUnitId] FROM [EngUnit] WHERE [EngUnit].[LAbbreviation] = '@Объем - ЕИ'),
+		SET [Dims].[VolumeEngUnitId] = (SELECT TOP 1 [EngUnit].[EngUnitId] FROM [EngUnit] WHERE [EngUnit].[LAbbreviation] = N'@Объем - ЕИ'),
 			[Dims].[Volume] = @NVolume,
-			[Dims].[WeightEngUnitId] = (SELECT TOP 1 [EngUnit].[EngUnitId] FROM [EngUnit] WHERE [EngUnit].[LAbbreviation] = '@Масса - ЕИ'),
+			[Dims].[WeightEngUnitId] = (SELECT TOP 1 [EngUnit].[EngUnitId] FROM [EngUnit] WHERE [EngUnit].[LAbbreviation] = N'@Масса - ЕИ'),
 			[Dims].[Weight] = @NWeight,
 			[Dims].ItemCount = @NItemCount
 	WHERE [Dims].[DimsId] = @NDimsId	
@@ -1813,12 +1765,12 @@ IF @NAEBatchUid IS NOT NULL BEGIN
 			[AEBatch].[ManufacturerAddressUid] = @NManufacturerAddressUid,
 			[AEBatch].[SupplierUid] = @NSupplierUid,
 			[AEBatch].[SupplierAddressUid] = @NSupplierAddressUid,
-			[AEBatch].[DocNum] = '@Номер паспорта',
+			[AEBatch].[DocNum] = N'@Номер паспорта',
 			[AEBatch].[DocIssueDate] = @NDocIssueDate,
-			[AEBatch].[AcceptanceNum] = '@Номер акта приемки',
+			[AEBatch].[AcceptanceNum] = N'@Номер акта приемки',
 			[AEBatch].[AcceptanceDate] = @NAcceptanceDate,
 			[AEBatch].[IssueDate] = @NCreationDate,
-			[AEBatch].[StorageСonditions] = '@Требования к хранению',
+			[AEBatch].[StorageСonditions] = N'@Требования к хранению',
 			[AEBatch].[InAccrScope] = @NInAccrScope
 	WHERE [AEBatch].[AEBatchUid] = @NAEBatchUid
 END</EditSql>
@@ -2089,11 +2041,12 @@ IF @NAEBatchUid IS NULL BEGIN
 END TRY
 
 BEGIN CATCH
-	PRINT ERROR_MESSAGE();
 	IF @@TRANCOUNT &gt; 0
 		BEGIN
 			ROLLBACK TRANSACTION
 			PRINT N'Откат транзакции.'
+			DECLARE @NERRORMESSAGE NVARCHAR(1000) = ERROR_MESSAGE()
+			RAISERROR(@NERRORMESSAGE, 16, 1);            	
 		END
 END CATCH
 
@@ -2216,11 +2169,12 @@ IF @NAEBatchTestUid IS NULL BEGIN
 END TRY
 
 BEGIN CATCH
-	PRINT ERROR_MESSAGE();
 	IF @@TRANCOUNT &gt; 0
 		BEGIN
 			ROLLBACK TRANSACTION
 			PRINT N'Откат транзакции.'
+			DECLARE @NERRORMESSAGE NVARCHAR(1000) = ERROR_MESSAGE()
+			RAISERROR(@NERRORMESSAGE, 16, 1);            	
 		END
 END CATCH
 
@@ -2246,12 +2200,13 @@ BEGIN TRY
 END TRY
 
 BEGIN CATCH
-	PRINT ERROR_MESSAGE()
 	IF @@TRANCOUNT &gt; 0
-	BEGIN
-		ROLLBACK TRANSACTION
-		PRINT N'Откат транзакции'
-	END
+		BEGIN
+			ROLLBACK TRANSACTION
+			PRINT N'Откат транзакции.'
+			DECLARE @NERRORMESSAGE NVARCHAR(1000) = ERROR_MESSAGE()
+			RAISERROR(@NERRORMESSAGE, 16, 1);            	
+		END
 END CATCH
 
 IF @@TRANCOUNT &gt; 0
@@ -2261,7 +2216,1054 @@ IF @@TRANCOUNT &gt; 0
 	END</DeleteSql>
       <ImageBuffer>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</ImageBuffer>
     </ItemChanger>
+    <ItemChanger>
+      <Name>LDS.Персонал</Name>
+      <GetSQL>DECLARE @FIOPersonal Table (UserUID uniqueidentifier, F NVARCHAR(255), I NVARCHAR(255), O NVARCHAR(255), NameShort NVARCHAR(150)) 
+DECLARE @TableSkills Table (UserId int, BirthAddress NVARCHAR(1024), WorkInfo NVARCHAR(1024), ActionFun NVARCHAR(1024))
+DECLARE @NR Table (CompanyIndex NVARCHAR(255), id INT)
+DECLARE @NRID INT = 0
+DECLARE @NUserUID uniqueidentifier
+DECLARE @NFullName NVARCHAR(255)
+DECLARE @NNameShort NVARCHAR(150)
+DECLARE @NSkills NVARCHAR(MAX)
+DECLARE @NUserId INT = NULL
+DECLARE @CURSOR CURSOR
+
+SET @CURSOR = CURSOR LOCAL FAST_FORWARD READ_ONLY FOR
+SELECT [User].[Name], [User].[FullName], [User].[UserUID] FROM [User]
+OPEN @CURSOR
+FETCH NEXT FROM @CURSOR INTO @NNameShort, @NFullName, @NUserUID
+WHILE @@FETCH_STATUS = 0
+	BEGIN
+		INSERT INTO @NR 
+		SELECT CONVERT(NVARCHAR(255), Item), ROW_NUMBER() OVER (ORDER BY @NRID) AS id FROM [dbo].[spc_sys_ParseString](@NFullName, ' ')
+		INSERT INTO @FIOPersonal
+		SELECT @NUserUID, (SELECT CompanyIndex FROM @NR WHERE id = 1), (SELECT CompanyIndex FROM @NR WHERE id = 2), 
+		(STUFF((SELECT ' ' + CONVERT(NVARCHAR, [@NR].[CompanyIndex]) FROM @NR WHERE [@NR].[id] &gt; 2 
+			FOR XML PATH ('')), 1, 1, '')), @NNameShort
+		DELETE @NR
+		SET @NRID = 0
+		FETCH NEXT FROM @CURSOR INTO @NNameShort, @NFullName, @NUserUID
+	END
+CLOSE @CURSOR
+
+SET @CURSOR = CURSOR LOCAL FAST_FORWARD READ_ONLY FOR
+SELECT [UserProp].[UserId], [UserProp].[Skills] FROM [UserProp]
+OPEN @CURSOR
+FETCH NEXT FROM @CURSOR INTO @NUserId, @NSkills
+WHILE @@FETCH_STATUS = 0
+	BEGIN
+		INSERT INTO @NR 
+		SELECT CONVERT(NVARCHAR(255), Item), ROW_NUMBER() OVER (ORDER BY @NRID) AS id FROM [dbo].[spc_sys_ParseString](@NSkills, ';')
+		INSERT INTO @TableSkills
+		SELECT @NUserId, (SELECT CompanyIndex FROM @NR WHERE id = 1), (SELECT CompanyIndex FROM @NR WHERE id = 2), 
+		(SELECT CompanyIndex FROM @NR WHERE id = 3)
+		DELETE @NR
+		SET @NRID = 0
+		FETCH NEXT FROM @CURSOR INTO @NUserId, @NSkills
+	END
+CLOSE @CURSOR
+
+SELECT
+	'x' AS [Select(x)], 
+	[User].[UserUID] AS "UserUID (Ключ персонала)",
+	[User].[Name] AS "Имя пользователя",
+	[@FIOPersonal].[F] AS "Фамилия",
+	[@FIOPersonal].[I] AS "Имя",
+	[@FIOPersonal].[O] AS "Отчество",
+	CASE WHEN [UserProp].[Sex] = 1 THEN 'М' ELSE
+		CASE WHEN [UserProp].[Sex] = 2 THEN 'Ж' ELSE NULL END END AS "Пол",
+	(SELECT CONVERT(VARCHAR(10),[UserProp].[Birthday], 104)) AS "Дата рождения",
+	[@TableSkills].[BirthAddress] AS "Место рождения",
+	[UserProp].[InsuranceNumber] AS "№ страхового свидетельства ГПС (СНИЛС)",
+	[UserProp].[Number] AS "Табельный номер",
+	[UserProp].[Emale] AS "Email",
+	[UserProp].[Phone] AS "Телефон",
+	[UserProp].[Fax] AS "Факс",
+	[@TableSkills].[WorkInfo] AS "Работа по основному месту работы / по совместительству",
+	[@TableSkills].[ActionFun] AS "Выполняемые функции",
+	CAST ([UserProp].[Accredited] AS INT) AS "Сотрудник аккредитованной лаборатории",
+	[UserProp].[Comment] AS "Примечание",
+	(SELECT CONVERT(VARCHAR(10),[UserProp].[HiringDay], 104)) AS "Дата трудоустройства",
+	[Status].[Name] AS "Статус трудоустройства",
+	CAST ([UserProp].[CommonSkillsYears] AS INT) AS "Общий стаж до последнего трудоустройства, лет",
+	CAST ([UserProp].[SkillsYears] AS INT) AS "Практический опыт до последнего трудоустройства, лет",
+	(SELECT [TMPED].[EducationName] FROM (SELECT [UserEd].[Name], [EducationTypes].[EducationName] ,ROW_NUMBER() OVER (ORDER BY [UserEd].[Date]) AS Id FROM [UserEd] INNER JOIN [EducationTypes] ON [UserEd].[EducationTypeId] = [EducationTypes].[Id] WHERE [UserEd].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 1) AS "Уровень образования_1",	
+	(SELECT [TMPED].[Name] FROM (SELECT [UserEd].[Name], ROW_NUMBER() OVER (ORDER BY [UserEd].[Date]) AS Id FROM [UserEd] WHERE [UserEd].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 1) AS "Учебное заведение_1",
+	(SELECT  CONVERT(VARCHAR(10), [TMPED].[Date], 104) FROM (SELECT [UserEd].[Date], ROW_NUMBER() OVER (ORDER BY [UserEd].[Date]) AS Id FROM [UserEd] WHERE [UserEd].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 1) AS "Дата окончания_1",
+	(SELECT [TMPED].[Qualification] FROM (SELECT [UserEd].[Qualification], ROW_NUMBER() OVER (ORDER BY [UserEd].[Date]) AS Id FROM [UserEd] WHERE [UserEd].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 1) AS "Квалификация_1",
+	(SELECT [TMPED].[DocNumber] FROM (SELECT [UserEd].[DocNumber], ROW_NUMBER() OVER (ORDER BY [UserEd].[Date]) AS Id FROM [UserEd] WHERE [UserEd].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 1) AS "№ документа об образовании_1",
+	(SELECT [TMPED].[EducationName] FROM (SELECT [UserEd].[Name], [EducationTypes].[EducationName] ,ROW_NUMBER() OVER (ORDER BY [UserEd].[Date]) AS Id FROM [UserEd] INNER JOIN [EducationTypes] ON [UserEd].[EducationTypeId] = [EducationTypes].[Id] WHERE [UserEd].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 2) AS "Уровень образования_2",	
+	(SELECT [TMPED].[Name] FROM (SELECT [UserEd].[Name], ROW_NUMBER() OVER (ORDER BY [UserEd].[Date]) AS Id FROM [UserEd] WHERE [UserEd].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 2) AS "Учебное заведение_2",
+	(SELECT  CONVERT(VARCHAR(10), [TMPED].[Date], 104) FROM (SELECT [UserEd].[Date], ROW_NUMBER() OVER (ORDER BY [UserEd].[Date]) AS Id FROM [UserEd] WHERE [UserEd].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 2) AS "Дата окончания_2",
+	(SELECT [TMPED].[Qualification] FROM (SELECT [UserEd].[Qualification], ROW_NUMBER() OVER (ORDER BY [UserEd].[Date]) AS Id FROM [UserEd] WHERE [UserEd].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 2) AS "Квалификация_2",
+	(SELECT [TMPED].[DocNumber] FROM (SELECT [UserEd].[DocNumber], ROW_NUMBER() OVER (ORDER BY [UserEd].[Date]) AS Id FROM [UserEd] WHERE [UserEd].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 2) AS "№ документа об образовании_2",
+	(SELECT [TMPED].[EducationName] FROM (SELECT [UserEd].[Name], [EducationTypes].[EducationName] ,ROW_NUMBER() OVER (ORDER BY [UserEd].[Date]) AS Id FROM [UserEd] INNER JOIN [EducationTypes] ON [UserEd].[EducationTypeId] = [EducationTypes].[Id] WHERE [UserEd].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 3) AS "Уровень образования_3",	
+	(SELECT [TMPED].[Name] FROM (SELECT [UserEd].[Name], ROW_NUMBER() OVER (ORDER BY [UserEd].[Date]) AS Id FROM [UserEd] WHERE [UserEd].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 3) AS "Учебное заведение_3",
+	(SELECT  CONVERT(VARCHAR(10), [TMPED].[Date], 104) FROM (SELECT [UserEd].[Date], ROW_NUMBER() OVER (ORDER BY [UserEd].[Date]) AS Id FROM [UserEd] WHERE [UserEd].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 3) AS "Дата окончания_3",
+	(SELECT [TMPED].[Qualification] FROM (SELECT [UserEd].[Qualification], ROW_NUMBER() OVER (ORDER BY [UserEd].[Date]) AS Id FROM [UserEd] WHERE [UserEd].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 3) AS "Квалификация_3",
+	(SELECT [TMPED].[DocNumber] FROM (SELECT [UserEd].[DocNumber], ROW_NUMBER() OVER (ORDER BY [UserEd].[Date]) AS Id FROM [UserEd] WHERE [UserEd].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 3) AS "№ документа об образовании_3",
+	(SELECT [TMPED].[EducationName] FROM (SELECT [UserEd].[Name], [EducationTypes].[EducationName] ,ROW_NUMBER() OVER (ORDER BY [UserEd].[Date]) AS Id FROM [UserEd] INNER JOIN [EducationTypes] ON [UserEd].[EducationTypeId] = [EducationTypes].[Id] WHERE [UserEd].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 4) AS "Уровень образования_4",	
+	(SELECT [TMPED].[Name] FROM (SELECT [UserEd].[Name], ROW_NUMBER() OVER (ORDER BY [UserEd].[Date]) AS Id FROM [UserEd] WHERE [UserEd].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 4) AS "Учебное заведение_4",
+	(SELECT  CONVERT(VARCHAR(10), [TMPED].[Date], 104) FROM (SELECT [UserEd].[Date], ROW_NUMBER() OVER (ORDER BY [UserEd].[Date]) AS Id FROM [UserEd] WHERE [UserEd].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 4) AS "Дата окончания_4",
+	(SELECT [TMPED].[Qualification] FROM (SELECT [UserEd].[Qualification], ROW_NUMBER() OVER (ORDER BY [UserEd].[Date]) AS Id FROM [UserEd] WHERE [UserEd].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 4) AS "Квалификация_4",
+	(SELECT [TMPED].[DocNumber] FROM (SELECT [UserEd].[DocNumber], ROW_NUMBER() OVER (ORDER BY [UserEd].[Date]) AS Id FROM [UserEd] WHERE [UserEd].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 4) AS "№ документа об образовании_4",
+	(SELECT [TMPED].[Name] FROM (SELECT [UserPosition].[Name], ROW_NUMBER() OVER (ORDER BY [UserPositionHistory].[ChangeDate] DESC) AS Id FROM [UserPositionHistory] INNER JOIN [UserPosition] ON [UserPositionHistory].[UserPositionId] = [UserPosition].[UserPositionId] WHERE [UserPositionHistory].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 1) AS "Должностная позиция_1",
+	(SELECT CONVERT(VARCHAR(10), [TMPED].[ChangeDate], 104) FROM (SELECT [UserPositionHistory].[ChangeDate], ROW_NUMBER() OVER (ORDER BY [UserPositionHistory].[ChangeDate] DESC) AS Id FROM [UserPositionHistory] INNER JOIN [UserPosition] ON [UserPositionHistory].[UserPositionId] = [UserPosition].[UserPositionId] WHERE [UserPositionHistory].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 1) AS "Дата назначения_1",	
+	(SELECT [TMPED].[Name] FROM (SELECT [UserPosition].[Name], ROW_NUMBER() OVER (ORDER BY [UserPositionHistory].[ChangeDate] DESC) AS Id FROM [UserPositionHistory] INNER JOIN [UserPosition] ON [UserPositionHistory].[UserPositionId] = [UserPosition].[UserPositionId] WHERE [UserPositionHistory].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 2) AS "Должностная позиция_2",
+	(SELECT CONVERT(VARCHAR(10), [TMPED].[ChangeDate], 104) FROM (SELECT [UserPositionHistory].[ChangeDate], ROW_NUMBER() OVER (ORDER BY [UserPositionHistory].[ChangeDate] DESC) AS Id FROM [UserPositionHistory] INNER JOIN [UserPosition] ON [UserPositionHistory].[UserPositionId] = [UserPosition].[UserPositionId] WHERE [UserPositionHistory].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 2) AS "Дата назначения_2",	
+	(SELECT [TMPED].[Name] FROM (SELECT [UserPosition].[Name], ROW_NUMBER() OVER (ORDER BY [UserPositionHistory].[ChangeDate] DESC) AS Id FROM [UserPositionHistory] INNER JOIN [UserPosition] ON [UserPositionHistory].[UserPositionId] = [UserPosition].[UserPositionId] WHERE [UserPositionHistory].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 3) AS "Должностная позиция_3",
+	(SELECT CONVERT(VARCHAR(10), [TMPED].[ChangeDate], 104) FROM (SELECT [UserPositionHistory].[ChangeDate], ROW_NUMBER() OVER (ORDER BY [UserPositionHistory].[ChangeDate] DESC) AS Id FROM [UserPositionHistory] INNER JOIN [UserPosition] ON [UserPositionHistory].[UserPositionId] = [UserPosition].[UserPositionId] WHERE [UserPositionHistory].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 3) AS "Дата назначения_3",	
+	(SELECT [TMPED].[Name] FROM (SELECT [UserPosition].[Name], ROW_NUMBER() OVER (ORDER BY [UserPositionHistory].[ChangeDate] DESC) AS Id FROM [UserPositionHistory] INNER JOIN [UserPosition] ON [UserPositionHistory].[UserPositionId] = [UserPosition].[UserPositionId] WHERE [UserPositionHistory].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 4) AS "Должностная позиция_4",
+	(SELECT CONVERT(VARCHAR(10), [TMPED].[ChangeDate], 104) FROM (SELECT [UserPositionHistory].[ChangeDate], ROW_NUMBER() OVER (ORDER BY [UserPositionHistory].[ChangeDate] DESC) AS Id FROM [UserPositionHistory] INNER JOIN [UserPosition] ON [UserPositionHistory].[UserPositionId] = [UserPosition].[UserPositionId] WHERE [UserPositionHistory].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 4) AS "Дата назначения_4",	
+	(SELECT [TMPED].[Name] FROM (SELECT [UserPosition].[Name], ROW_NUMBER() OVER (ORDER BY [UserPositionHistory].[ChangeDate] DESC) AS Id FROM [UserPositionHistory] INNER JOIN [UserPosition] ON [UserPositionHistory].[UserPositionId] = [UserPosition].[UserPositionId] WHERE [UserPositionHistory].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 5) AS "Должностная позиция_5",
+	(SELECT CONVERT(VARCHAR(10), [TMPED].[ChangeDate], 104) FROM (SELECT [UserPositionHistory].[ChangeDate], ROW_NUMBER() OVER (ORDER BY [UserPositionHistory].[ChangeDate] DESC) AS Id FROM [UserPositionHistory] INNER JOIN [UserPosition] ON [UserPositionHistory].[UserPositionId] = [UserPosition].[UserPositionId] WHERE [UserPositionHistory].[UserId] = [User].[UserId]) AS TMPED WHERE TMPED.Id = 5) AS "Дата назначения_5"	
+	FROM [User]
+	INNER JOIN @FIOPersonal ON [User].[UserUID] = [@FIOPersonal].[UserUID]
+	LEFT JOIN [UserProp] ON [User].[UserId] = [UserProp].[UserId]
+	LEFT JOIN @TableSkills ON [UserProp].[UserId] = [@TableSkills].[UserId]
+	LEFT JOIN [Status] ON [UserProp].[StatusId] = [Status].[StatusId]
+WHERE [User].{0}</GetSQL>
+      <GetSQLWhereString>FullName like '*'</GetSQLWhereString>
+      <CreateSql>DECLARE @NGenerate NVARCHAR(10) = SUBSTRING(CONVERT(NVARCHAR(100), HASHBYTES('MD5', CAST(SYSDATETIME() AS NVARCHAR)), 2), 0, 12)
+DECLARE @NUserUID uniqueidentifier = NEWID()
+DECLARE @NUserId INT = NULL
+DECLARE @NFullName NVARCHAR(150)
+DECLARE @NName NVARCHAR(150) = N'@Имя пользователя'
+DECLARE @F NVARCHAR(255) = N'@Фамилия'
+DECLARE @I NVARCHAR(255) = N'@Имя'
+DECLARE @O NVARCHAR(255) = N'@Отчество'
+IF (@F IS NULL OR @F = '') AND (@I IS NULL OR @I = '') AND (@O IS NULL OR @O = '')
+	SET @NFullName = 'Новый пользователь - ' + @NGenerate
+		ELSE SET @NFullName = @F + ' ' + @I + ' ' + @O
+DECLARE @NRID INT = 0
+DECLARE @NR TABLE (PartyIndex NVARCHAR(255), id INT) 
+INSERT INTO @NR 
+SELECT CONVERT(NVARCHAR(255), Item), ROW_NUMBER() OVER (ORDER BY @NRID) AS id FROM [dbo].[spc_sys_ParseString](@NFullName, ' ')		
+
+IF (@NName IS NULL OR @NName = '')
+	IF CHARINDEX('Новый пользователь', @NFullName) &gt; 0 SET @NName = @NFullName
+		ELSE BEGIN
+			IF (SELECT [@NR].[PartyIndex] FROM @NR WHERE [@NR].[id] = 1) IS NOT NULL
+				SET @NName = (SELECT [@NR].[PartyIndex] FROM @NR WHERE [@NR].[id] = 1)
+			IF (SELECT [@NR].[PartyIndex] FROM @NR WHERE [@NR].[id] = 2) IS NOT NULL
+				SET @NName = @NName + ' ' + UPPER((SELECT LEFT([@NR].[PartyIndex], 1) FROM @NR WHERE [@NR].[id] = 2)) + '.'
+			IF (SELECT [@NR].[PartyIndex] FROM @NR WHERE [@NR].[id] = 3) IS NOT NULL
+				SET @NName = @NName + ' ' + UPPER((SELECT LEFT([@NR].[PartyIndex], 1) FROM @NR WHERE [@NR].[id] = 3)) + '.'
+		END
+
+DECLARE @NSkills NVARCHAR(MAX) = N'@Место рождения' + ';' + 
+	N'@Работа по основному месту работы / по совместительству' + ';' + 
+		N'@Выполняемые функции'
+
+DECLARE @NEmale NVARCHAR(150) = NULL
+IF N'@Email' IS NOT NULL AND N'@Email' &lt;&gt; '' AND PATINDEX('%@%.%', N'@Email') &gt; 0 SET @NEmale = N'@Email'
+
+DECLARE @NInsuranceNumber NVARCHAR(150) = NULL
+IF N'@№ страхового свидетельства ГПС (СНИЛС)' IS NOT NULL AND N'@№ страхового свидетельства ГПС (СНИЛС)' &lt;&gt; ''
+	SET @NInsuranceNumber = N'@№ страхового свидетельства ГПС (СНИЛС)'
+
+DECLARE @NNumber NVARCHAR(150) = NULL
+IF N'@Табельный номер' IS NOT NULL AND N'@Табельный номер' &lt;&gt; ''
+	SET @NNumber = N'@Табельный номер'
+	
+DECLARE @NPhone NVARCHAR(50) = NULL
+IF N'@Телефон' IS NOT NULL AND N'@Телефон' &lt;&gt; ''
+	SET @NPhone = N'@Телефон'
+	
+DECLARE @NFax NVARCHAR(50) = NULL
+IF N'@Факс' IS NOT NULL AND N'@Факс' &lt;&gt; ''
+	SET @NFax = N'@Факс'
+	
+DECLARE @NAccredited BIT = NULL
+IF N'@Сотрудник аккредитованной лаборатории' = '1' SET @NAccredited = 1
+
+DECLARE @NComment NVARCHAR(MAX) = NULL
+IF N'@Примечание' IS NOT NULL AND N'@Примечание' &lt;&gt; ''
+	SET @NComment = N'@Примечание'
+	
+BEGIN TRANSACTION
+BEGIN TRY
+	-- Проверка наличия повторения записи в таблице User
+	IF (SELECT SUM(1) FROM [User] WHERE [User].[Name] = @NName) &gt; 0
+		RAISERROR(N'Имя пользователья должно быть уникальным!', 16, 1)
+
+	-- Основной этап транзакции по вносу записей
+	INSERT INTO [User] ([User].[Name], [User].[FullName], [User].[Hash], [User].[Salt], [User].[Description],
+		[User].[Enable], [User].[UserUID])
+			VALUES (@NName, @NFullName, NULL, NULL, NULL, 1, @NUserUID);
+	SET @NUserId = (SELECT [User].[UserId] FROM [User] WHERE [User].[UserUID] = @NUserUID)
+	IF @NUserId IS NULL RAISERROR(N'Ошибка внесения записи в таблицу "User" базе данных!', 16, 1)
+	
+	-- Проверка корректности введеных величин по полям с преобразованием
+	DECLARE @NSex INT = NULL
+	IF N'@Пол' = 'М' OR N'@Пол' = 'M' SET @NSex = 1
+	IF N'@Пол' = 'Ж' SET @NSex = 2
+	IF N'@Пол' IS NOT NULL AND N'@Пол' &lt;&gt; '' AND @NSex IS NULL 
+		RAISERROR(N'Пол пользователя задан некорректно!', 16, 1)
+	
+	DECLARE @NBirthday datetime = NULL
+	IF N'@Дата рождения' IS NOT NULL AND N'@Дата рождения' &lt;&gt; ''
+	BEGIN TRY 
+		SET @NBirthday = CONVERT(datetime, N'@Дата рождения', 104)
+	END TRY	
+	BEGIN CATCH
+		RAISERROR(N'Дата рождения задана некорректно!', 16, 1)
+	END CATCH	
+	
+	DECLARE @NHiringDay datetime = NULL
+	IF N'@Дата трудоустройства' IS NOT NULL AND N'@Дата трудоустройства' &lt;&gt; ''
+	BEGIN TRY 
+		SET @NHiringDay = CONVERT(datetime, N'@Дата трудоустройства', 104)
+	END TRY	
+	BEGIN CATCH
+		RAISERROR(N'Дата трудоустройства задана некорректно!', 16, 1)
+	END CATCH
+	
+	DECLARE @NStatusId INT = NULL
+	IF N'@Статус трудоустройства' IS NOT NULL AND N'@Статус трудоустройства' &lt;&gt; '' BEGIN
+		SET @NStatusId = (SELECT TOP 1 [Status].[StatusId] FROM [Status] WHERE [Status].[Name] = N'@Статус трудоустройства' AND [Status].[StatusTypeId] = 11)
+		IF @NStatusId IS NULL RAISERROR(N'Статус трудоустройства задан некорректно!', 16, 1)
+		END	
+	
+	DECLARE @NCommonSkilsYears REAL = NULL
+	IF N'@Общий стаж до последнего трудоустройства, лет' IS NOT NULL AND N'@Общий стаж до последнего трудоустройства, лет' &lt;&gt; ''
+		BEGIN TRY 
+			SET @NCommonSkilsYears = CONVERT(REAL, N'@Общий стаж до последнего трудоустройства, лет')
+		END TRY	
+		BEGIN CATCH
+			RAISERROR(N'Величина общего стажа до последнего трудоустройства задана некорректно!', 16, 1)
+		END CATCH
+	
+	DECLARE @NSkilsYears REAL = NULL
+	IF N'@Практический опыт до последнего трудоустройства, лет' IS NOT NULL AND N'@Практический опыт до последнего трудоустройства, лет' &lt;&gt; ''
+		BEGIN TRY 
+			SET @NSkilsYears = CONVERT(REAL, N'@Практический опыт до последнего трудоустройства, лет')
+		END TRY	
+		BEGIN CATCH
+			RAISERROR(N'Величина практического опыта до последнего трудоустройства задана некорректно!', 16, 1)
+		END CATCH
+
+	EXEC [dbo].[UserProp_Insert] default, @NUserId, @NBirthday, @NHiringDay, @NStatusId, NULL, @NSkills, @NEmale, @NPhone,
+		@NAccredited, NULL, @NSkilsYears, @NCommonSkilsYears, @NFax, NULL, @NNumber, NULL, @NInsuranceNumber, @NComment, @NSex,
+			NULL, NULL, 0 
+			
+	-- Вставка данных по образованию
+	DECLARE @NEdEducationTypeId INT = NULL
+	DECLARE @NEdName NVARCHAR(250) = NULL
+	DECLARE @NEdDate datetime = NULL 
+	DECLARE @NEdQualification NVARCHAR(250) = NULL
+	DECLARE @NDocNumber NVARCHAR(250) = NULL
+	DECLARE @NUserEdId INT = NULL
+
+	-- Проверка типа по образованию 1-ой позиции
+	IF N'@Уровень образования_1' IS NOT NULL AND N'@Уровень образования_1' &lt;&gt; '' BEGIN
+		SET @NEdEducationTypeId = (SELECT TOP 1 [EducationTypes].[Id] FROM [EducationTypes] WHERE [EducationTypes].[EducationName] = N'@Уровень образования_1')
+		IF @NEdEducationTypeId IS NULL RAISERROR(N'Уровень образования 1 задан некорректно!', 16, 1)
+		END
+		
+	IF N'@Учебное заведение_1' IS NOT NULL AND N'@Учебное заведение_1' &lt;&gt; ''
+		SET @NEdName = N'@Учебное заведение_1'
+	
+	IF N'@Дата окончания_1' IS NOT NULL AND N'@Дата окончания_1' &lt;&gt; ''
+	BEGIN TRY 
+		SET @NEdDate = CONVERT(datetime, N'@Дата окончания_1', 104)
+	END TRY	
+	BEGIN CATCH
+		RAISERROR(N'Дата окончания учебного заведения 1 задана некорректно!', 16, 1)
+	END CATCH
+	
+	IF N'@Квалификация_1' IS NOT NULL AND N'@Квалификация_1' &lt;&gt; ''
+		SET @NEdQualification = N'@Квалификация_1'
+
+	IF N'@№ документа об образовании_1' IS NOT NULL AND N'@№ документа об образовании_1' &lt;&gt; ''
+		SET @NDocNumber = N'@№ документа об образовании_1'
+	
+	SET @NUserEdId = (SELECT MAX([UserEd].[UserEdId]) + 1 FROM [UserEd]) 
+	IF @NUserEdId IS NULL SET @NUserEdId = 1
+	
+	-- Вставка записи по образованию 1
+	IF @NEdName IS NOT NULL AND @NEdDate IS NOT NULL AND @NEdQualification IS NOT NULL AND @NEdEducationTypeId IS NOT NULL BEGIN
+		EXEC [dbo].[UserEd_Insert] default, @NUserEdId, @NUserId, @NEdName, @NEdDate, @NEdQualification, @NEdEducationTypeId, @NDocNumber,
+			NULL, 0
+	END	ELSE PRINT N'Пропуск внесения записи по позиции образования 1'
+	SET @NEdEducationTypeId = NULL
+	SET @NEdName = NULL
+	SET @NEdDate = NULL
+	SET @NEdQualification = NULL
+	SET @NDocNumber = NULL
+	SET @NUserEdId = NULL
+	
+	-- Проверка типа по образованию 2-ой позиции
+	IF N'@Уровень образования_2' IS NOT NULL AND N'@Уровень образования_2' &lt;&gt; '' BEGIN
+		SET @NEdEducationTypeId = (SELECT TOP 1 [EducationTypes].[Id] FROM [EducationTypes] WHERE [EducationTypes].[EducationName] = N'@Уровень образования_2')
+		IF @NEdEducationTypeId IS NULL RAISERROR(N'Уровень образования 2 задан некорректно!', 16, 1)
+		END
+		
+	IF N'@Учебное заведение_2' IS NOT NULL AND N'@Учебное заведение_2' &lt;&gt; ''
+		SET @NEdName = N'@Учебное заведение_2'
+	
+	IF N'@Дата окончания_2' IS NOT NULL AND N'@Дата окончания_2' &lt;&gt; ''
+	BEGIN TRY 
+		SET @NEdDate = CONVERT(datetime, N'@Дата окончания_2', 104)
+	END TRY	
+	BEGIN CATCH
+		RAISERROR(N'Дата окончания учебного заведения 2 задана некорректно!', 16, 1)
+	END CATCH
+	
+	IF N'@Квалификация_2' IS NOT NULL AND N'@Квалификация_2' &lt;&gt; ''
+		SET @NEdQualification = N'@Квалификация_2'
+
+	IF N'@№ документа об образовании_2' IS NOT NULL AND N'@№ документа об образовании_2' &lt;&gt; ''
+		SET @NDocNumber = N'@№ документа об образовании_2'
+	
+	SET @NUserEdId = (SELECT MAX([UserEd].[UserEdId]) + 1 FROM [UserEd]) 
+	IF @NUserEdId IS NULL SET @NUserEdId = 1
+	
+	-- Вставка записи по образованию 2
+	IF @NEdName IS NOT NULL AND @NEdDate IS NOT NULL AND @NEdQualification IS NOT NULL AND @NEdEducationTypeId IS NOT NULL BEGIN
+		EXEC [dbo].[UserEd_Insert] default, @NUserEdId, @NUserId, @NEdName, @NEdDate, @NEdQualification, @NEdEducationTypeId, @NDocNumber,
+			NULL, 0
+	END	ELSE PRINT N'Пропуск внесения записи по позиции образования 2'
+	SET @NEdEducationTypeId = NULL
+	SET @NEdName = NULL
+	SET @NEdDate = NULL
+	SET @NEdQualification = NULL
+	SET @NDocNumber = NULL
+	SET @NUserEdId = NULL
+	
+	-- Проверка типа по образованию 3-ой позиции
+	IF N'@Уровень образования_3' IS NOT NULL AND N'@Уровень образования_3' &lt;&gt; '' BEGIN
+		SET @NEdEducationTypeId = (SELECT TOP 1 [EducationTypes].[Id] FROM [EducationTypes] WHERE [EducationTypes].[EducationName] = N'@Уровень образования_3')
+		IF @NEdEducationTypeId IS NULL RAISERROR(N'Уровень образования 3 задан некорректно!', 16, 1)
+		END
+		
+	IF N'@Учебное заведение_3' IS NOT NULL AND N'@Учебное заведение_3' &lt;&gt; ''
+		SET @NEdName = N'@Учебное заведение_3'
+	
+	IF N'@Дата окончания_3' IS NOT NULL AND N'@Дата окончания_3' &lt;&gt; ''
+	BEGIN TRY 
+		SET @NEdDate = CONVERT(datetime, N'@Дата окончания_3', 104)
+	END TRY	
+	BEGIN CATCH
+		RAISERROR(N'Дата окончания учебного заведения 3 задана некорректно!', 16, 1)
+	END CATCH
+	
+	IF N'@Квалификация_3' IS NOT NULL AND N'@Квалификация_3' &lt;&gt; ''
+		SET @NEdQualification = N'@Квалификация_3'
+
+	IF N'@№ документа об образовании_3' IS NOT NULL AND N'@№ документа об образовании_3' &lt;&gt; ''
+		SET @NDocNumber = N'@№ документа об образовании_3'
+	
+	SET @NUserEdId = (SELECT MAX([UserEd].[UserEdId]) + 1 FROM [UserEd]) 
+	IF @NUserEdId IS NULL SET @NUserEdId = 1
+	
+	-- Вставка записи по образованию 3
+	IF @NEdName IS NOT NULL AND @NEdDate IS NOT NULL AND @NEdQualification IS NOT NULL AND @NEdEducationTypeId IS NOT NULL BEGIN
+		EXEC [dbo].[UserEd_Insert] default, @NUserEdId, @NUserId, @NEdName, @NEdDate, @NEdQualification, @NEdEducationTypeId, @NDocNumber,
+			NULL, 0
+	END	ELSE PRINT N'Пропуск внесения записи по позиции образования 3'
+	SET @NEdEducationTypeId = NULL
+	SET @NEdName = NULL
+	SET @NEdDate = NULL
+	SET @NEdQualification = NULL
+	SET @NDocNumber = NULL
+	SET @NUserEdId = NULL
+	
+	-- Проверка типа по образованию 4-ой позиции
+	IF N'@Уровень образования_4' IS NOT NULL AND N'@Уровень образования_4' &lt;&gt; '' BEGIN
+		SET @NEdEducationTypeId = (SELECT TOP 1 [EducationTypes].[Id] FROM [EducationTypes] WHERE [EducationTypes].[EducationName] = N'@Уровень образования_4')
+		IF @NEdEducationTypeId IS NULL RAISERROR(N'Уровень образования 4 задан некорректно!', 16, 1)
+		END
+		
+	IF N'@Учебное заведение_4' IS NOT NULL AND N'@Учебное заведение_4' &lt;&gt; ''
+		SET @NEdName = N'@Учебное заведение_4'
+	
+	IF N'@Дата окончания_4' IS NOT NULL AND N'@Дата окончания_4' &lt;&gt; ''
+	BEGIN TRY 
+		SET @NEdDate = CONVERT(datetime, N'@Дата окончания_4', 104)
+	END TRY	
+	BEGIN CATCH
+		RAISERROR(N'Дата окончания учебного заведения 4 задана некорректно!', 16, 1)
+	END CATCH
+	
+	IF N'@Квалификация_4' IS NOT NULL AND N'@Квалификация_4' &lt;&gt; ''
+		SET @NEdQualification = N'@Квалификация_4'
+
+	IF N'@№ документа об образовании_4' IS NOT NULL AND N'@№ документа об образовании_4' &lt;&gt; ''
+		SET @NDocNumber = N'@№ документа об образовании_4'
+	
+	SET @NUserEdId = (SELECT MAX([UserEd].[UserEdId]) + 1 FROM [UserEd]) 
+	IF @NUserEdId IS NULL SET @NUserEdId = 1
+	
+	-- Вставка записи по образованию 4
+	IF @NEdName IS NOT NULL AND @NEdDate IS NOT NULL AND @NEdQualification IS NOT NULL AND @NEdEducationTypeId IS NOT NULL BEGIN
+		EXEC [dbo].[UserEd_Insert] default, @NUserEdId, @NUserId, @NEdName, @NEdDate, @NEdQualification, @NEdEducationTypeId, @NDocNumber,
+			NULL, 0
+	END	ELSE PRINT N'Пропуск внесения записи по позиции образования 4'
+	SET @NEdEducationTypeId = NULL
+	SET @NEdName = NULL
+	SET @NEdDate = NULL
+	SET @NEdQualification = NULL
+	SET @NDocNumber = NULL
+	SET @NUserEdId = NULL
+
+	-- Вставка данных по должностной позиции
+	DECLARE @NUPHUserPositionHistoryId INT = NULL
+	DECLARE @NUPHChangeDate datetime = NULL
+	DECLARE @NUPHUserPositionId INT = NULL
+	
+	-- Проверка типа по должностной позиции 1
+	IF N'@Должностная позиция_1' IS NOT NULL AND N'@Должностная позиция_1' &lt;&gt; '' BEGIN
+		SET @NUPHUserPositionId = (SELECT TOP 1 [UserPosition].[UserPositionId] FROM [UserPosition] WHERE [UserPosition].[Name] = N'@Должностная позиция_1')
+		IF @NUPHUserPositionId IS NULL RAISERROR(N'Наименование должностной позиции 1 задано некорректно!', 16, 1)
+		END
+	
+	IF N'@Дата назначения_1' IS NOT NULL AND N'@Дата назначения_1' &lt;&gt; ''
+	BEGIN TRY 
+		SET @NUPHChangeDate = CONVERT(datetime, N'@Дата назначения_1', 104)
+	END TRY	
+	BEGIN CATCH
+		RAISERROR(N'Дата назначения по должностной позиции 1 задана некорректно!', 16, 1)
+	END CATCH	
+	
+	SET @NUPHUserPositionHistoryId = (SELECT MAX([UserPositionHistory].[UserPositionHistoryId]) + 1 FROM [UserPositionHistory]) 
+	IF @NUPHUserPositionHistoryId IS NULL SET @NUPHUserPositionHistoryId = 1
+	
+	-- Вставка записи по должностной позиции 1
+	IF @NUPHChangeDate IS NOT NULL AND @NUPHUserPositionId IS NOT NULL BEGIN
+		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate, @NUPHUserPositionId
+		UPDATE [UserProp] SET
+			[UserProp].[UserPositionId] = @NUPHUserPositionId
+		WHERE [UserProp].[UserId] = @NUserId
+		END
+	ELSE PRINT N'Пропуск внесения записи по должностной позиции 1'
+	SET @NUPHChangeDate  = NULL
+	SET @NUPHUserPositionId = NULL
+	
+	-- Проверка типа по должностной позиции 2
+	IF N'@Должностная позиция_2' IS NOT NULL AND N'@Должностная позиция_2' &lt;&gt; '' BEGIN
+		SET @NUPHUserPositionId = (SELECT TOP 1 [UserPosition].[UserPositionId] FROM [UserPosition] WHERE [UserPosition].[Name] = N'@Должностная позиция_2')
+		IF @NUPHUserPositionId IS NULL RAISERROR(N'Наименование должностной позиции 2 задано некорректно!', 16, 1)
+		END
+	
+	IF N'@Дата назначения_2' IS NOT NULL AND N'@Дата назначения_2' &lt;&gt; ''
+	BEGIN TRY 
+		SET @NUPHChangeDate = CONVERT(datetime, N'@Дата назначения_2', 104)
+	END TRY	
+	BEGIN CATCH
+		RAISERROR(N'Дата назначения по должностной позиции 2 задана некорректно!', 16, 1)
+	END CATCH	
+	
+	SET @NUPHUserPositionHistoryId = (SELECT MAX([UserPositionHistory].[UserPositionHistoryId]) + 1 FROM [UserPositionHistory]) 
+	IF @NUPHUserPositionHistoryId IS NULL SET @NUPHUserPositionHistoryId = 1
+	
+	-- Вставка записи по должностной позиции 1
+	IF @NUPHChangeDate IS NOT NULL AND @NUPHUserPositionId IS NOT NULL
+		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate, @NUPHUserPositionId
+	ELSE PRINT N'Пропуск внесения записи по должностной позиции 2'
+	SET @NUPHChangeDate  = NULL
+	SET @NUPHUserPositionId = NULL
+	
+	-- Проверка типа по должностной позиции 3
+	IF N'@Должностная позиция_3' IS NOT NULL AND N'@Должностная позиция_3' &lt;&gt; '' BEGIN
+		SET @NUPHUserPositionId = (SELECT TOP 1 [UserPosition].[UserPositionId] FROM [UserPosition] WHERE [UserPosition].[Name] = N'@Должностная позиция_3')
+		IF @NUPHUserPositionId IS NULL RAISERROR(N'Наименование должностной позиции 3 задано некорректно!', 16, 1)
+		END
+	
+	IF N'@Дата назначения_3' IS NOT NULL AND N'@Дата назначения_3' &lt;&gt; ''
+	BEGIN TRY 
+		SET @NUPHChangeDate = CONVERT(datetime, N'@Дата назначения_3', 104)
+	END TRY	
+	BEGIN CATCH
+		RAISERROR(N'Дата назначения по должностной позиции 3 задана некорректно!', 16, 1)
+	END CATCH	
+	
+	SET @NUPHUserPositionHistoryId = (SELECT MAX([UserPositionHistory].[UserPositionHistoryId]) + 1 FROM [UserPositionHistory]) 
+	IF @NUPHUserPositionHistoryId IS NULL SET @NUPHUserPositionHistoryId = 1
+	
+	-- Вставка записи по должностной позиции 3
+	IF @NUPHChangeDate IS NOT NULL AND @NUPHUserPositionId IS NOT NULL
+		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate, @NUPHUserPositionId
+	ELSE PRINT N'Пропуск внесения записи по должностной позиции 3'
+	SET @NUPHChangeDate  = NULL
+	SET @NUPHUserPositionId = NULL
+	
+	-- Проверка типа по должностной позиции 4
+	IF N'@Должностная позиция_4' IS NOT NULL AND N'@Должностная позиция_4' &lt;&gt; '' BEGIN
+		SET @NUPHUserPositionId = (SELECT TOP 1 [UserPosition].[UserPositionId] FROM [UserPosition] WHERE [UserPosition].[Name] = N'@Должностная позиция_4')
+		IF @NUPHUserPositionId IS NULL RAISERROR(N'Наименование должностной позиции 4 задано некорректно!', 16, 1)
+		END
+	
+	IF N'@Дата назначения_4' IS NOT NULL AND N'@Дата назначения_4' &lt;&gt; ''
+	BEGIN TRY 
+		SET @NUPHChangeDate = CONVERT(datetime, N'@Дата назначения_4', 104)
+	END TRY	
+	BEGIN CATCH
+		RAISERROR(N'Дата назначения по должностной позиции 4 задана некорректно!', 16, 1)
+	END CATCH	
+	
+	SET @NUPHUserPositionHistoryId = (SELECT MAX([UserPositionHistory].[UserPositionHistoryId]) + 1 FROM [UserPositionHistory]) 
+	IF @NUPHUserPositionHistoryId IS NULL SET @NUPHUserPositionHistoryId = 1
+	
+	-- Вставка записи по должностной позиции 1
+	IF @NUPHChangeDate IS NOT NULL AND @NUPHUserPositionId IS NOT NULL
+		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate, @NUPHUserPositionId
+	ELSE PRINT N'Пропуск внесения записи по должностной позиции 4'
+	SET @NUPHChangeDate  = NULL
+	SET @NUPHUserPositionId = NULL
+	
+	-- Проверка типа по должностной позиции 5
+	IF N'@Должностная позиция_5' IS NOT NULL AND N'@Должностная позиция_5' &lt;&gt; '' BEGIN
+		SET @NUPHUserPositionId = (SELECT TOP 1 [UserPosition].[UserPositionId] FROM [UserPosition] WHERE [UserPosition].[Name] = N'@Должностная позиция_5')
+		IF @NUPHUserPositionId IS NULL RAISERROR(N'Наименование должностной позиции 5 задано некорректно!', 16, 1)
+		END
+	
+	IF N'@Дата назначения_5' IS NOT NULL AND N'@Дата назначения_5' &lt;&gt; ''
+	BEGIN TRY 
+		SET @NUPHChangeDate = CONVERT(datetime, N'@Дата назначения_5', 104)
+	END TRY	
+	BEGIN CATCH
+		RAISERROR(N'Дата назначения по должностной позиции 5 задана некорректно!', 16, 1)
+	END CATCH	
+	
+	SET @NUPHUserPositionHistoryId = (SELECT MAX([UserPositionHistory].[UserPositionHistoryId]) + 1 FROM [UserPositionHistory]) 
+	IF @NUPHUserPositionHistoryId IS NULL SET @NUPHUserPositionHistoryId = 1
+	
+	-- Вставка записи по должностной позиции 5
+	IF @NUPHChangeDate IS NOT NULL AND @NUPHUserPositionId IS NOT NULL
+		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate, @NUPHUserPositionId
+	ELSE PRINT N'Пропуск внесения записи по должностной позиции 5'
+	SET @NUPHChangeDate  = NULL
+	SET @NUPHUserPositionId = NULL
+END TRY
+
+BEGIN CATCH
+	IF @@TRANCOUNT &gt; 0
+		BEGIN
+			ROLLBACK TRANSACTION
+			PRINT N'Откат транзакции.'
+			DECLARE @NERRORMESSAGE NVARCHAR(1000) = ERROR_MESSAGE()
+			RAISERROR(@NERRORMESSAGE, 16, 1);            	
+		END
+END CATCH
+
+IF @@TRANCOUNT &gt; 0
+	BEGIN
+		COMMIT TRANSACTION
+		PRINT N'Применение транзакции.'
+	END</CreateSql>
+      <EditSql>DECLARE @NGenerate NVARCHAR(10) = SUBSTRING(CONVERT(NVARCHAR(100), HASHBYTES('MD5', CAST(SYSDATETIME() AS NVARCHAR)), 2), 0, 12)
+DECLARE @NUserUID uniqueidentifier = N'@UserUID (Ключ персонала)'
+DECLARE @NUserId INT = NULL
+DECLARE @NFullName NVARCHAR(150)
+DECLARE @NName NVARCHAR(150) = N'@Имя пользователя'
+DECLARE @F NVARCHAR(255) = N'@Фамилия'
+DECLARE @I NVARCHAR(255) = N'@Имя'
+DECLARE @O NVARCHAR(255) = N'@Отчество'
+IF (@F IS NULL OR @F = '') AND (@I IS NULL OR @I = '') AND (@O IS NULL OR @O = '')
+	SET @NFullName = 'Новый пользователь - ' + @NGenerate
+		ELSE SET @NFullName = @F + ' ' + @I + ' ' + @O
+DECLARE @NRID INT = 0
+DECLARE @NR TABLE (PartyIndex NVARCHAR(255), id INT) 
+INSERT INTO @NR 
+SELECT CONVERT(NVARCHAR(255), Item), ROW_NUMBER() OVER (ORDER BY @NRID) AS id FROM [dbo].[spc_sys_ParseString](@NFullName, ' ')		
+
+IF (@NName IS NULL OR @NName = '')
+	IF CHARINDEX('Новый пользователь', @NFullName) &gt; 0 SET @NName = @NFullName
+		ELSE BEGIN
+			IF (SELECT [@NR].[PartyIndex] FROM @NR WHERE [@NR].[id] = 1) IS NOT NULL
+				SET @NName = (SELECT [@NR].[PartyIndex] FROM @NR WHERE [@NR].[id] = 1)
+			IF (SELECT [@NR].[PartyIndex] FROM @NR WHERE [@NR].[id] = 2) IS NOT NULL
+				SET @NName = @NName + ' ' + UPPER((SELECT LEFT([@NR].[PartyIndex], 1) FROM @NR WHERE [@NR].[id] = 2)) + '.'
+			IF (SELECT [@NR].[PartyIndex] FROM @NR WHERE [@NR].[id] = 3) IS NOT NULL
+				SET @NName = @NName + ' ' + UPPER((SELECT LEFT([@NR].[PartyIndex], 1) FROM @NR WHERE [@NR].[id] = 3)) + '.'
+		END
+
+DECLARE @NSkills NVARCHAR(MAX) = N'@Место рождения' + ';' + 
+	N'@Работа по основному месту работы / по совместительству' + ';' + 
+		N'@Выполняемые функции'
+
+DECLARE @NEmale NVARCHAR(150) = NULL
+IF N'@Email' IS NOT NULL AND N'@Email' &lt;&gt; '' AND PATINDEX('%@%.%', N'@Email') &gt; 0 SET @NEmale = N'@Email'
+
+DECLARE @NInsuranceNumber NVARCHAR(150) = NULL
+IF N'@№ страхового свидетельства ГПС (СНИЛС)' IS NOT NULL AND N'@№ страхового свидетельства ГПС (СНИЛС)' &lt;&gt; ''
+	SET @NInsuranceNumber = N'@№ страхового свидетельства ГПС (СНИЛС)'
+
+DECLARE @NNumber NVARCHAR(150) = NULL
+IF N'@Табельный номер' IS NOT NULL AND N'@Табельный номер' &lt;&gt; ''
+	SET @NNumber = N'@Табельный номер'
+	
+DECLARE @NPhone NVARCHAR(50) = NULL
+IF N'@Телефон' IS NOT NULL AND N'@Телефон' &lt;&gt; ''
+	SET @NPhone = N'@Телефон'
+	
+DECLARE @NFax NVARCHAR(50) = NULL
+IF N'@Факс' IS NOT NULL AND N'@Факс' &lt;&gt; ''
+	SET @NFax = N'@Факс'
+	
+DECLARE @NAccredited BIT = NULL
+IF N'@Сотрудник аккредитованной лаборатории' = '1' SET @NAccredited = 1
+
+DECLARE @NComment NVARCHAR(MAX) = NULL
+IF N'@Примечание' IS NOT NULL AND N'@Примечание' &lt;&gt; ''
+	SET @NComment = N'@Примечание'
+	
+BEGIN TRANSACTION
+BEGIN TRY
+	SET @NUserId = (SELECT [User].[UserId] FROM [User] WHERE [User].[UserUID] = @NUserUID)
+	IF @NUserId IS NULL RAISERROR(N'Ошибка получения записи в таблице "User" по ключу UserUID', 16, 1)
+
+	-- Основной этап транзакции по изменению записей
+	UPDATE [User] SET
+		[User].[Name] = @NName, 
+		[User].[FullName] = @NFullName
+	WHERE [User].[UserUID] = @NUserUID
+	
+	-- Проверка наличия повторения записи в таблице User
+	IF (SELECT SUM(1) FROM [User] WHERE [User].[Name] = @NName) &gt; 1
+		RAISERROR(N'Имя пользователья должно быть уникальным!', 16, 1)
+		
+	-- Проверка корректности введеных величин по полям с преобразованием
+	DECLARE @NSex INT = NULL
+	IF N'@Пол' = 'М' OR N'@Пол' = 'M' SET @NSex = 1
+	IF N'@Пол' = 'Ж' SET @NSex = 2
+	IF N'@Пол' IS NOT NULL AND N'@Пол' &lt;&gt; '' AND @NSex IS NULL 
+		RAISERROR(N'Пол пользователя задан некорректно!', 16, 1)
+	
+	DECLARE @NBirthday datetime = NULL
+	IF N'@Дата рождения' IS NOT NULL AND N'@Дата рождения' &lt;&gt; ''
+	BEGIN TRY 
+		SET @NBirthday = CONVERT(datetime, N'@Дата рождения', 104)
+	END TRY	
+	BEGIN CATCH
+		RAISERROR(N'Дата рождения задана некорректно!', 16, 1)
+	END CATCH	
+	
+	DECLARE @NHiringDay datetime = NULL
+	IF N'@Дата трудоустройства' IS NOT NULL AND N'@Дата трудоустройства' &lt;&gt; ''
+	BEGIN TRY 
+		SET @NHiringDay = CONVERT(datetime, N'@Дата трудоустройства', 104)
+	END TRY	
+	BEGIN CATCH
+		RAISERROR(N'Дата трудоустройства задана некорректно!', 16, 1)
+	END CATCH
+	
+	DECLARE @NStatusId INT = NULL
+	IF N'@Статус трудоустройства' IS NOT NULL AND N'@Статус трудоустройства' &lt;&gt; '' BEGIN
+		SET @NStatusId = (SELECT TOP 1 [Status].[StatusId] FROM [Status] WHERE [Status].[Name] = N'@Статус трудоустройства' AND [Status].[StatusTypeId] = 11)
+		IF @NStatusId IS NULL RAISERROR(N'Статус трудоустройства задан некорректно!', 16, 1)
+		END	
+	
+	DECLARE @NCommonSkilsYears REAL = NULL
+	IF N'@Общий стаж до последнего трудоустройства, лет' IS NOT NULL AND N'@Общий стаж до последнего трудоустройства, лет' &lt;&gt; ''
+		BEGIN TRY 
+			SET @NCommonSkilsYears = CONVERT(REAL, N'@Общий стаж до последнего трудоустройства, лет')
+		END TRY	
+		BEGIN CATCH
+			RAISERROR(N'Величина общего стажа до последнего трудоустройства задана некорректно!', 16, 1)
+		END CATCH
+	
+	DECLARE @NSkilsYears REAL = NULL
+	IF N'@Практический опыт до последнего трудоустройства, лет' IS NOT NULL AND N'@Практический опыт до последнего трудоустройства, лет' &lt;&gt; ''
+		BEGIN TRY 
+			SET @NSkilsYears = CONVERT(REAL, N'@Практический опыт до последнего трудоустройства, лет')
+		END TRY	
+		BEGIN CATCH
+			RAISERROR(N'Величина практического опыта до последнего трудоустройства задана некорректно!', 16, 1)
+		END CATCH
+
+	UPDATE [UserProp] SET
+		[UserProp].[Birthday] = @NBirthday,
+		[UserProp].[HiringDay] = @NHiringDay,
+		[UserProp].[StatusId] = @NStatusId,
+		[UserProp].[Skills] = @NSkills,
+		[UserProp].[Emale] = @NEmale,
+		[UserProp].[Phone] = @NPhone,
+		[UserProp].[Accredited] = @NAccredited,
+		[UserProp].[SkillsYears] = @NSkilsYears,
+		[UserProp].[CommonSkillsYears] = @NCommonSkilsYears,
+		[UserProp].[Fax] = @NFax,
+		[UserProp].[Number] = @NNumber,
+		[UserProp].[InsuranceNumber] = @NInsuranceNumber,
+		[UserProp].[Comment] = @NComment,
+		[UserProp].[Sex] = @NSex
+	WHERE [UserProp].[UserId] = @NUserId
+
+	-- Удаление всех записей по образованию по пользователю
+	DELETE [UserEd] WHERE [UserEd].[UserId] = @NUserId
+	
+	-- Вставка данных по образованию
+	DECLARE @NEdEducationTypeId INT = NULL
+	DECLARE @NEdName NVARCHAR(250) = NULL
+	DECLARE @NEdDate datetime = NULL 
+	DECLARE @NEdQualification NVARCHAR(250) = NULL
+	DECLARE @NDocNumber NVARCHAR(250) = NULL
+	DECLARE @NUserEdId INT = NULL
+
+	-- Проверка типа по образованию 1-ой позиции
+	IF N'@Уровень образования_1' IS NOT NULL AND N'@Уровень образования_1' &lt;&gt; '' BEGIN
+		SET @NEdEducationTypeId = (SELECT TOP 1 [EducationTypes].[Id] FROM [EducationTypes] WHERE [EducationTypes].[EducationName] = N'@Уровень образования_1')
+		IF @NEdEducationTypeId IS NULL RAISERROR(N'Уровень образования 1 задан некорректно!', 16, 1)
+		END
+		
+	IF N'@Учебное заведение_1' IS NOT NULL AND N'@Учебное заведение_1' &lt;&gt; ''
+		SET @NEdName = N'@Учебное заведение_1'
+	
+	IF N'@Дата окончания_1' IS NOT NULL AND N'@Дата окончания_1' &lt;&gt; ''
+	BEGIN TRY 
+		SET @NEdDate = CONVERT(datetime, N'@Дата окончания_1', 104)
+	END TRY	
+	BEGIN CATCH
+		RAISERROR(N'Дата окончания учебного заведения 1 задана некорректно!', 16, 1)
+	END CATCH
+	
+	IF N'@Квалификация_1' IS NOT NULL AND N'@Квалификация_1' &lt;&gt; ''
+		SET @NEdQualification = N'@Квалификация_1'
+
+	IF N'@№ документа об образовании_1' IS NOT NULL AND N'@№ документа об образовании_1' &lt;&gt; ''
+		SET @NDocNumber = N'@№ документа об образовании_1'
+	
+	SET @NUserEdId = (SELECT MAX([UserEd].[UserEdId]) + 1 FROM [UserEd]) 
+	IF @NUserEdId IS NULL SET @NUserEdId = 1
+	
+	-- Вставка записи по образованию 1
+	IF @NEdName IS NOT NULL AND @NEdDate IS NOT NULL AND @NEdQualification IS NOT NULL AND @NEdEducationTypeId IS NOT NULL BEGIN
+
+		EXEC [dbo].[UserEd_Insert] default, @NUserEdId, @NUserId, @NEdName, @NEdDate, @NEdQualification, @NEdEducationTypeId, @NDocNumber,
+			NULL, 0
+	END	ELSE PRINT N'Пропуск внесения записи по позиции образования 1'
+	SET @NEdEducationTypeId = NULL
+	SET @NEdName = NULL
+	SET @NEdDate = NULL
+	SET @NEdQualification = NULL
+	SET @NDocNumber = NULL
+	SET @NUserEdId = NULL
+	
+	-- Проверка типа по образованию 2-ой позиции
+	IF N'@Уровень образования_2' IS NOT NULL AND N'@Уровень образования_2' &lt;&gt; '' BEGIN
+		SET @NEdEducationTypeId = (SELECT TOP 1 [EducationTypes].[Id] FROM [EducationTypes] WHERE [EducationTypes].[EducationName] = N'@Уровень образования_2')
+		IF @NEdEducationTypeId IS NULL RAISERROR(N'Уровень образования 2 задан некорректно!', 16, 1)
+		END
+		
+	IF N'@Учебное заведение_2' IS NOT NULL AND N'@Учебное заведение_2' &lt;&gt; ''
+		SET @NEdName = N'@Учебное заведение_2'
+	
+	IF N'@Дата окончания_2' IS NOT NULL AND N'@Дата окончания_2' &lt;&gt; ''
+	BEGIN TRY 
+		SET @NEdDate = CONVERT(datetime, N'@Дата окончания_2', 104)
+	END TRY	
+	BEGIN CATCH
+		RAISERROR(N'Дата окончания учебного заведения 2 задана некорректно!', 16, 1)
+	END CATCH
+	
+	IF N'@Квалификация_2' IS NOT NULL AND N'@Квалификация_2' &lt;&gt; ''
+		SET @NEdQualification = N'@Квалификация_2'
+
+	IF N'@№ документа об образовании_2' IS NOT NULL AND N'@№ документа об образовании_2' &lt;&gt; ''
+		SET @NDocNumber = N'@№ документа об образовании_2'
+	
+	SET @NUserEdId = (SELECT MAX([UserEd].[UserEdId]) + 1 FROM [UserEd]) 
+	IF @NUserEdId IS NULL SET @NUserEdId = 1
+	
+	-- Вставка записи по образованию 2
+	IF @NEdName IS NOT NULL AND @NEdDate IS NOT NULL AND @NEdQualification IS NOT NULL AND @NEdEducationTypeId IS NOT NULL BEGIN
+		EXEC [dbo].[UserEd_Insert] default, @NUserEdId, @NUserId, @NEdName, @NEdDate, @NEdQualification, @NEdEducationTypeId, @NDocNumber,
+			NULL, 0
+	END	ELSE PRINT N'Пропуск внесения записи по позиции образования 2'
+	SET @NEdEducationTypeId = NULL
+	SET @NEdName = NULL
+	SET @NEdDate = NULL
+	SET @NEdQualification = NULL
+	SET @NDocNumber = NULL
+	SET @NUserEdId = NULL
+	
+	-- Проверка типа по образованию 3-ой позиции
+	IF N'@Уровень образования_3' IS NOT NULL AND N'@Уровень образования_3' &lt;&gt; '' BEGIN
+		SET @NEdEducationTypeId = (SELECT TOP 1 [EducationTypes].[Id] FROM [EducationTypes] WHERE [EducationTypes].[EducationName] = N'@Уровень образования_3')
+		IF @NEdEducationTypeId IS NULL RAISERROR(N'Уровень образования 3 задан некорректно!', 16, 1)
+		END
+		
+	IF N'@Учебное заведение_3' IS NOT NULL AND N'@Учебное заведение_3' &lt;&gt; ''
+		SET @NEdName = N'@Учебное заведение_3'
+	
+	IF N'@Дата окончания_3' IS NOT NULL AND N'@Дата окончания_3' &lt;&gt; ''
+	BEGIN TRY 
+		SET @NEdDate = CONVERT(datetime, N'@Дата окончания_3', 104)
+	END TRY	
+	BEGIN CATCH
+		RAISERROR(N'Дата окончания учебного заведения 3 задана некорректно!', 16, 1)
+	END CATCH
+	
+	IF N'@Квалификация_3' IS NOT NULL AND N'@Квалификация_3' &lt;&gt; ''
+		SET @NEdQualification = N'@Квалификация_3'
+
+	IF N'@№ документа об образовании_3' IS NOT NULL AND N'@№ документа об образовании_3' &lt;&gt; ''
+		SET @NDocNumber = N'@№ документа об образовании_3'
+	
+	SET @NUserEdId = (SELECT MAX([UserEd].[UserEdId]) + 1 FROM [UserEd]) 
+	IF @NUserEdId IS NULL SET @NUserEdId = 1
+	
+	-- Вставка записи по образованию 3
+	IF @NEdName IS NOT NULL AND @NEdDate IS NOT NULL AND @NEdQualification IS NOT NULL AND @NEdEducationTypeId IS NOT NULL BEGIN
+		EXEC [dbo].[UserEd_Insert] default, @NUserEdId, @NUserId, @NEdName, @NEdDate, @NEdQualification, @NEdEducationTypeId, @NDocNumber,
+			NULL, 0
+	END	ELSE PRINT N'Пропуск внесения записи по позиции образования 3'
+	SET @NEdEducationTypeId = NULL
+	SET @NEdName = NULL
+	SET @NEdDate = NULL
+	SET @NEdQualification = NULL
+	SET @NDocNumber = NULL
+	SET @NUserEdId = NULL
+	
+	-- Проверка типа по образованию 4-ой позиции
+	IF N'@Уровень образования_4' IS NOT NULL AND N'@Уровень образования_4' &lt;&gt; '' BEGIN
+		SET @NEdEducationTypeId = (SELECT TOP 1 [EducationTypes].[Id] FROM [EducationTypes] WHERE [EducationTypes].[EducationName] = N'@Уровень образования_4')
+		IF @NEdEducationTypeId IS NULL RAISERROR(N'Уровень образования 4 задан некорректно!', 16, 1)
+		END
+		
+	IF N'@Учебное заведение_4' IS NOT NULL AND N'@Учебное заведение_4' &lt;&gt; ''
+		SET @NEdName = N'@Учебное заведение_4'
+	
+	IF N'@Дата окончания_4' IS NOT NULL AND N'@Дата окончания_4' &lt;&gt; ''
+	BEGIN TRY 
+		SET @NEdDate = CONVERT(datetime, N'@Дата окончания_4', 104)
+	END TRY	
+	BEGIN CATCH
+		RAISERROR(N'Дата окончания учебного заведения 4 задана некорректно!', 16, 1)
+	END CATCH
+	
+	IF N'@Квалификация_4' IS NOT NULL AND N'@Квалификация_4' &lt;&gt; ''
+		SET @NEdQualification = N'@Квалификация_4'
+
+	IF N'@№ документа об образовании_4' IS NOT NULL AND N'@№ документа об образовании_4' &lt;&gt; ''
+		SET @NDocNumber = N'@№ документа об образовании_4'
+	
+	SET @NUserEdId = (SELECT MAX([UserEd].[UserEdId]) + 1 FROM [UserEd]) 
+	IF @NUserEdId IS NULL SET @NUserEdId = 1
+	
+	-- Вставка записи по образованию 4
+	IF @NEdName IS NOT NULL AND @NEdDate IS NOT NULL AND @NEdQualification IS NOT NULL AND @NEdEducationTypeId IS NOT NULL BEGIN
+		EXEC [dbo].[UserEd_Insert] default, @NUserEdId, @NUserId, @NEdName, @NEdDate, @NEdQualification, @NEdEducationTypeId, @NDocNumber,
+			NULL, 0
+	END	ELSE PRINT N'Пропуск внесения записи по позиции образования 4'
+	SET @NEdEducationTypeId = NULL
+	SET @NEdName = NULL
+	SET @NEdDate = NULL
+	SET @NEdQualification = NULL
+	SET @NDocNumber = NULL
+	SET @NUserEdId = NULL
+
+	-- Удаление всех записей по должностной позиции для пользователя
+	DELETE [UserPositionHistory] WHERE [UserPositionHistory].[UserId] = @NUserId
+
+	-- Вставка данных по должностной позиции
+	DECLARE @NUPHUserPositionHistoryId INT = NULL
+	DECLARE @NUPHChangeDate datetime = NULL
+	DECLARE @NUPHUserPositionId INT = NULL
+	
+	-- Проверка типа по должностной позиции 1
+	IF N'@Должностная позиция_1' IS NOT NULL AND N'@Должностная позиция_1' &lt;&gt; '' BEGIN
+		SET @NUPHUserPositionId = (SELECT TOP 1 [UserPosition].[UserPositionId] FROM [UserPosition] WHERE [UserPosition].[Name] = N'@Должностная позиция_1')
+		IF @NUPHUserPositionId IS NULL RAISERROR(N'Наименование должностной позиции 1 задано некорректно!', 16, 1)
+		END
+	
+	IF N'@Дата назначения_1' IS NOT NULL AND N'@Дата назначения_1' &lt;&gt; ''
+	BEGIN TRY 
+		SET @NUPHChangeDate = CONVERT(datetime, N'@Дата назначения_1', 104)
+	END TRY	
+	BEGIN CATCH
+		RAISERROR(N'Дата назначения по должностной позиции 1 задана некорректно!', 16, 1)
+	END CATCH	
+	
+	SET @NUPHUserPositionHistoryId = (SELECT MAX([UserPositionHistory].[UserPositionHistoryId]) + 1 FROM [UserPositionHistory]) 
+	IF @NUPHUserPositionHistoryId IS NULL SET @NUPHUserPositionHistoryId = 1
+	
+	-- Вставка записи по должностной позиции 1
+	IF @NUPHChangeDate IS NOT NULL AND @NUPHUserPositionId IS NOT NULL BEGIN
+		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate, @NUPHUserPositionId
+		UPDATE [UserProp] SET
+			[UserProp].[UserPositionId] = @NUPHUserPositionId
+		WHERE [UserProp].[UserId] = @NUserId
+		END
+	ELSE PRINT N'Пропуск внесения записи по должностной позиции 1'
+	SET @NUPHChangeDate  = NULL
+	SET @NUPHUserPositionId = NULL
+	
+	-- Проверка типа по должностной позиции 2
+	IF N'@Должностная позиция_2' IS NOT NULL AND N'@Должностная позиция_2' &lt;&gt; '' BEGIN
+		SET @NUPHUserPositionId = (SELECT TOP 1 [UserPosition].[UserPositionId] FROM [UserPosition] WHERE [UserPosition].[Name] = N'@Должностная позиция_2')
+		IF @NUPHUserPositionId IS NULL RAISERROR(N'Наименование должностной позиции 2 задано некорректно!', 16, 1)
+		END
+	
+	IF N'@Дата назначения_2' IS NOT NULL AND N'@Дата назначения_2' &lt;&gt; ''
+	BEGIN TRY 
+		SET @NUPHChangeDate = CONVERT(datetime, N'@Дата назначения_2', 104)
+	END TRY	
+	BEGIN CATCH
+		RAISERROR(N'Дата назначения по должностной позиции 2 задана некорректно!', 16, 1)
+	END CATCH	
+	
+	SET @NUPHUserPositionHistoryId = (SELECT MAX([UserPositionHistory].[UserPositionHistoryId]) + 1 FROM [UserPositionHistory]) 
+	IF @NUPHUserPositionHistoryId IS NULL SET @NUPHUserPositionHistoryId = 1
+	
+	-- Вставка записи по должностной позиции 1
+	IF @NUPHChangeDate IS NOT NULL AND @NUPHUserPositionId IS NOT NULL
+		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate, @NUPHUserPositionId
+	ELSE PRINT N'Пропуск внесения записи по должностной позиции 2'
+	SET @NUPHChangeDate  = NULL
+	SET @NUPHUserPositionId = NULL
+	
+	-- Проверка типа по должностной позиции 3
+	IF N'@Должностная позиция_3' IS NOT NULL AND N'@Должностная позиция_3' &lt;&gt; '' BEGIN
+		SET @NUPHUserPositionId = (SELECT TOP 1 [UserPosition].[UserPositionId] FROM [UserPosition] WHERE [UserPosition].[Name] = N'@Должностная позиция_3')
+		IF @NUPHUserPositionId IS NULL RAISERROR(N'Наименование должностной позиции 3 задано некорректно!', 16, 1)
+		END
+	
+	IF N'@Дата назначения_3' IS NOT NULL AND N'@Дата назначения_3' &lt;&gt; ''
+	BEGIN TRY 
+		SET @NUPHChangeDate = CONVERT(datetime, N'@Дата назначения_3', 104)
+	END TRY	
+	BEGIN CATCH
+		RAISERROR(N'Дата назначения по должностной позиции 3 задана некорректно!', 16, 1)
+	END CATCH	
+	
+	SET @NUPHUserPositionHistoryId = (SELECT MAX([UserPositionHistory].[UserPositionHistoryId]) + 1 FROM [UserPositionHistory]) 
+	IF @NUPHUserPositionHistoryId IS NULL SET @NUPHUserPositionHistoryId = 1
+	
+	-- Вставка записи по должностной позиции 3
+	IF @NUPHChangeDate IS NOT NULL AND @NUPHUserPositionId IS NOT NULL
+		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate, @NUPHUserPositionId
+	ELSE PRINT N'Пропуск внесения записи по должностной позиции 3'
+	SET @NUPHChangeDate  = NULL
+	SET @NUPHUserPositionId = NULL
+	
+	-- Проверка типа по должностной позиции 4
+	IF N'@Должностная позиция_4' IS NOT NULL AND N'@Должностная позиция_4' &lt;&gt; '' BEGIN
+		SET @NUPHUserPositionId = (SELECT TOP 1 [UserPosition].[UserPositionId] FROM [UserPosition] WHERE [UserPosition].[Name] = N'@Должностная позиция_4')
+		IF @NUPHUserPositionId IS NULL RAISERROR(N'Наименование должностной позиции 4 задано некорректно!', 16, 1)
+		END
+	
+	IF N'@Дата назначения_4' IS NOT NULL AND N'@Дата назначения_4' &lt;&gt; ''
+	BEGIN TRY 
+		SET @NUPHChangeDate = CONVERT(datetime, N'@Дата назначения_4', 104)
+	END TRY	
+	BEGIN CATCH
+		RAISERROR(N'Дата назначения по должностной позиции 4 задана некорректно!', 16, 1)
+	END CATCH	
+	
+	SET @NUPHUserPositionHistoryId = (SELECT MAX([UserPositionHistory].[UserPositionHistoryId]) + 1 FROM [UserPositionHistory]) 
+	IF @NUPHUserPositionHistoryId IS NULL SET @NUPHUserPositionHistoryId = 1
+	
+	-- Вставка записи по должностной позиции 1
+	IF @NUPHChangeDate IS NOT NULL AND @NUPHUserPositionId IS NOT NULL
+		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate, @NUPHUserPositionId
+	ELSE PRINT N'Пропуск внесения записи по должностной позиции 4'
+	SET @NUPHChangeDate  = NULL
+	SET @NUPHUserPositionId = NULL
+	
+	-- Проверка типа по должностной позиции 5
+	IF N'@Должностная позиция_5' IS NOT NULL AND N'@Должностная позиция_5' &lt;&gt; '' BEGIN
+		SET @NUPHUserPositionId = (SELECT TOP 1 [UserPosition].[UserPositionId] FROM [UserPosition] WHERE [UserPosition].[Name] = N'@Должностная позиция_5')
+		IF @NUPHUserPositionId IS NULL RAISERROR(N'Наименование должностной позиции 5 задано некорректно!', 16, 1)
+		END
+	
+	IF N'@Дата назначения_5' IS NOT NULL AND N'@Дата назначения_5' &lt;&gt; ''
+	BEGIN TRY 
+		SET @NUPHChangeDate = CONVERT(datetime, N'@Дата назначения_5', 104)
+	END TRY	
+	BEGIN CATCH
+		RAISERROR(N'Дата назначения по должностной позиции 5 задана некорректно!', 16, 1)
+	END CATCH	
+	
+	SET @NUPHUserPositionHistoryId = (SELECT MAX([UserPositionHistory].[UserPositionHistoryId]) + 1 FROM [UserPositionHistory]) 
+	IF @NUPHUserPositionHistoryId IS NULL SET @NUPHUserPositionHistoryId = 1
+	
+	-- Вставка записи по должностной позиции 5
+	IF @NUPHChangeDate IS NOT NULL AND @NUPHUserPositionId IS NOT NULL
+		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate, @NUPHUserPositionId
+	ELSE PRINT N'Пропуск внесения записи по должностной позиции 5'
+	SET @NUPHChangeDate  = NULL
+	SET @NUPHUserPositionId = NULL
+END TRY
+
+BEGIN CATCH
+	IF @@TRANCOUNT &gt; 0
+		BEGIN
+			ROLLBACK TRANSACTION
+			PRINT N'Откат транзакции.'
+			DECLARE @NERRORMESSAGE NVARCHAR(1000) = ERROR_MESSAGE()
+			RAISERROR(@NERRORMESSAGE, 16, 1);            	
+		END
+END CATCH
+
+IF @@TRANCOUNT &gt; 0
+	BEGIN
+		COMMIT TRANSACTION
+		PRINT N'Применение транзакции.'
+	END</EditSql>
+      <DeleteSql>DECLARE @NUserUID AS uniqueidentifier = '@UserUID (Ключ персонала)'
+DECLARE @NUserId INT = NULL
+
+BEGIN TRANSACTION
+BEGIN TRY
+	IF (SELECT SUM(1) FROM [User] WHERE [User].[UserUID] = @NUserUID) &gt; 0 
+		SET @NUserId = (SELECT [User].[UserId] FROM [User] WHERE [User].[UserUID] = @NUserUID)
+			ELSE RAISERROR(N'Ошибка в данных "UserUID (Ключ персонала)"! В базе данных ЛИМС пользователя с таким ключом не существует.', 16, 1)			
+		IF @NUserId IS NOT NULL BEGIN
+			-- 1
+			PRINT N'[UserRole]:'
+			DELETE FROM [UserRole] WHERE [UserRole].[UserId] = @NUserId
+			
+			-- 2
+			PRINT N'[UserPositionHistory]:'
+			DELETE FROM [UserPositionHistory] WHERE [UserPositionHistory].[UserId] = @NUserId
+			
+			-- 3
+			PRINT N'[UserMapping]:'
+			DELETE FROM [UserMapping] WHERE [UserMapping].[UserId] = @NUserId			
+
+			-- 4
+			PRINT N'[UserGroup]:'
+			DELETE FROM [UserGroup] WHERE [UserGroup].[UserId] = @NUserId			
+			
+			-- 5
+			PRINT N'[UserEd]:'
+			DELETE FROM [UserEd] WHERE [UserEd].[UserId] = @NUserId
+			
+			-- 6
+			PRINT N'[UserProp]:'
+			DELETE FROM [UserProp] WHERE [UserProp].[UserId] = @NUserId
+			
+			-- 7
+			PRINT N'[SubdivisionUser]:'
+			DELETE FROM [SubdivisionUser] WHERE [SubdivisionUser].[UserId] = @NUserId
+			
+			-- 8
+			PRINT N'[User]:'
+			DELETE FROM [User] WHERE [User].[UserId] = @NUserId AND [User].[UserUID] = @NUserUID
+		END
+END TRY
+
+BEGIN CATCH
+	IF @@TRANCOUNT &gt; 0
+		BEGIN
+			ROLLBACK TRANSACTION
+			PRINT N'Откат транзакции.'
+			DECLARE @NERRORMESSAGE NVARCHAR(1000) = ERROR_MESSAGE()
+			RAISERROR(@NERRORMESSAGE, 16, 1);            	
+		END
+END CATCH
+
+IF @@TRANCOUNT &gt; 0
+	BEGIN
+		COMMIT TRANSACTION
+		PRINT N'Применение транзакции'
+	END</DeleteSql>
+      <ImageBuffer>iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAcpSURBVFhHxZZrTJNnFMedS5bNLfuwLLtkX/ZpS3ZL9mXZNc5lF+dtMy6bUZk61A1BdDoUxAoqKnIbotwtICIIOArMcZFysQUKQocUpEBLARm03EUUaKH975y37bTQElyW7CR/IOW8z/93znnePs8iAP+rrD8WHou9k2t3bEm8rt8qrsfOi83wSGuGW3wdvomS6zfG1GznHGvqAuMhAZYE5mtRfgvIbwMymoGkGxZE15kRUWPGtrQ2XmyJNXWB8RAAj3z8Y9C7h/I7kaUyCQCXCEDcYMbZ2mmckptwotKM5fvjVnCu9ZEFhAuAxbuSa7bPbvUmavXaKDm+jVNio1gFd6p4Z3YX9uYZEFDUj82JSvxA+VsS67E5oR5uJBpN37ZklevRuABYIsrToOyBVottrQ5XmLH1/E1sEjdiW3o7PLO7CaAfolw1CjSU306ducmjAWIoP6TSCPdUtevRzAZ4ff2hp07mKLN9JR1OWx0sM+LYNRNS6LNkVpP1t59EY81ngH/yTZQ/JeQHXlYqlwbkuZGFYydsAIs/PZK39pxMq6rsMkFKlS8Pl2FdbJ3TVm9KqINbnAIbYxVYT/ouWoGvImVYf67RIf/nXD18C4chkt5DcRcg6zQhtLAF30VejSDPR9nYDvDEhhg5Clr1UBom8BtV4Vc4gs0pascFCUAkUeNKmwU5rcAFlQVx9Wb8Wj2NwLJJbE5qovxGuF+k/Kwu7Jbo4V88hlNVFlxqsaBtZBwdI6PYGCNj06fY2A7wzOrwcmynmXpltSL7Rg/Uw+Mo0AFxDUC8TYmNgG+OBpnUagkBpDFA3QzCac4BBMCiJiCBcmP/BM7WA1lqNh5Ds96ApBoDQsoG8WVoKZs+y8Z2gOe+iignag12pLdRxWrsIpCE6k7U60ch7ZwWFmWY+6NpokrbbaPRU8eGcVh6FzFKIOo67YMWM9qGx9Ck10Os6ENQsR4nSwyIlA1jVVgZmz7Hxg4AXtk67Mxsx08Z7QTSKoDsSG9BfKUOiu5BeivMCJIO4fsHR0Ot3vNPq83IJOPWwVE09d43Dpb2U+UDCCsfxJmq264B9ki6CKKDpIVnlpZgNPgxQ0OjacVWepVCS7Ro6BtCjd6EVHrVuCP3W00VD90m4z7B+PhVA06VDgjG4RWDiLg2hF+p+mjFHQIQRjAXYG9eD0F0w/u3TpIOuy6zOgimwzoeguENdqxQi1KNHrW9E0i/aYF6aEQwTqo14ETJgGAcStWyqd2YdbpyFHG1d10D+PzeRzv9Fn6W3BJA9uR0Y3cO7WYSQ+0iKE8ak0emlr6ENNib0wbN0CRiK/VkzG0epGodTSPlI4Ix60z1GOKv38NKZwBrIspoIw3AJ78X+1h5fwnam9tD77MjlDcBeV3uwrYMLVoMUwgm4zAydmYaRTNnsXl0zTgSlZNYaX0LZgGEl9FGGoZvQT/2X9HDh0UdYf3iBGo3AXnQBlTpjQhhcxemZ2nmLDaPofaLG4yuAQ6XjMKvaAh+BQMEQvqjHwcEGeZA7cvrhWdOD5S9RoTLyNiFqd04llofVzeBlMYZ5wCrw0txpHwcoqujQif8CeQgq3CQRkOaBbWfoHbn9qL21hQiK8dwxoWp3ZiVoJxCapMFK0KlTgBoYwRdm0BA6Rh14jZE1A2GOXR1BIeKR+ZA+ZL25RtQ1W1EVPU4zrowja+fFIxZ5xpMSGuBc4A11IGTldM4VnEPgeV3EVh6R4AJkBKQ9PYcKP+iEfgUDKGCDpjo2nuIcWGa+KdRMBbfmEYKVZ9Bp6uzETy7zEec5k07+zgdnyfkdIRWTOIogRwpY43TYUN6AEpEUH5FoyjVGcncuSkriWaerDLjAn1xpdIxfbiwB0t/EaexJxvbAfhkepW07HNRutwzswOhNRbqCF2z5HT+V0wInTlazrJCMZB/yR0Ua010IjqacrX2irnlXLVffhe+EGXI2cPm5XAa8tnMH7xEevvFNz/asDakSLcvvw8hCguCq6YJxAoTdG1S0FGCCiCQK5oZMr9vyhWfb7YIFV+iY/24dADrwop1L9CavLbNg70c7gP24A+fJr1Meuf1NR4H152WT/nTJgyhqxjvEYbgMbGOVEzRDWgGYlubzz9QcZTiLr45I596bbXHQV7LtiavbTW2xywADr7RPkZ6hvQK6cMPvKIy3OjCKYBUM4iJAIzUhSnktluoYrqckDFXzMbuKQ14z/N0Bj9rW4PX4jXn3padANiDkx8nPU96g7TsE99U+ZakRuF1Da6aQZCMLiZaa8VJqhn8dEGFpQfO2+fMz/CzvIbra/o8APbglj1Jsu6Ptz7asPyoROdOZfM+uEiVe19S47NAiY7/xzm2XH7Gsd3OYgEA9nDYH29+7XVwdZh0ZlWodOYN+ps/s/1v7pzni4cA4Ji9P963af45zxcPCWAP+/5gU9b8c54v/iXAfxSLFv0N7tIrfpE/3PoAAAAASUVORK5CYII=</ImageBuffer>
+    </ItemChanger>
   </Items>
-  <SelectedObjectIndex>12</SelectedObjectIndex>
+  <SelectedObjectIndex>13</SelectedObjectIndex>
   <EditorType>1</EditorType>
 </ItemChangerList>
