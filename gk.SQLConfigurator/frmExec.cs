@@ -187,6 +187,7 @@ namespace gk.SQLConfigurator
                             {
                                 val = (wSheet.Cells[i, j].Value2 != null) ? wSheet.Cells[i, j].Value2.ToString() : wSheet.Cells[i, j].Value.ToString();
                                 val = ConvertValueToSqlString(val);
+                                // TODO: Переписать логику для совместимости с SQLCMD $(var)
                                 if (val == "null")
                                     sql = sql.Replace("N'@" + pair.Key + "'", val).Replace("'@" + pair.Key + "'", val);
                                 else
@@ -204,8 +205,8 @@ namespace gk.SQLConfigurator
                             try
                             {
                                 wSheet.Rows[i].Select();
-                                cmd.CommandTimeout = 360;
                                 wSheet.Rows[i].Font.Color = System.Drawing.Color.Black;
+                                cmd.CommandTimeout = 360;
 
                                 int c = cmd.ExecuteNonQuery();
 
