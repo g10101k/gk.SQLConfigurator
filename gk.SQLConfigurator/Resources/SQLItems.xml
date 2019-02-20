@@ -1198,23 +1198,36 @@ IF @NAEBatchUid IS NULL BEGIN
 	DECLARE @NCode NVARCHAR(150) = N'@Код партии'
 	IF (@NCode IS NULL OR @NCode = '') SET @NCode = 'Код партии - ' + @NGenerate
 	
-	SET @NCreationDate = GETDATE()
-	IF N'@Дата производства' &lt;&gt; '' AND N'@Дата производства' IS NOT NULL BEGIN
-		BEGIN TRY SET @NCreationDate = CONVERT(datetime, '@Дата производства', 104)
-		IF @NCreationDate IS NULL SET @NCreationDate = GETDATE()
+	DECLARE @NCreationDate datetime = GETDATE()
+	IF N'@Дата производства' &lt;&gt; '' AND N'@Дата производства' IS NOT NULL
+		BEGIN TRY 
+			SET @NCreationDate = CONVERT(datetime, N'@Дата производства', 104)
 		END TRY
-		BEGIN CATCH SET @NCreationDate = GETDATE()
-		END CATCH 
-	END
+		BEGIN CATCH 
+			BEGIN TRY
+				SET @NCreationDate = CONVERT(datetime, CONVERT(INT, N'@Дата производства') - 2)
+			END TRY
+			BEGIN CATCH
+				SET @NCreationDate = GETDATE()
+			END CATCH 
+		END CATCH
 	
 	DECLARE @TypeInterval NVARCHAR(10) = N'@Срок хранения - тип интервала'
 	DECLARE @IntervalInt int = NULL;
-	IF N'@Дата окончания срока хранения' &lt;&gt; '' AND N'@Дата окончания срока хранения' IS NOT NULL BEGIN
-		BEGIN TRY SET @NShelfLifeDate = CONVERT(datetime, N'@Дата окончания срока хранения', 104)
+	
+	IF N'@Дата окончания срока хранения' &lt;&gt; '' AND N'@Дата окончания срока хранения' IS NOT NULL
+		BEGIN TRY 
+			SET @NShelfLifeDate = CONVERT(datetime, N'@Дата окончания срока хранения', 104)
 		END TRY	
-		BEGIN CATCH	SET @NShelfLifeDate = NULL
+		BEGIN CATCH	
+			BEGIN TRY
+				SET @NShelfLifeDate = CONVERT(datetime, CONVERT(INT, N'@Дата окончания срока хранения') - 2)
+			END TRY
+			BEGIN CATCH
+				SET @NShelfLifeDate = NULL
+			END CATCH
 		END CATCH
-	END
+		
 	IF N'@Дата окончания срока хранения' = '' OR N'@Дата окончания срока хранения' IS NULL BEGIN
 		IF (@TypeInterval IS NOT NULL) BEGIN
 			BEGIN TRY SET @IntervalInt = CAST(N'@Срок хранения - значение' AS INT)
@@ -1310,22 +1323,31 @@ IF @NAEBatchUid IS NULL BEGIN
 	
 	DECLARE @NDocIssueDate datetime = NULL
 	DECLARE @NAcceptanceDate datetime = NULL
-	IF N'@Дата паспорта' IS NOT NULL AND N'@Дата паспорта' &lt;&gt; '' BEGIN
+	IF N'@Дата паспорта' IS NOT NULL AND N'@Дата паспорта' &lt;&gt; ''
 		BEGIN TRY
 			SET @NDocIssueDate = CONVERT(datetime, N'@Дата паспорта', 104)
 		END TRY
 		BEGIN CATCH
-			SET @NDocIssueDate = NULL;
+			BEGIN TRY
+				SET @NDocIssueDate = CONVERT(datetime, CONVERT(INT, N'@Дата паспорта') - 2)
+			END TRY
+			BEGIN CATCH
+				SET @NDocIssueDate = NULL;
+			END CATCH
 		END CATCH
-		END
-	IF N'@Дата акта приемки' IS NOT NULL AND N'@Дата акта приемки' &lt;&gt; '' BEGIN
+		
+	IF N'@Дата акта приемки' IS NOT NULL AND N'@Дата акта приемки' &lt;&gt; ''
 		BEGIN TRY
 			SET @NAcceptanceDate = CONVERT(datetime, N'@Дата акта приемки', 104)
 		END TRY
 		BEGIN CATCH
-			SET @NAcceptanceDate = NULL;
+			BEGIN TRY
+				SET @NAcceptanceDate = CONVERT(datetime, CONVERT(INT, N'@Дата акта приемки') - 2)
+			END TRY
+			BEGIN CATCH
+				SET @NAcceptanceDate = NULL;
+			END CATCH
 		END CATCH
-		END
 	
 	DECLARE @NDimsId int = (SELECT MAX([Dims].[DimsId]) + 1 FROM [Dims])
 	DECLARE @NVolume FLOAT = NULL
@@ -1587,23 +1609,36 @@ IF @NAEBatchUid IS NOT NULL BEGIN
 	IF (@NCode IS NULL OR @NCode = '') SET @NCode = 'Код партии - ' + @NGenerate	
 	
 	DECLARE @NCreationDate datetime = GETDATE()
-	IF N'@Дата производства' &lt;&gt; '' AND N'@Дата производства' IS NOT NULL BEGIN
-		BEGIN TRY SET @NCreationDate = CONVERT(datetime, N'@Дата производства', 104)
-		IF @NCreationDate IS NULL SET @NCreationDate = GETDATE()
+	IF N'@Дата производства' &lt;&gt; '' AND N'@Дата производства' IS NOT NULL
+		BEGIN TRY 
+			SET @NCreationDate = CONVERT(datetime, N'@Дата производства', 104)
 		END TRY
-		BEGIN CATCH SET @NCreationDate = GETDATE()
-		END CATCH 
-	END
+		BEGIN CATCH 
+			BEGIN TRY
+				SET @NCreationDate = CONVERT(datetime, CONVERT(INT, N'@Дата производства') - 2)
+			END TRY
+			BEGIN CATCH
+				SET @NCreationDate = GETDATE()
+			END CATCH 
+		END CATCH
 	
 	DECLARE @NShelfLifeDate datetime = DATEADD(MONTH, 1, CONVERT(VARCHAR(10), @NCreationDate, 104))
 	DECLARE @TypeInterval NVARCHAR(10) = N'@Срок хранения - тип интервала'
 	DECLARE @IntervalInt int = NULL;
-	IF N'@Дата окончания срока хранения' &lt;&gt; '' AND N'@Дата окончания срока хранения' IS NOT NULL BEGIN
-		BEGIN TRY SET @NShelfLifeDate = CONVERT(datetime, N'@Дата окончания срока хранения', 104)
+	
+	IF N'@Дата окончания срока хранения' &lt;&gt; '' AND N'@Дата окончания срока хранения' IS NOT NULL
+		BEGIN TRY 
+			SET @NShelfLifeDate = CONVERT(datetime, N'@Дата окончания срока хранения', 104)
 		END TRY	
-		BEGIN CATCH	SET @NShelfLifeDate = NULL
+		BEGIN CATCH	
+			BEGIN TRY
+				SET @NShelfLifeDate = CONVERT(datetime, CONVERT(INT, N'@Дата окончания срока хранения') - 2)
+			END TRY
+			BEGIN CATCH
+				SET @NShelfLifeDate = NULL
+			END CATCH
 		END CATCH
-	END
+	
 	IF N'@Дата окончания срока хранения' = '' OR N'@Дата окончания срока хранения' IS NULL BEGIN
 		IF (@TypeInterval IS NOT NULL) BEGIN
 			BEGIN TRY SET @IntervalInt = CAST(N'@Срок хранения - значение' AS INT)
@@ -1703,23 +1738,32 @@ IF @NAEBatchUid IS NOT NULL BEGIN
 	
 	DECLARE @NDocIssueDate datetime = NULL
 	DECLARE @NAcceptanceDate datetime = NULL
-	IF N'@Дата паспорта' IS NOT NULL AND N'@Дата паспорта' &lt;&gt; '' BEGIN
+	IF N'@Дата паспорта' IS NOT NULL AND N'@Дата паспорта' &lt;&gt; ''
 		BEGIN TRY
 			SET @NDocIssueDate = CONVERT(datetime, N'@Дата паспорта', 104)
 		END TRY
 		BEGIN CATCH
-			SET @NDocIssueDate = NULL;
+			BEGIN TRY
+				SET @NDocIssueDate = CONVERT(datetime, CONVERT(INT, N'@Дата паспорта') - 2)
+			END TRY
+			BEGIN CATCH
+				SET @NDocIssueDate = NULL;
+			END CATCH
 		END CATCH
-		END
-	IF N'@Дата акта приемки' IS NOT NULL AND N'@Дата акта приемки' &lt;&gt; '' BEGIN
+		
+	IF N'@Дата акта приемки' IS NOT NULL AND N'@Дата акта приемки' &lt;&gt; ''
 		BEGIN TRY
 			SET @NAcceptanceDate = CONVERT(datetime, N'@Дата акта приемки', 104)
 		END TRY
 		BEGIN CATCH
-			SET @NAcceptanceDate = NULL;
+			BEGIN TRY
+				SET @NAcceptanceDate = CONVERT(datetime, CONVERT(INT, N'@Дата акта приемки') - 2)
+			END TRY
+			BEGIN CATCH
+				SET @NAcceptanceDate = NULL;
+			END CATCH
 		END CATCH
-		END
-		
+				
 	DECLARE @NDimsId int = (SELECT [AEBatch].[DimsId] FROM [AEBatch] WHERE [AEBatch].[AEBatchUid] = @NAEBatchUid)
 	DECLARE @NVolume FLOAT = NULL
 	DECLARE @NWeight FLOAT = NULL
@@ -2217,6 +2261,217 @@ IF @@TRANCOUNT &gt; 0
       <ImageBuffer>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</ImageBuffer>
     </ItemChanger>
     <ItemChanger>
+      <Name>LDS.ОУ_Характеристика_Показатели</Name>
+      <GetSQL>DECLARE @N int = 0
+SELECT ROW_NUMBER() OVER (ORDER BY @N) AS "№ п/п", [Test].[Name] AS "Показатель", CASE WHEN [Test].[TestType] = 0 THEN 'Аналоговый'
+ELSE CASE WHEN [Test].[TestType] = 1 THEN 'Дискретный' END END AS "Тип показателя" FROM [Test] WHERE [Test].[TestType] IN (0,1)</GetSQL>
+      <GetSQLWhereString>Name like '*'</GetSQLWhereString>
+      <ImageBuffer>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</ImageBuffer>
+    </ItemChanger>
+    <ItemChanger>
+      <Name>LDS.ОУ_Применимость</Name>
+      <GetSQL>SELECT 
+	'x' AS [Select(x)],
+	[AEStdDoc].[AEStdDocUid] AS "AEStdDocUid (Ключ применимости ОУ)",
+	CASE WHEN [AE].[Name] IS NULL AND [StdDoc].[Name] IS NULL AND [GradeVer].[Name] IS NULL AND [AEBatch].[Num] IS NULL THEN NULL ELSE
+		(CASE WHEN [AE].[Name] IS NULL THEN ';' ELSE ([AE].[Name] + ';') END + 
+			CASE WHEN [StdDoc].[Name] IS NULL THEN ';' ELSE ([StdDoc].[Name] + ';') END + 
+				CASE WHEN [GradeVer].[Name] IS NULL THEN ';' ELSE ([GradeVer].[Name] + ';') END +
+					CASE WHEN [AEBatch].[Num] IS NULL THEN '' ELSE [AEBatch].[Num] END) END AS "Партия ОУ",
+	[tmp].[Name] AS "Методика"
+	FROM [AEStdDoc] 
+	INNER JOIN [AE] ON [AEStdDoc].[AEUid] = [AE].[AEUid]
+	LEFT JOIN [SpecVer] ON [AE].[SpecVerId] = [SpecVer].[SpecVerId]
+	LEFT JOIN [StdDoc] ON [SpecVer].[SpecUid] = [StdDoc].[StdDocUid]
+	LEFT JOIN [AEGrade] ON [AE].[AEUid] = [AEGrade].[AEUid]
+	LEFT JOIN [GradeVer] ON [AEGrade].[GradeVerId] = [GradeVer].[GradeVerId]
+	LEFT JOIN [AEBatch] ON [AE].[AEUid] = [AEBatch].[AEUid]
+	INNER JOIN [StdDocVer] ON [AEStdDoc].[StdDocVerId] = [StdDocVer].[StdDocVerId]
+	INNER JOIN [StdDoc] [tmp] ON [StdDocVer].[StdDocUid] = [tmp].[StdDocUid]</GetSQL>
+      <GetSQLWhereString>Name like '*'</GetSQLWhereString>
+      <CreateSql>DECLARE @NPartyOU NVARCHAR(600) = N'@Партия ОУ'
+DECLARE @NAEName NVARCHAR(150) = NULL
+DECLARE @NStdDocName NVARCHAR(150) = NULL
+DECLARE @NGradeVerName NVARCHAR(150) = NULL
+DECLARE @NAEBatchNum NVARCHAR(150) = NULL
+DECLARE @NAEBatchUid uniqueidentifier = NULL
+DECLARE @NAEUid uniqueidentifier = NULL
+DECLARE @NRID INT = 0
+DECLARE @NR TABLE (PartyIndex NVARCHAR(255), id INT) 
+INSERT INTO @NR 
+SELECT CONVERT(NVARCHAR(255), Item), ROW_NUMBER() OVER (ORDER BY @NRID) AS id FROM [dbo].[spc_sys_ParseString](@NPartyOU, ';')
+SET @NAEName = (SELECT CASE WHEN PartyIndex = '' THEN NULL ELSE PartyIndex END FROM @NR WHERE id = 1)
+SET @NStdDocName = (SELECT CASE WHEN PartyIndex = '' THEN NULL ELSE PartyIndex END FROM @NR WHERE id = 2)
+SET @NGradeVerName = (SELECT CASE WHEN PartyIndex = '' THEN NULL ELSE PartyIndex END FROM @NR WHERE id = 3)
+SET @NAEBatchNum = (SELECT CASE WHEN PartyIndex = '' THEN NULL ELSE PartyIndex END FROM @NR WHERE id = 4)
+DECLARE @NStdDocVerId INT = NULL
+DECLARE @NAEStdDocUid uniqueidentifier = NEWID()
+
+BEGIN TRANSACTION
+BEGIN TRY
+
+IF @NAEName IS NULL BEGIN
+	RAISERROR(N'Ошибка в данных "Партия ОУ"! Наименование ОУ не может быть NULL или пустым.', 16, 1)
+	END
+
+IF @NAEBatchNum IS NULL BEGIN
+	RAISERROR(N'Ошибка в данных "Партия ОУ"! Номер партии ОУ не может быть NULL или пустым.', 16, 1)
+	END	
+
+SET @NAEBatchUid = (SELECT [AEBatch].[AEBatchUid] FROM [AEBatch]
+INNER JOIN [AE] ON [AEBatch].[AEUid] = [AE].[AEUid]
+LEFT JOIN [SpecVer] ON [AE].[SpecVerId] = [SpecVer].[SpecVerId]
+LEFT JOIN [StdDoc] ON [SpecVer].[SpecUid] = [StdDoc].[StdDocUid]
+LEFT JOIN [AEGrade] ON [AE].[AEUid] = [AEGrade].[AEUid]
+LEFT JOIN [GradeVer] ON [AEGrade].[GradeVerId] = [GradeVer].[GradeVerId]
+WHERE [AE].[Name] = @NAEName AND ([StdDoc].Name = @NStdDocName OR (@NStdDocName IS NULL AND [AE].[SpecVerId] IS NULL)) AND
+	([GradeVer].[Name] = @NGradeVerName OR (@NGradeVerName IS NULL AND [AEGrade].[AEGradeUid] IS NULL)) AND [AEBatch].[Num] = @NAEBatchNum)
+
+IF @NAEBatchUid IS NULL
+	RAISERROR(N'Ошибка в данных "Партия ОУ"! Уникальный ключ партии AEBatchUid не найден по параметрам "Партия ОУ"', 16, 1)
+	ELSE SET @NAEUid = (SELECT TOP 1 [AEBatch].[AEUid] FROM [AEBatch] WHERE [AEBatch].[AEBatchUid] = @NAEBatchUid)
+	-- Основная часть запроса
+	IF @NAEUid IS NULL
+		RAISERROR(N'Ошибка в данных! Невозможно получить ключ ОУ по идентификатору "Партия ОУ"', 16, 1)
+		ELSE BEGIN
+			SET @NStdDocVerId = (SELECT TOP 1 [StdDocVer].[StdDocVerId] FROM [StdDoc]
+				INNER JOIN [StdDocVer] ON [StdDoc].[StdDocUid] = [StdDocVer].[StdDocUid]
+					 WHERE [StdDoc].[Name] = N'@Методика')
+			IF @NStdDocVerId IS NULL
+				RAISERROR(N'Ошибка в данных "Методика"! Данная методика отсутствует в базе данных ЛИМСа', 16, 1)
+			IF (SELECT SUM(1) FROM [AEStdDoc] WHERE [AEStdDoc].[AEUid] = @NAEUid AND [AEStdDoc].[StdDocVerId] = @NStdDocVerId) &gt; 0
+				RAISERROR(N'Ошибка! Данная методика уже добавлена к текущему показателю ОУ', 16, 1)
+			EXEC [dbo].[AEStdDoc_Insert] default, @NAEStdDocUid, @NAEUid, @NStdDocVerId, 0 
+		END
+END TRY
+BEGIN CATCH
+	IF @@TRANCOUNT &gt; 0
+		BEGIN
+			ROLLBACK TRANSACTION
+			PRINT N'Откат транзакции.'
+			DECLARE @NERRORMESSAGE NVARCHAR(1000) = ERROR_MESSAGE()
+			RAISERROR(@NERRORMESSAGE, 16, 1);            	
+		END
+END CATCH
+
+IF @@TRANCOUNT &gt; 0
+	BEGIN
+		COMMIT TRANSACTION
+		PRINT N'Применение транзакции.'
+	END</CreateSql>
+      <EditSql>DECLARE @NPartyOU NVARCHAR(600) = N'@Партия ОУ'
+DECLARE @NAEName NVARCHAR(150) = NULL
+DECLARE @NStdDocName NVARCHAR(150) = NULL
+DECLARE @NGradeVerName NVARCHAR(150) = NULL
+DECLARE @NAEBatchNum NVARCHAR(150) = NULL
+DECLARE @NAEBatchUid uniqueidentifier = NULL
+DECLARE @NAEUid uniqueidentifier = NULL
+DECLARE @NRID INT = 0
+DECLARE @NR TABLE (PartyIndex NVARCHAR(255), id INT) 
+INSERT INTO @NR 
+SELECT CONVERT(NVARCHAR(255), Item), ROW_NUMBER() OVER (ORDER BY @NRID) AS id FROM [dbo].[spc_sys_ParseString](@NPartyOU, ';')
+SET @NAEName = (SELECT CASE WHEN PartyIndex = '' THEN NULL ELSE PartyIndex END FROM @NR WHERE id = 1)
+SET @NStdDocName = (SELECT CASE WHEN PartyIndex = '' THEN NULL ELSE PartyIndex END FROM @NR WHERE id = 2)
+SET @NGradeVerName = (SELECT CASE WHEN PartyIndex = '' THEN NULL ELSE PartyIndex END FROM @NR WHERE id = 3)
+SET @NAEBatchNum = (SELECT CASE WHEN PartyIndex = '' THEN NULL ELSE PartyIndex END FROM @NR WHERE id = 4)
+DECLARE @NStdDocVerId INT = NULL
+DECLARE @NAEStdDocUid uniqueidentifier = N'@AEStdDocUid (Ключ применимости ОУ)'
+
+BEGIN TRANSACTION
+BEGIN TRY
+
+IF @NAEName IS NULL BEGIN
+	RAISERROR(N'Ошибка в данных "Партия ОУ"! Наименование ОУ не может быть NULL или пустым.', 16, 1)
+	END
+
+IF @NAEBatchNum IS NULL BEGIN
+	RAISERROR(N'Ошибка в данных "Партия ОУ"! Номер партии ОУ не может быть NULL или пустым.', 16, 1)
+	END
+
+IF @NAEStdDocUid IS NULL BEGIN
+	RAISERROR(N'Ошибка! Ключ применимости ОУ не может быть NULL или пустым.', 16, 1)
+	END	
+	
+SET @NAEBatchUid = (SELECT [AEBatch].[AEBatchUid] FROM [AEBatch]
+INNER JOIN [AE] ON [AEBatch].[AEUid] = [AE].[AEUid]
+LEFT JOIN [SpecVer] ON [AE].[SpecVerId] = [SpecVer].[SpecVerId]
+LEFT JOIN [StdDoc] ON [SpecVer].[SpecUid] = [StdDoc].[StdDocUid]
+LEFT JOIN [AEGrade] ON [AE].[AEUid] = [AEGrade].[AEUid]
+LEFT JOIN [GradeVer] ON [AEGrade].[GradeVerId] = [GradeVer].[GradeVerId]
+WHERE [AE].[Name] = @NAEName AND ([StdDoc].Name = @NStdDocName OR (@NStdDocName IS NULL AND [AE].[SpecVerId] IS NULL)) AND
+	([GradeVer].[Name] = @NGradeVerName OR (@NGradeVerName IS NULL AND [AEGrade].[AEGradeUid] IS NULL)) AND [AEBatch].[Num] = @NAEBatchNum)
+
+IF @NAEBatchUid IS NULL
+	RAISERROR(N'Ошибка в данных "Партия ОУ"! Уникальный ключ партии AEBatchUid не найден по параметрам "Партия ОУ"', 16, 1)
+	ELSE SET @NAEUid = (SELECT TOP 1 [AEBatch].[AEUid] FROM [AEBatch] WHERE [AEBatch].[AEBatchUid] = @NAEBatchUid)
+	-- Основная часть запроса
+	IF @NAEUid IS NULL
+		RAISERROR(N'Ошибка в данных! Невозможно получить ключ ОУ по идентификатору "Партия ОУ"', 16, 1)
+		ELSE BEGIN
+			SET @NStdDocVerId = (SELECT TOP 1 [StdDocVer].[StdDocVerId] FROM [StdDoc]
+				INNER JOIN [StdDocVer] ON [StdDoc].[StdDocUid] = [StdDocVer].[StdDocUid]
+					 WHERE [StdDoc].[Name] = N'@Методика')
+			IF @NStdDocVerId IS NULL
+				RAISERROR(N'Ошибка в данных "Методика"! Данная методика отсутствует в базе данных ЛИМСа', 16, 1)
+			IF (SELECT SUM(1) FROM [AEStdDoc] WHERE [AEStdDoc].[AEUid] = @NAEUid AND [AEStdDoc].[StdDocVerId] = @NStdDocVerId) &gt; 0
+				RAISERROR(N'Ошибка! Данная методика уже добавлена к текущему показателю ОУ', 16, 1)
+			UPDATE [AEStdDoc] SET 
+				[AEStdDoc].[AEUid] = @NAEUid,
+				[AEStdDoc].[StdDocVerId] = @NStdDocVerId
+			WHERE [AEStdDoc].[AEStdDocUid] = @NAEStdDocUid
+		END
+END TRY
+BEGIN CATCH
+	IF @@TRANCOUNT &gt; 0
+		BEGIN
+			ROLLBACK TRANSACTION
+			PRINT N'Откат транзакции.'
+			DECLARE @NERRORMESSAGE NVARCHAR(1000) = ERROR_MESSAGE()
+			RAISERROR(@NERRORMESSAGE, 16, 1);            	
+		END
+END CATCH
+
+IF @@TRANCOUNT &gt; 0
+	BEGIN
+		COMMIT TRANSACTION
+		PRINT N'Применение транзакции.'
+	END</EditSql>
+      <DeleteSql>DECLARE @NAEStdDocUid AS uniqueidentifier = '@AEStdDocUid (Ключ применимости ОУ)'
+
+BEGIN TRANSACTION
+BEGIN TRY
+	IF (SELECT SUM(1) FROM [AEStdDoc] WHERE [AEStdDoc].[AEStdDocUid] = @NAEStdDocUid) &lt; 1 
+		RAISERROR(N'Ошибка в данных "AEStdDocUid (Ключ применимости ОУ)"! В базе данных ЛИМС применимости с таким ключом не существует.', 16, 1)			
+	-- 1
+	PRINT N'[AEStdDoc]:'
+	DELETE FROM [AEStdDoc] WHERE [AEStdDoc].[AEStdDocUid] = @NAEStdDocUid
+END TRY
+
+BEGIN CATCH
+	IF @@TRANCOUNT &gt; 0
+		BEGIN
+			ROLLBACK TRANSACTION
+			PRINT N'Откат транзакции.'
+			DECLARE @NERRORMESSAGE NVARCHAR(1000) = ERROR_MESSAGE()
+			RAISERROR(@NERRORMESSAGE, 16, 1);            	
+		END
+END CATCH
+
+IF @@TRANCOUNT &gt; 0
+	BEGIN
+		COMMIT TRANSACTION
+		PRINT N'Применение транзакции'
+	END</DeleteSql>
+      <ImageBuffer>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</ImageBuffer>
+    </ItemChanger>
+    <ItemChanger>
+      <Name>LDS.ОУ_Применимость_Методики</Name>
+      <GetSQL>SELECT ROW_NUMBER() OVER (ORDER BY [StdDoc].[Name]) AS "№ п/п", [StdDoc].[Name] AS "Методика" FROM [StdDocVer]
+INNER JOIN [StdDoc] ON [StdDocVer].[StdDocUid] = [StdDoc].[StdDocUid]</GetSQL>
+      <GetSQLWhereString>Name like '*'</GetSQLWhereString>
+      <ImageBuffer>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</ImageBuffer>
+    </ItemChanger>
+    <ItemChanger>
       <Name>LDS.Персонал</Name>
       <GetSQL>DECLARE @FIOPersonal Table (UserUID uniqueidentifier, F NVARCHAR(255), I NVARCHAR(255), O NVARCHAR(255), NameShort NVARCHAR(150)) 
 DECLARE @TableSkills Table (UserId int, BirthAddress NVARCHAR(1024), WorkInfo NVARCHAR(1024), ActionFun NVARCHAR(1024))
@@ -2325,7 +2580,9 @@ SELECT
 	LEFT JOIN [Status] ON [UserProp].[StatusId] = [Status].[StatusId]
 WHERE [User].{0}</GetSQL>
       <GetSQLWhereString>FullName like '*'</GetSQLWhereString>
-      <CreateSql>DECLARE @NGenerate NVARCHAR(10) = SUBSTRING(CONVERT(NVARCHAR(100), HASHBYTES('MD5', CAST(SYSDATETIME() AS NVARCHAR)), 2), 0, 12)
+      <CreateSql>DECLARE @NError BIT = NULL
+DECLARE @NERRORMESSAGE NVARCHAR(1000)
+DECLARE @NGenerate NVARCHAR(10) = SUBSTRING(CONVERT(NVARCHAR(100), HASHBYTES('MD5', CAST(SYSDATETIME() AS NVARCHAR)), 2), 0, 12)
 DECLARE @NUserUID uniqueidentifier = NEWID()
 DECLARE @NUserId INT = NULL
 DECLARE @NFullName NVARCHAR(150)
@@ -2352,12 +2609,19 @@ IF (@NName IS NULL OR @NName = '')
 				SET @NName = @NName + ' ' + UPPER((SELECT LEFT([@NR].[PartyIndex], 1) FROM @NR WHERE [@NR].[id] = 3)) + '.'
 		END
 
-DECLARE @NSkills NVARCHAR(MAX) = N'@Место рождения' + ';' + 
-	N'@Работа по основному месту работы / по совместительству' + ';' + 
-		N'@Выполняемые функции'
+DECLARE @NSkills NVARCHAR(MAX);
+IF N'@Место рождения' IS NOT NULL AND N'@Место рождения' &lt;&gt; '' SET @NSkills = N'@Место рождения' + ';'
+	ELSE SET @NSkills = ';'
+IF N'@Работа по основному месту работы / по совместительству' IS NOT NULL AND N'@Работа по основному месту работы / по совместительству'
+	&lt;&gt; '' SET @NSkills = @NSkills + N'@Работа по основному месту работы / по совместительству' + ';'
+		ELSE SET @NSkills = @NSkills + ';'
+IF N'@Выполняемые функции' IS NOT NULL AND N'@Выполняемые функции' &lt;&gt; '' SET @NSkills = @NSkills + N'@Выполняемые функции'
 
 DECLARE @NEmale NVARCHAR(150) = NULL
-IF N'@Email' IS NOT NULL AND N'@Email' &lt;&gt; '' AND PATINDEX('%@%.%', N'@Email') &gt; 0 SET @NEmale = N'@Email'
+IF N'@Email' IS NOT NULL AND N'@Email' &lt;&gt; '' BEGIN
+	SET @NEmale = N'@Email'
+	IF PATINDEX('%@%.%', @NEmale) &lt; 1 SET @NEmale = NULL
+	END
 
 DECLARE @NInsuranceNumber NVARCHAR(150) = NULL
 IF N'@№ страхового свидетельства ГПС (СНИЛС)' IS NOT NULL AND N'@№ страхового свидетельства ГПС (СНИЛС)' &lt;&gt; ''
@@ -2381,6 +2645,183 @@ IF N'@Сотрудник аккредитованной лаборатории' 
 DECLARE @NComment NVARCHAR(MAX) = NULL
 IF N'@Примечание' IS NOT NULL AND N'@Примечание' &lt;&gt; ''
 	SET @NComment = N'@Примечание'
+
+-- Преобразование дат
+DECLARE @NBirthday datetime = NULL
+IF N'@Дата рождения' IS NOT NULL AND N'@Дата рождения' &lt;&gt; ''
+	BEGIN TRY 
+		SET @NBirthday = CONVERT(datetime, N'@Дата рождения', 104)
+	END TRY	
+BEGIN CATCH
+	BEGIN TRY
+		SET @NBirthday = CONVERT(datetime, CONVERT(int, N'@Дата рождения') - 2)
+	END TRY
+	BEGIN CATCH		
+		SET @NBirthday = NULL
+		SET @NError = 1
+		RAISERROR(N'Дата рождения задана некорректно!', 16, 1)
+	END CATCH			
+END CATCH	
+	
+DECLARE @NHiringDay datetime = NULL
+IF N'@Дата трудоустройства' IS NOT NULL AND N'@Дата трудоустройства' &lt;&gt; ''
+BEGIN TRY 
+	SET @NHiringDay = CONVERT(datetime, N'@Дата трудоустройства', 104)
+END TRY	
+BEGIN CATCH
+	BEGIN TRY
+		SET @NHiringDay = CONVERT(datetime, CONVERT(INT, N'@Дата трудоустройства') - 2)
+	END TRY
+	BEGIN CATCH	
+		SET @NHiringDay = NULL
+		SET @NError = 1
+		RAISERROR(N'Дата трудоустройства задана некорректно!', 16, 1)
+	END CATCH
+END CATCH
+	
+DECLARE @NEdDate1 datetime = NULL 	
+IF N'@Дата окончания_1' IS NOT NULL AND N'@Дата окончания_1' &lt;&gt; ''
+BEGIN TRY 
+	SET @NEdDate1 = CONVERT(datetime, N'@Дата окончания_1', 104)
+END TRY	
+BEGIN CATCH
+	BEGIN TRY
+		SET @NEdDate1 = CONVERT(datetime, CONVERT(INT, N'@Дата окончания_1') - 2)
+	END TRY
+	BEGIN CATCH	
+		SET @NEdDate1 = NULL
+		SET @NError = 1
+		RAISERROR(N'Дата окончания учебного заведения 1 задана некорректно!', 16, 1)
+	END CATCH
+END CATCH
+
+DECLARE @NEdDate2 datetime = NULL 	
+IF N'@Дата окончания_2' IS NOT NULL AND N'@Дата окончания_2' &lt;&gt; ''
+BEGIN TRY 
+	SET @NEdDate2 = CONVERT(datetime, N'@Дата окончания_2', 104)
+END TRY	
+BEGIN CATCH
+	BEGIN TRY
+		SET @NEdDate2 = CONVERT(datetime, CONVERT(INT, N'@Дата окончания_2') - 2)
+	END TRY
+	BEGIN CATCH	
+		SET @NEdDate2 = NULL
+		SET @NError = 1
+		RAISERROR(N'Дата окончания учебного заведения 2 задана некорректно!', 16, 1)
+	END CATCH
+END CATCH
+
+DECLARE @NEdDate3 datetime = NULL 	
+IF N'@Дата окончания_3' IS NOT NULL AND N'@Дата окончания_3' &lt;&gt; ''
+BEGIN TRY 
+	SET @NEdDate3 = CONVERT(datetime, N'@Дата окончания_3', 104)
+END TRY	
+BEGIN CATCH
+	BEGIN TRY
+		SET @NEdDate3 = CONVERT(datetime, CONVERT(INT, N'@Дата окончания_3') - 2)
+	END TRY
+	BEGIN CATCH	
+		SET @NEdDate3 = NULL
+		SET @NError = 1
+		RAISERROR(N'Дата окончания учебного заведения 3 задана некорректно!', 16, 1)
+	END CATCH
+END CATCH
+	
+DECLARE @NEdDate4 datetime = NULL 	
+IF N'@Дата окончания_4' IS NOT NULL AND N'@Дата окончания_4' &lt;&gt; ''
+BEGIN TRY 
+	SET @NEdDate4 = CONVERT(datetime, N'@Дата окончания_4', 104)
+END TRY	
+BEGIN CATCH
+	BEGIN TRY
+		SET @NEdDate4 = CONVERT(datetime, CONVERT(INT, N'@Дата окончания_4') - 2)
+	END TRY
+	BEGIN CATCH	
+		SET @NEdDate4 = NULL
+		SET @NError = 1
+		RAISERROR(N'Дата окончания учебного заведения 4 задана некорректно!', 16, 1)
+	END CATCH
+END CATCH	
+	
+DECLARE @NUPHChangeDate1 datetime = NULL	
+IF N'@Дата назначения_1' IS NOT NULL AND N'@Дата назначения_1' &lt;&gt; ''
+BEGIN TRY 
+	SET @NUPHChangeDate1 = CONVERT(datetime, N'@Дата назначения_1', 104)
+END TRY	
+BEGIN CATCH
+	BEGIN TRY
+		SET @NUPHChangeDate1 = CONVERT(datetime, CONVERT(INT, N'@Дата назначения_1') - 2)
+	END TRY
+	BEGIN CATCH
+		SET @NUPHChangeDate1 = NULL
+		SET @NError = 1
+		RAISERROR(N'Дата назначения по должностной позиции 1 задана некорректно!', 16, 1)
+	END CATCH
+END CATCH	
+
+DECLARE @NUPHChangeDate2 datetime = NULL	
+IF N'@Дата назначения_2' IS NOT NULL AND N'@Дата назначения_2' &lt;&gt; ''
+BEGIN TRY 
+	SET @NUPHChangeDate2 = CONVERT(datetime, N'@Дата назначения_2', 104)
+END TRY	
+BEGIN CATCH
+	BEGIN TRY
+		SET @NUPHChangeDate2 = CONVERT(datetime, CONVERT(INT, N'@Дата назначения_2') - 2)
+	END TRY
+	BEGIN CATCH
+		SET @NUPHChangeDate2 = NULL
+		SET @NError = 1
+		RAISERROR(N'Дата назначения по должностной позиции 2 задана некорректно!', 16, 1)
+	END CATCH
+END CATCH
+
+DECLARE @NUPHChangeDate3 datetime = NULL	
+IF N'@Дата назначения_3' IS NOT NULL AND N'@Дата назначения_3' &lt;&gt; ''
+BEGIN TRY 
+	SET @NUPHChangeDate3 = CONVERT(datetime, N'@Дата назначения_3', 104)
+END TRY	
+BEGIN CATCH
+	BEGIN TRY
+		SET @NUPHChangeDate3 = CONVERT(datetime, CONVERT(INT, N'@Дата назначения_3') - 2)
+	END TRY
+	BEGIN CATCH
+		SET @NUPHChangeDate3 = NULL
+		SET @NError = 1
+		RAISERROR(N'Дата назначения по должностной позиции 3 задана некорректно!', 16, 1)
+	END CATCH
+END CATCH
+
+DECLARE @NUPHChangeDate4 datetime = NULL	
+IF N'@Дата назначения_4' IS NOT NULL AND N'@Дата назначения_4' &lt;&gt; ''
+BEGIN TRY 
+	SET @NUPHChangeDate4 = CONVERT(datetime, N'@Дата назначения_4', 104)
+END TRY	
+BEGIN CATCH
+	BEGIN TRY
+		SET @NUPHChangeDate4 = CONVERT(datetime, CONVERT(INT, N'@Дата назначения_4') - 2)
+	END TRY
+	BEGIN CATCH
+		SET @NUPHChangeDate4 = NULL
+		SET @NError = 1
+		RAISERROR(N'Дата назначения по должностной позиции 4 задана некорректно!', 16, 1)
+	END CATCH
+END CATCH	
+
+DECLARE @NUPHChangeDate5 datetime = NULL	
+IF N'@Дата назначения_5' IS NOT NULL AND N'@Дата назначения_5' &lt;&gt; ''
+BEGIN TRY 
+	SET @NUPHChangeDate5 = CONVERT(datetime, N'@Дата назначения_5', 104)
+END TRY	
+BEGIN CATCH
+	BEGIN TRY
+		SET @NUPHChangeDate5 = CONVERT(datetime, CONVERT(INT, N'@Дата назначения_5') - 2)
+	END TRY
+	BEGIN CATCH
+		SET @NUPHChangeDate5 = NULL
+		SET @NError = 1
+		RAISERROR(N'Дата назначения по должностной позиции 5 задана некорректно!', 16, 1)
+	END CATCH
+END CATCH	
 	
 BEGIN TRANSACTION
 BEGIN TRY
@@ -2401,24 +2842,6 @@ BEGIN TRY
 	IF N'@Пол' = 'Ж' SET @NSex = 2
 	IF N'@Пол' IS NOT NULL AND N'@Пол' &lt;&gt; '' AND @NSex IS NULL 
 		RAISERROR(N'Пол пользователя задан некорректно!', 16, 1)
-	
-	DECLARE @NBirthday datetime = NULL
-	IF N'@Дата рождения' IS NOT NULL AND N'@Дата рождения' &lt;&gt; ''
-	BEGIN TRY 
-		SET @NBirthday = CONVERT(datetime, N'@Дата рождения', 104)
-	END TRY	
-	BEGIN CATCH
-		RAISERROR(N'Дата рождения задана некорректно!', 16, 1)
-	END CATCH	
-	
-	DECLARE @NHiringDay datetime = NULL
-	IF N'@Дата трудоустройства' IS NOT NULL AND N'@Дата трудоустройства' &lt;&gt; ''
-	BEGIN TRY 
-		SET @NHiringDay = CONVERT(datetime, N'@Дата трудоустройства', 104)
-	END TRY	
-	BEGIN CATCH
-		RAISERROR(N'Дата трудоустройства задана некорректно!', 16, 1)
-	END CATCH
 	
 	DECLARE @NStatusId INT = NULL
 	IF N'@Статус трудоустройства' IS NOT NULL AND N'@Статус трудоустройства' &lt;&gt; '' BEGIN
@@ -2451,7 +2874,6 @@ BEGIN TRY
 	-- Вставка данных по образованию
 	DECLARE @NEdEducationTypeId INT = NULL
 	DECLARE @NEdName NVARCHAR(250) = NULL
-	DECLARE @NEdDate datetime = NULL 
 	DECLARE @NEdQualification NVARCHAR(250) = NULL
 	DECLARE @NDocNumber NVARCHAR(250) = NULL
 	DECLARE @NUserEdId INT = NULL
@@ -2462,17 +2884,6 @@ BEGIN TRY
 		IF @NEdEducationTypeId IS NULL RAISERROR(N'Уровень образования 1 задан некорректно!', 16, 1)
 		END
 		
-	IF N'@Учебное заведение_1' IS NOT NULL AND N'@Учебное заведение_1' &lt;&gt; ''
-		SET @NEdName = N'@Учебное заведение_1'
-	
-	IF N'@Дата окончания_1' IS NOT NULL AND N'@Дата окончания_1' &lt;&gt; ''
-	BEGIN TRY 
-		SET @NEdDate = CONVERT(datetime, N'@Дата окончания_1', 104)
-	END TRY	
-	BEGIN CATCH
-		RAISERROR(N'Дата окончания учебного заведения 1 задана некорректно!', 16, 1)
-	END CATCH
-	
 	IF N'@Квалификация_1' IS NOT NULL AND N'@Квалификация_1' &lt;&gt; ''
 		SET @NEdQualification = N'@Квалификация_1'
 
@@ -2483,13 +2894,12 @@ BEGIN TRY
 	IF @NUserEdId IS NULL SET @NUserEdId = 1
 	
 	-- Вставка записи по образованию 1
-	IF @NEdName IS NOT NULL AND @NEdDate IS NOT NULL AND @NEdQualification IS NOT NULL AND @NEdEducationTypeId IS NOT NULL BEGIN
-		EXEC [dbo].[UserEd_Insert] default, @NUserEdId, @NUserId, @NEdName, @NEdDate, @NEdQualification, @NEdEducationTypeId, @NDocNumber,
+	IF @NEdName IS NOT NULL AND @NEdDate1 IS NOT NULL AND @NEdQualification IS NOT NULL AND @NEdEducationTypeId IS NOT NULL BEGIN
+		EXEC [dbo].[UserEd_Insert] default, @NUserEdId, @NUserId, @NEdName, @NEdDate1, @NEdQualification, @NEdEducationTypeId, @NDocNumber,
 			NULL, 0
 	END	ELSE PRINT N'Пропуск внесения записи по позиции образования 1'
 	SET @NEdEducationTypeId = NULL
 	SET @NEdName = NULL
-	SET @NEdDate = NULL
 	SET @NEdQualification = NULL
 	SET @NDocNumber = NULL
 	SET @NUserEdId = NULL
@@ -2503,14 +2913,6 @@ BEGIN TRY
 	IF N'@Учебное заведение_2' IS NOT NULL AND N'@Учебное заведение_2' &lt;&gt; ''
 		SET @NEdName = N'@Учебное заведение_2'
 	
-	IF N'@Дата окончания_2' IS NOT NULL AND N'@Дата окончания_2' &lt;&gt; ''
-	BEGIN TRY 
-		SET @NEdDate = CONVERT(datetime, N'@Дата окончания_2', 104)
-	END TRY	
-	BEGIN CATCH
-		RAISERROR(N'Дата окончания учебного заведения 2 задана некорректно!', 16, 1)
-	END CATCH
-	
 	IF N'@Квалификация_2' IS NOT NULL AND N'@Квалификация_2' &lt;&gt; ''
 		SET @NEdQualification = N'@Квалификация_2'
 
@@ -2521,13 +2923,12 @@ BEGIN TRY
 	IF @NUserEdId IS NULL SET @NUserEdId = 1
 	
 	-- Вставка записи по образованию 2
-	IF @NEdName IS NOT NULL AND @NEdDate IS NOT NULL AND @NEdQualification IS NOT NULL AND @NEdEducationTypeId IS NOT NULL BEGIN
-		EXEC [dbo].[UserEd_Insert] default, @NUserEdId, @NUserId, @NEdName, @NEdDate, @NEdQualification, @NEdEducationTypeId, @NDocNumber,
+	IF @NEdName IS NOT NULL AND @NEdDate2 IS NOT NULL AND @NEdQualification IS NOT NULL AND @NEdEducationTypeId IS NOT NULL BEGIN
+		EXEC [dbo].[UserEd_Insert] default, @NUserEdId, @NUserId, @NEdName, @NEdDate2, @NEdQualification, @NEdEducationTypeId, @NDocNumber,
 			NULL, 0
 	END	ELSE PRINT N'Пропуск внесения записи по позиции образования 2'
 	SET @NEdEducationTypeId = NULL
 	SET @NEdName = NULL
-	SET @NEdDate = NULL
 	SET @NEdQualification = NULL
 	SET @NDocNumber = NULL
 	SET @NUserEdId = NULL
@@ -2541,14 +2942,6 @@ BEGIN TRY
 	IF N'@Учебное заведение_3' IS NOT NULL AND N'@Учебное заведение_3' &lt;&gt; ''
 		SET @NEdName = N'@Учебное заведение_3'
 	
-	IF N'@Дата окончания_3' IS NOT NULL AND N'@Дата окончания_3' &lt;&gt; ''
-	BEGIN TRY 
-		SET @NEdDate = CONVERT(datetime, N'@Дата окончания_3', 104)
-	END TRY	
-	BEGIN CATCH
-		RAISERROR(N'Дата окончания учебного заведения 3 задана некорректно!', 16, 1)
-	END CATCH
-	
 	IF N'@Квалификация_3' IS NOT NULL AND N'@Квалификация_3' &lt;&gt; ''
 		SET @NEdQualification = N'@Квалификация_3'
 
@@ -2559,13 +2952,12 @@ BEGIN TRY
 	IF @NUserEdId IS NULL SET @NUserEdId = 1
 	
 	-- Вставка записи по образованию 3
-	IF @NEdName IS NOT NULL AND @NEdDate IS NOT NULL AND @NEdQualification IS NOT NULL AND @NEdEducationTypeId IS NOT NULL BEGIN
-		EXEC [dbo].[UserEd_Insert] default, @NUserEdId, @NUserId, @NEdName, @NEdDate, @NEdQualification, @NEdEducationTypeId, @NDocNumber,
+	IF @NEdName IS NOT NULL AND @NEdDate3 IS NOT NULL AND @NEdQualification IS NOT NULL AND @NEdEducationTypeId IS NOT NULL BEGIN
+		EXEC [dbo].[UserEd_Insert] default, @NUserEdId, @NUserId, @NEdName, @NEdDate3, @NEdQualification, @NEdEducationTypeId, @NDocNumber,
 			NULL, 0
 	END	ELSE PRINT N'Пропуск внесения записи по позиции образования 3'
 	SET @NEdEducationTypeId = NULL
 	SET @NEdName = NULL
-	SET @NEdDate = NULL
 	SET @NEdQualification = NULL
 	SET @NDocNumber = NULL
 	SET @NUserEdId = NULL
@@ -2579,14 +2971,6 @@ BEGIN TRY
 	IF N'@Учебное заведение_4' IS NOT NULL AND N'@Учебное заведение_4' &lt;&gt; ''
 		SET @NEdName = N'@Учебное заведение_4'
 	
-	IF N'@Дата окончания_4' IS NOT NULL AND N'@Дата окончания_4' &lt;&gt; ''
-	BEGIN TRY 
-		SET @NEdDate = CONVERT(datetime, N'@Дата окончания_4', 104)
-	END TRY	
-	BEGIN CATCH
-		RAISERROR(N'Дата окончания учебного заведения 4 задана некорректно!', 16, 1)
-	END CATCH
-	
 	IF N'@Квалификация_4' IS NOT NULL AND N'@Квалификация_4' &lt;&gt; ''
 		SET @NEdQualification = N'@Квалификация_4'
 
@@ -2597,20 +2981,18 @@ BEGIN TRY
 	IF @NUserEdId IS NULL SET @NUserEdId = 1
 	
 	-- Вставка записи по образованию 4
-	IF @NEdName IS NOT NULL AND @NEdDate IS NOT NULL AND @NEdQualification IS NOT NULL AND @NEdEducationTypeId IS NOT NULL BEGIN
-		EXEC [dbo].[UserEd_Insert] default, @NUserEdId, @NUserId, @NEdName, @NEdDate, @NEdQualification, @NEdEducationTypeId, @NDocNumber,
+	IF @NEdName IS NOT NULL AND @NEdDate4 IS NOT NULL AND @NEdQualification IS NOT NULL AND @NEdEducationTypeId IS NOT NULL BEGIN
+		EXEC [dbo].[UserEd_Insert] default, @NUserEdId, @NUserId, @NEdName, @NEdDate4, @NEdQualification, @NEdEducationTypeId, @NDocNumber,
 			NULL, 0
 	END	ELSE PRINT N'Пропуск внесения записи по позиции образования 4'
 	SET @NEdEducationTypeId = NULL
 	SET @NEdName = NULL
-	SET @NEdDate = NULL
 	SET @NEdQualification = NULL
 	SET @NDocNumber = NULL
 	SET @NUserEdId = NULL
 
 	-- Вставка данных по должностной позиции
 	DECLARE @NUPHUserPositionHistoryId INT = NULL
-	DECLARE @NUPHChangeDate datetime = NULL
 	DECLARE @NUPHUserPositionId INT = NULL
 	
 	-- Проверка типа по должностной позиции 1
@@ -2619,26 +3001,17 @@ BEGIN TRY
 		IF @NUPHUserPositionId IS NULL RAISERROR(N'Наименование должностной позиции 1 задано некорректно!', 16, 1)
 		END
 	
-	IF N'@Дата назначения_1' IS NOT NULL AND N'@Дата назначения_1' &lt;&gt; ''
-	BEGIN TRY 
-		SET @NUPHChangeDate = CONVERT(datetime, N'@Дата назначения_1', 104)
-	END TRY	
-	BEGIN CATCH
-		RAISERROR(N'Дата назначения по должностной позиции 1 задана некорректно!', 16, 1)
-	END CATCH	
-	
 	SET @NUPHUserPositionHistoryId = (SELECT MAX([UserPositionHistory].[UserPositionHistoryId]) + 1 FROM [UserPositionHistory]) 
 	IF @NUPHUserPositionHistoryId IS NULL SET @NUPHUserPositionHistoryId = 1
 	
 	-- Вставка записи по должностной позиции 1
-	IF @NUPHChangeDate IS NOT NULL AND @NUPHUserPositionId IS NOT NULL BEGIN
-		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate, @NUPHUserPositionId
+	IF @NUPHChangeDate1 IS NOT NULL AND @NUPHUserPositionId IS NOT NULL BEGIN
+		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate1, @NUPHUserPositionId
 		UPDATE [UserProp] SET
 			[UserProp].[UserPositionId] = @NUPHUserPositionId
 		WHERE [UserProp].[UserId] = @NUserId
 		END
 	ELSE PRINT N'Пропуск внесения записи по должностной позиции 1'
-	SET @NUPHChangeDate  = NULL
 	SET @NUPHUserPositionId = NULL
 	
 	-- Проверка типа по должностной позиции 2
@@ -2647,22 +3020,13 @@ BEGIN TRY
 		IF @NUPHUserPositionId IS NULL RAISERROR(N'Наименование должностной позиции 2 задано некорректно!', 16, 1)
 		END
 	
-	IF N'@Дата назначения_2' IS NOT NULL AND N'@Дата назначения_2' &lt;&gt; ''
-	BEGIN TRY 
-		SET @NUPHChangeDate = CONVERT(datetime, N'@Дата назначения_2', 104)
-	END TRY	
-	BEGIN CATCH
-		RAISERROR(N'Дата назначения по должностной позиции 2 задана некорректно!', 16, 1)
-	END CATCH	
-	
 	SET @NUPHUserPositionHistoryId = (SELECT MAX([UserPositionHistory].[UserPositionHistoryId]) + 1 FROM [UserPositionHistory]) 
 	IF @NUPHUserPositionHistoryId IS NULL SET @NUPHUserPositionHistoryId = 1
 	
-	-- Вставка записи по должностной позиции 1
-	IF @NUPHChangeDate IS NOT NULL AND @NUPHUserPositionId IS NOT NULL
-		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate, @NUPHUserPositionId
+	-- Вставка записи по должностной позиции 2
+	IF @NUPHChangeDate2 IS NOT NULL AND @NUPHUserPositionId IS NOT NULL
+		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate2, @NUPHUserPositionId
 	ELSE PRINT N'Пропуск внесения записи по должностной позиции 2'
-	SET @NUPHChangeDate  = NULL
 	SET @NUPHUserPositionId = NULL
 	
 	-- Проверка типа по должностной позиции 3
@@ -2671,22 +3035,13 @@ BEGIN TRY
 		IF @NUPHUserPositionId IS NULL RAISERROR(N'Наименование должностной позиции 3 задано некорректно!', 16, 1)
 		END
 	
-	IF N'@Дата назначения_3' IS NOT NULL AND N'@Дата назначения_3' &lt;&gt; ''
-	BEGIN TRY 
-		SET @NUPHChangeDate = CONVERT(datetime, N'@Дата назначения_3', 104)
-	END TRY	
-	BEGIN CATCH
-		RAISERROR(N'Дата назначения по должностной позиции 3 задана некорректно!', 16, 1)
-	END CATCH	
-	
 	SET @NUPHUserPositionHistoryId = (SELECT MAX([UserPositionHistory].[UserPositionHistoryId]) + 1 FROM [UserPositionHistory]) 
 	IF @NUPHUserPositionHistoryId IS NULL SET @NUPHUserPositionHistoryId = 1
 	
 	-- Вставка записи по должностной позиции 3
-	IF @NUPHChangeDate IS NOT NULL AND @NUPHUserPositionId IS NOT NULL
-		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate, @NUPHUserPositionId
+	IF @NUPHChangeDate3 IS NOT NULL AND @NUPHUserPositionId IS NOT NULL
+		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate3, @NUPHUserPositionId
 	ELSE PRINT N'Пропуск внесения записи по должностной позиции 3'
-	SET @NUPHChangeDate  = NULL
 	SET @NUPHUserPositionId = NULL
 	
 	-- Проверка типа по должностной позиции 4
@@ -2695,22 +3050,13 @@ BEGIN TRY
 		IF @NUPHUserPositionId IS NULL RAISERROR(N'Наименование должностной позиции 4 задано некорректно!', 16, 1)
 		END
 	
-	IF N'@Дата назначения_4' IS NOT NULL AND N'@Дата назначения_4' &lt;&gt; ''
-	BEGIN TRY 
-		SET @NUPHChangeDate = CONVERT(datetime, N'@Дата назначения_4', 104)
-	END TRY	
-	BEGIN CATCH
-		RAISERROR(N'Дата назначения по должностной позиции 4 задана некорректно!', 16, 1)
-	END CATCH	
-	
 	SET @NUPHUserPositionHistoryId = (SELECT MAX([UserPositionHistory].[UserPositionHistoryId]) + 1 FROM [UserPositionHistory]) 
 	IF @NUPHUserPositionHistoryId IS NULL SET @NUPHUserPositionHistoryId = 1
 	
-	-- Вставка записи по должностной позиции 1
-	IF @NUPHChangeDate IS NOT NULL AND @NUPHUserPositionId IS NOT NULL
-		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate, @NUPHUserPositionId
+	-- Вставка записи по должностной позиции 4
+	IF @NUPHChangeDate4 IS NOT NULL AND @NUPHUserPositionId IS NOT NULL
+		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate4, @NUPHUserPositionId
 	ELSE PRINT N'Пропуск внесения записи по должностной позиции 4'
-	SET @NUPHChangeDate  = NULL
 	SET @NUPHUserPositionId = NULL
 	
 	-- Проверка типа по должностной позиции 5
@@ -2719,22 +3065,14 @@ BEGIN TRY
 		IF @NUPHUserPositionId IS NULL RAISERROR(N'Наименование должностной позиции 5 задано некорректно!', 16, 1)
 		END
 	
-	IF N'@Дата назначения_5' IS NOT NULL AND N'@Дата назначения_5' &lt;&gt; ''
-	BEGIN TRY 
-		SET @NUPHChangeDate = CONVERT(datetime, N'@Дата назначения_5', 104)
-	END TRY	
-	BEGIN CATCH
-		RAISERROR(N'Дата назначения по должностной позиции 5 задана некорректно!', 16, 1)
-	END CATCH	
-	
 	SET @NUPHUserPositionHistoryId = (SELECT MAX([UserPositionHistory].[UserPositionHistoryId]) + 1 FROM [UserPositionHistory]) 
 	IF @NUPHUserPositionHistoryId IS NULL SET @NUPHUserPositionHistoryId = 1
 	
 	-- Вставка записи по должностной позиции 5
-	IF @NUPHChangeDate IS NOT NULL AND @NUPHUserPositionId IS NOT NULL
-		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate, @NUPHUserPositionId
+	IF @NUPHChangeDate5 IS NOT NULL AND @NUPHUserPositionId IS NOT NULL
+		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate5, @NUPHUserPositionId
 	ELSE PRINT N'Пропуск внесения записи по должностной позиции 5'
-	SET @NUPHChangeDate  = NULL
+	SET @NUPHChangeDate5  = NULL
 	SET @NUPHUserPositionId = NULL
 END TRY
 
@@ -2743,17 +3081,28 @@ BEGIN CATCH
 		BEGIN
 			ROLLBACK TRANSACTION
 			PRINT N'Откат транзакции.'
-			DECLARE @NERRORMESSAGE NVARCHAR(1000) = ERROR_MESSAGE()
+			SET @NERRORMESSAGE = ERROR_MESSAGE()
 			RAISERROR(@NERRORMESSAGE, 16, 1);            	
 		END
 END CATCH
+
+IF @NError IS NOT NULL
+	IF @@TRANCOUNT &gt; 0
+		BEGIN
+			ROLLBACK TRANSACTION
+			PRINT N'Откат транзакции.'
+			SET @NERRORMESSAGE = ERROR_MESSAGE()
+			RAISERROR(@NERRORMESSAGE, 16, 1);            	
+		END
 
 IF @@TRANCOUNT &gt; 0
 	BEGIN
 		COMMIT TRANSACTION
 		PRINT N'Применение транзакции.'
 	END</CreateSql>
-      <EditSql>DECLARE @NGenerate NVARCHAR(10) = SUBSTRING(CONVERT(NVARCHAR(100), HASHBYTES('MD5', CAST(SYSDATETIME() AS NVARCHAR)), 2), 0, 12)
+      <EditSql>DECLARE @NError BIT = NULL
+DECLARE @NERRORMESSAGE NVARCHAR(1000)
+DECLARE @NGenerate NVARCHAR(10) = SUBSTRING(CONVERT(NVARCHAR(100), HASHBYTES('MD5', CAST(SYSDATETIME() AS NVARCHAR)), 2), 0, 12)
 DECLARE @NUserUID uniqueidentifier = N'@UserUID (Ключ персонала)'
 DECLARE @NUserId INT = NULL
 DECLARE @NFullName NVARCHAR(150)
@@ -2780,12 +3129,19 @@ IF (@NName IS NULL OR @NName = '')
 				SET @NName = @NName + ' ' + UPPER((SELECT LEFT([@NR].[PartyIndex], 1) FROM @NR WHERE [@NR].[id] = 3)) + '.'
 		END
 
-DECLARE @NSkills NVARCHAR(MAX) = N'@Место рождения' + ';' + 
-	N'@Работа по основному месту работы / по совместительству' + ';' + 
-		N'@Выполняемые функции'
+DECLARE @NSkills NVARCHAR(MAX);
+IF N'@Место рождения' IS NOT NULL AND N'@Место рождения' &lt;&gt; '' SET @NSkills = N'@Место рождения' + ';'
+	ELSE SET @NSkills = ';'
+IF N'@Работа по основному месту работы / по совместительству' IS NOT NULL AND N'@Работа по основному месту работы / по совместительству'
+	&lt;&gt; '' SET @NSkills = @NSkills + N'@Работа по основному месту работы / по совместительству' + ';'
+		ELSE SET @NSkills = @NSkills + ';'
+IF N'@Выполняемые функции' IS NOT NULL AND N'@Выполняемые функции' &lt;&gt; '' SET @NSkills = @NSkills + N'@Выполняемые функции'
 
 DECLARE @NEmale NVARCHAR(150) = NULL
-IF N'@Email' IS NOT NULL AND N'@Email' &lt;&gt; '' AND PATINDEX('%@%.%', N'@Email') &gt; 0 SET @NEmale = N'@Email'
+IF N'@Email' IS NOT NULL AND N'@Email' &lt;&gt; '' BEGIN
+	SET @NEmale = N'@Email'
+	IF PATINDEX('%@%.%', @NEmale) &lt; 1 SET @NEmale = NULL
+	END
 
 DECLARE @NInsuranceNumber NVARCHAR(150) = NULL
 IF N'@№ страхового свидетельства ГПС (СНИЛС)' IS NOT NULL AND N'@№ страхового свидетельства ГПС (СНИЛС)' &lt;&gt; ''
@@ -2809,7 +3165,184 @@ IF N'@Сотрудник аккредитованной лаборатории' 
 DECLARE @NComment NVARCHAR(MAX) = NULL
 IF N'@Примечание' IS NOT NULL AND N'@Примечание' &lt;&gt; ''
 	SET @NComment = N'@Примечание'
+
+-- Преобразование дат
+DECLARE @NBirthday datetime = NULL
+IF N'@Дата рождения' IS NOT NULL AND N'@Дата рождения' &lt;&gt; ''
+	BEGIN TRY 
+		SET @NBirthday = CONVERT(datetime, N'@Дата рождения', 104)
+	END TRY	
+BEGIN CATCH
+	BEGIN TRY
+		SET @NBirthday = CONVERT(datetime, CONVERT(int, N'@Дата рождения') - 2)
+	END TRY
+	BEGIN CATCH		
+		SET @NBirthday = NULL
+		SET @NError = 1
+		RAISERROR(N'Дата рождения задана некорректно!', 16, 1)
+	END CATCH			
+END CATCH	
 	
+DECLARE @NHiringDay datetime = NULL
+IF N'@Дата трудоустройства' IS NOT NULL AND N'@Дата трудоустройства' &lt;&gt; ''
+BEGIN TRY 
+	SET @NHiringDay = CONVERT(datetime, N'@Дата трудоустройства', 104)
+END TRY	
+BEGIN CATCH
+	BEGIN TRY
+		SET @NHiringDay = CONVERT(datetime, CONVERT(INT, N'@Дата трудоустройства') - 2)
+	END TRY
+	BEGIN CATCH	
+		SET @NHiringDay = NULL
+		SET @NError = 1
+		RAISERROR(N'Дата трудоустройства задана некорректно!', 16, 1)
+	END CATCH
+END CATCH
+	
+DECLARE @NEdDate1 datetime = NULL 	
+IF N'@Дата окончания_1' IS NOT NULL AND N'@Дата окончания_1' &lt;&gt; ''
+BEGIN TRY 
+	SET @NEdDate1 = CONVERT(datetime, N'@Дата окончания_1', 104)
+END TRY	
+BEGIN CATCH
+	BEGIN TRY
+		SET @NEdDate1 = CONVERT(datetime, CONVERT(INT, N'@Дата окончания_1') - 2)
+	END TRY
+	BEGIN CATCH	
+		SET @NEdDate1 = NULL
+		SET @NError = 1
+		RAISERROR(N'Дата окончания учебного заведения 1 задана некорректно!', 16, 1)
+	END CATCH
+END CATCH
+
+DECLARE @NEdDate2 datetime = NULL 	
+IF N'@Дата окончания_2' IS NOT NULL AND N'@Дата окончания_2' &lt;&gt; ''
+BEGIN TRY 
+	SET @NEdDate2 = CONVERT(datetime, N'@Дата окончания_2', 104)
+END TRY	
+BEGIN CATCH
+	BEGIN TRY
+		SET @NEdDate2 = CONVERT(datetime, CONVERT(INT, N'@Дата окончания_2') - 2)
+	END TRY
+	BEGIN CATCH	
+		SET @NEdDate2 = NULL
+		SET @NError = 1
+		RAISERROR(N'Дата окончания учебного заведения 2 задана некорректно!', 16, 1)
+	END CATCH
+END CATCH
+
+DECLARE @NEdDate3 datetime = NULL 	
+IF N'@Дата окончания_3' IS NOT NULL AND N'@Дата окончания_3' &lt;&gt; ''
+BEGIN TRY 
+	SET @NEdDate3 = CONVERT(datetime, N'@Дата окончания_3', 104)
+END TRY	
+BEGIN CATCH
+	BEGIN TRY
+		SET @NEdDate3 = CONVERT(datetime, CONVERT(INT, N'@Дата окончания_3') - 2)
+	END TRY
+	BEGIN CATCH	
+		SET @NEdDate3 = NULL
+		SET @NError = 1
+		RAISERROR(N'Дата окончания учебного заведения 3 задана некорректно!', 16, 1)
+	END CATCH
+END CATCH
+	
+DECLARE @NEdDate4 datetime = NULL 	
+IF N'@Дата окончания_4' IS NOT NULL AND N'@Дата окончания_4' &lt;&gt; ''
+BEGIN TRY 
+	SET @NEdDate4 = CONVERT(datetime, N'@Дата окончания_4', 104)
+END TRY	
+BEGIN CATCH
+	BEGIN TRY
+		SET @NEdDate4 = CONVERT(datetime, CONVERT(INT, N'@Дата окончания_4') - 2)
+	END TRY
+	BEGIN CATCH	
+		SET @NEdDate4 = NULL
+		SET @NError = 1
+		RAISERROR(N'Дата окончания учебного заведения 4 задана некорректно!', 16, 1)
+	END CATCH
+END CATCH	
+	
+DECLARE @NUPHChangeDate1 datetime = NULL	
+IF N'@Дата назначения_1' IS NOT NULL AND N'@Дата назначения_1' &lt;&gt; ''
+BEGIN TRY 
+	SET @NUPHChangeDate1 = CONVERT(datetime, N'@Дата назначения_1', 104)
+END TRY	
+BEGIN CATCH
+	BEGIN TRY
+		SET @NUPHChangeDate1 = CONVERT(datetime, CONVERT(INT, N'@Дата назначения_1') - 2)
+	END TRY
+	BEGIN CATCH
+		SET @NUPHChangeDate1 = NULL
+		SET @NError = 1
+		RAISERROR(N'Дата назначения по должностной позиции 1 задана некорректно!', 16, 1)
+	END CATCH
+END CATCH	
+
+DECLARE @NUPHChangeDate2 datetime = NULL	
+IF N'@Дата назначения_2' IS NOT NULL AND N'@Дата назначения_2' &lt;&gt; ''
+BEGIN TRY 
+	SET @NUPHChangeDate2 = CONVERT(datetime, N'@Дата назначения_2', 104)
+END TRY	
+BEGIN CATCH
+	BEGIN TRY
+		SET @NUPHChangeDate2 = CONVERT(datetime, CONVERT(INT, N'@Дата назначения_2') - 2)
+	END TRY
+	BEGIN CATCH
+		SET @NUPHChangeDate2 = NULL
+		SET @NError = 1
+		RAISERROR(N'Дата назначения по должностной позиции 2 задана некорректно!', 16, 1)
+	END CATCH
+END CATCH
+
+DECLARE @NUPHChangeDate3 datetime = NULL	
+IF N'@Дата назначения_3' IS NOT NULL AND N'@Дата назначения_3' &lt;&gt; ''
+BEGIN TRY 
+	SET @NUPHChangeDate3 = CONVERT(datetime, N'@Дата назначения_3', 104)
+END TRY	
+BEGIN CATCH
+	BEGIN TRY
+		SET @NUPHChangeDate3 = CONVERT(datetime, CONVERT(INT, N'@Дата назначения_3') - 2)
+	END TRY
+	BEGIN CATCH
+		SET @NUPHChangeDate3 = NULL
+		SET @NError = 1
+		RAISERROR(N'Дата назначения по должностной позиции 3 задана некорректно!', 16, 1)
+	END CATCH
+END CATCH
+
+DECLARE @NUPHChangeDate4 datetime = NULL	
+IF N'@Дата назначения_4' IS NOT NULL AND N'@Дата назначения_4' &lt;&gt; ''
+BEGIN TRY 
+	SET @NUPHChangeDate4 = CONVERT(datetime, N'@Дата назначения_4', 104)
+END TRY	
+BEGIN CATCH
+	BEGIN TRY
+		SET @NUPHChangeDate4 = CONVERT(datetime, CONVERT(INT, N'@Дата назначения_4') - 2)
+	END TRY
+	BEGIN CATCH
+		SET @NUPHChangeDate4 = NULL
+		SET @NError = 1
+		RAISERROR(N'Дата назначения по должностной позиции 4 задана некорректно!', 16, 1)
+	END CATCH
+END CATCH	
+
+DECLARE @NUPHChangeDate5 datetime = NULL	
+IF N'@Дата назначения_5' IS NOT NULL AND N'@Дата назначения_5' &lt;&gt; ''
+BEGIN TRY 
+	SET @NUPHChangeDate5 = CONVERT(datetime, N'@Дата назначения_5', 104)
+END TRY	
+BEGIN CATCH
+	BEGIN TRY
+		SET @NUPHChangeDate5 = CONVERT(datetime, CONVERT(INT, N'@Дата назначения_5') - 2)
+	END TRY
+	BEGIN CATCH
+		SET @NUPHChangeDate5 = NULL
+		SET @NError = 1
+		RAISERROR(N'Дата назначения по должностной позиции 5 задана некорректно!', 16, 1)
+	END CATCH
+END CATCH	
+
 BEGIN TRANSACTION
 BEGIN TRY
 	SET @NUserId = (SELECT [User].[UserId] FROM [User] WHERE [User].[UserUID] = @NUserUID)
@@ -2831,24 +3364,6 @@ BEGIN TRY
 	IF N'@Пол' = 'Ж' SET @NSex = 2
 	IF N'@Пол' IS NOT NULL AND N'@Пол' &lt;&gt; '' AND @NSex IS NULL 
 		RAISERROR(N'Пол пользователя задан некорректно!', 16, 1)
-	
-	DECLARE @NBirthday datetime = NULL
-	IF N'@Дата рождения' IS NOT NULL AND N'@Дата рождения' &lt;&gt; ''
-	BEGIN TRY 
-		SET @NBirthday = CONVERT(datetime, N'@Дата рождения', 104)
-	END TRY	
-	BEGIN CATCH
-		RAISERROR(N'Дата рождения задана некорректно!', 16, 1)
-	END CATCH	
-	
-	DECLARE @NHiringDay datetime = NULL
-	IF N'@Дата трудоустройства' IS NOT NULL AND N'@Дата трудоустройства' &lt;&gt; ''
-	BEGIN TRY 
-		SET @NHiringDay = CONVERT(datetime, N'@Дата трудоустройства', 104)
-	END TRY	
-	BEGIN CATCH
-		RAISERROR(N'Дата трудоустройства задана некорректно!', 16, 1)
-	END CATCH
 	
 	DECLARE @NStatusId INT = NULL
 	IF N'@Статус трудоустройства' IS NOT NULL AND N'@Статус трудоустройства' &lt;&gt; '' BEGIN
@@ -2873,23 +3388,28 @@ BEGIN TRY
 		BEGIN CATCH
 			RAISERROR(N'Величина практического опыта до последнего трудоустройства задана некорректно!', 16, 1)
 		END CATCH
-
-	UPDATE [UserProp] SET
-		[UserProp].[Birthday] = @NBirthday,
-		[UserProp].[HiringDay] = @NHiringDay,
-		[UserProp].[StatusId] = @NStatusId,
-		[UserProp].[Skills] = @NSkills,
-		[UserProp].[Emale] = @NEmale,
-		[UserProp].[Phone] = @NPhone,
-		[UserProp].[Accredited] = @NAccredited,
-		[UserProp].[SkillsYears] = @NSkilsYears,
-		[UserProp].[CommonSkillsYears] = @NCommonSkilsYears,
-		[UserProp].[Fax] = @NFax,
-		[UserProp].[Number] = @NNumber,
-		[UserProp].[InsuranceNumber] = @NInsuranceNumber,
-		[UserProp].[Comment] = @NComment,
-		[UserProp].[Sex] = @NSex
-	WHERE [UserProp].[UserId] = @NUserId
+	
+	IF (SELECT SUM(1) FROM [UserProp] WHERE [UserProp].[UserId] = @NUserId) &gt; 0 BEGIN
+		UPDATE [UserProp] SET
+			[UserProp].[Birthday] = @NBirthday,
+			[UserProp].[HiringDay] = @NHiringDay,
+			[UserProp].[StatusId] = @NStatusId,
+			[UserProp].[Skills] = @NSkills,
+			[UserProp].[Emale] = @NEmale,
+			[UserProp].[Phone] = @NPhone,
+			[UserProp].[Accredited] = @NAccredited,
+			[UserProp].[SkillsYears] = @NSkilsYears,
+			[UserProp].[CommonSkillsYears] = @NCommonSkilsYears,
+			[UserProp].[Fax] = @NFax,
+			[UserProp].[Number] = @NNumber,
+			[UserProp].[InsuranceNumber] = @NInsuranceNumber,
+			[UserProp].[Comment] = @NComment,
+			[UserProp].[Sex] = @NSex
+		WHERE [UserProp].[UserId] = @NUserId
+		END ELSE
+		EXEC [dbo].[UserProp_Insert] default, @NUserId, @NBirthday, @NHiringDay, @NStatusId, NULL, @NSkills, @NEmale, @NPhone,
+			@NAccredited, NULL, @NSkilsYears, @NCommonSkilsYears, @NFax, NULL, @NNumber, NULL, @NInsuranceNumber, @NComment, @NSex,
+				NULL, NULL, 0
 
 	-- Удаление всех записей по образованию по пользователю
 	DELETE [UserEd] WHERE [UserEd].[UserId] = @NUserId
@@ -2897,7 +3417,6 @@ BEGIN TRY
 	-- Вставка данных по образованию
 	DECLARE @NEdEducationTypeId INT = NULL
 	DECLARE @NEdName NVARCHAR(250) = NULL
-	DECLARE @NEdDate datetime = NULL 
 	DECLARE @NEdQualification NVARCHAR(250) = NULL
 	DECLARE @NDocNumber NVARCHAR(250) = NULL
 	DECLARE @NUserEdId INT = NULL
@@ -2911,14 +3430,6 @@ BEGIN TRY
 	IF N'@Учебное заведение_1' IS NOT NULL AND N'@Учебное заведение_1' &lt;&gt; ''
 		SET @NEdName = N'@Учебное заведение_1'
 	
-	IF N'@Дата окончания_1' IS NOT NULL AND N'@Дата окончания_1' &lt;&gt; ''
-	BEGIN TRY 
-		SET @NEdDate = CONVERT(datetime, N'@Дата окончания_1', 104)
-	END TRY	
-	BEGIN CATCH
-		RAISERROR(N'Дата окончания учебного заведения 1 задана некорректно!', 16, 1)
-	END CATCH
-	
 	IF N'@Квалификация_1' IS NOT NULL AND N'@Квалификация_1' &lt;&gt; ''
 		SET @NEdQualification = N'@Квалификация_1'
 
@@ -2929,14 +3440,13 @@ BEGIN TRY
 	IF @NUserEdId IS NULL SET @NUserEdId = 1
 	
 	-- Вставка записи по образованию 1
-	IF @NEdName IS NOT NULL AND @NEdDate IS NOT NULL AND @NEdQualification IS NOT NULL AND @NEdEducationTypeId IS NOT NULL BEGIN
+	IF @NEdName IS NOT NULL AND @NEdDate1 IS NOT NULL AND @NEdQualification IS NOT NULL AND @NEdEducationTypeId IS NOT NULL BEGIN
 
-		EXEC [dbo].[UserEd_Insert] default, @NUserEdId, @NUserId, @NEdName, @NEdDate, @NEdQualification, @NEdEducationTypeId, @NDocNumber,
+		EXEC [dbo].[UserEd_Insert] default, @NUserEdId, @NUserId, @NEdName, @NEdDate1, @NEdQualification, @NEdEducationTypeId, @NDocNumber,
 			NULL, 0
 	END	ELSE PRINT N'Пропуск внесения записи по позиции образования 1'
 	SET @NEdEducationTypeId = NULL
 	SET @NEdName = NULL
-	SET @NEdDate = NULL
 	SET @NEdQualification = NULL
 	SET @NDocNumber = NULL
 	SET @NUserEdId = NULL
@@ -2950,14 +3460,6 @@ BEGIN TRY
 	IF N'@Учебное заведение_2' IS NOT NULL AND N'@Учебное заведение_2' &lt;&gt; ''
 		SET @NEdName = N'@Учебное заведение_2'
 	
-	IF N'@Дата окончания_2' IS NOT NULL AND N'@Дата окончания_2' &lt;&gt; ''
-	BEGIN TRY 
-		SET @NEdDate = CONVERT(datetime, N'@Дата окончания_2', 104)
-	END TRY	
-	BEGIN CATCH
-		RAISERROR(N'Дата окончания учебного заведения 2 задана некорректно!', 16, 1)
-	END CATCH
-	
 	IF N'@Квалификация_2' IS NOT NULL AND N'@Квалификация_2' &lt;&gt; ''
 		SET @NEdQualification = N'@Квалификация_2'
 
@@ -2968,13 +3470,12 @@ BEGIN TRY
 	IF @NUserEdId IS NULL SET @NUserEdId = 1
 	
 	-- Вставка записи по образованию 2
-	IF @NEdName IS NOT NULL AND @NEdDate IS NOT NULL AND @NEdQualification IS NOT NULL AND @NEdEducationTypeId IS NOT NULL BEGIN
-		EXEC [dbo].[UserEd_Insert] default, @NUserEdId, @NUserId, @NEdName, @NEdDate, @NEdQualification, @NEdEducationTypeId, @NDocNumber,
+	IF @NEdName IS NOT NULL AND @NEdDate2 IS NOT NULL AND @NEdQualification IS NOT NULL AND @NEdEducationTypeId IS NOT NULL BEGIN
+		EXEC [dbo].[UserEd_Insert] default, @NUserEdId, @NUserId, @NEdName, @NEdDate2, @NEdQualification, @NEdEducationTypeId, @NDocNumber,
 			NULL, 0
 	END	ELSE PRINT N'Пропуск внесения записи по позиции образования 2'
 	SET @NEdEducationTypeId = NULL
 	SET @NEdName = NULL
-	SET @NEdDate = NULL
 	SET @NEdQualification = NULL
 	SET @NDocNumber = NULL
 	SET @NUserEdId = NULL
@@ -2988,14 +3489,6 @@ BEGIN TRY
 	IF N'@Учебное заведение_3' IS NOT NULL AND N'@Учебное заведение_3' &lt;&gt; ''
 		SET @NEdName = N'@Учебное заведение_3'
 	
-	IF N'@Дата окончания_3' IS NOT NULL AND N'@Дата окончания_3' &lt;&gt; ''
-	BEGIN TRY 
-		SET @NEdDate = CONVERT(datetime, N'@Дата окончания_3', 104)
-	END TRY	
-	BEGIN CATCH
-		RAISERROR(N'Дата окончания учебного заведения 3 задана некорректно!', 16, 1)
-	END CATCH
-	
 	IF N'@Квалификация_3' IS NOT NULL AND N'@Квалификация_3' &lt;&gt; ''
 		SET @NEdQualification = N'@Квалификация_3'
 
@@ -3006,13 +3499,12 @@ BEGIN TRY
 	IF @NUserEdId IS NULL SET @NUserEdId = 1
 	
 	-- Вставка записи по образованию 3
-	IF @NEdName IS NOT NULL AND @NEdDate IS NOT NULL AND @NEdQualification IS NOT NULL AND @NEdEducationTypeId IS NOT NULL BEGIN
-		EXEC [dbo].[UserEd_Insert] default, @NUserEdId, @NUserId, @NEdName, @NEdDate, @NEdQualification, @NEdEducationTypeId, @NDocNumber,
+	IF @NEdName IS NOT NULL AND @NEdDate3 IS NOT NULL AND @NEdQualification IS NOT NULL AND @NEdEducationTypeId IS NOT NULL BEGIN
+		EXEC [dbo].[UserEd_Insert] default, @NUserEdId, @NUserId, @NEdName, @NEdDate3, @NEdQualification, @NEdEducationTypeId, @NDocNumber,
 			NULL, 0
 	END	ELSE PRINT N'Пропуск внесения записи по позиции образования 3'
 	SET @NEdEducationTypeId = NULL
 	SET @NEdName = NULL
-	SET @NEdDate = NULL
 	SET @NEdQualification = NULL
 	SET @NDocNumber = NULL
 	SET @NUserEdId = NULL
@@ -3026,14 +3518,6 @@ BEGIN TRY
 	IF N'@Учебное заведение_4' IS NOT NULL AND N'@Учебное заведение_4' &lt;&gt; ''
 		SET @NEdName = N'@Учебное заведение_4'
 	
-	IF N'@Дата окончания_4' IS NOT NULL AND N'@Дата окончания_4' &lt;&gt; ''
-	BEGIN TRY 
-		SET @NEdDate = CONVERT(datetime, N'@Дата окончания_4', 104)
-	END TRY	
-	BEGIN CATCH
-		RAISERROR(N'Дата окончания учебного заведения 4 задана некорректно!', 16, 1)
-	END CATCH
-	
 	IF N'@Квалификация_4' IS NOT NULL AND N'@Квалификация_4' &lt;&gt; ''
 		SET @NEdQualification = N'@Квалификация_4'
 
@@ -3044,13 +3528,12 @@ BEGIN TRY
 	IF @NUserEdId IS NULL SET @NUserEdId = 1
 	
 	-- Вставка записи по образованию 4
-	IF @NEdName IS NOT NULL AND @NEdDate IS NOT NULL AND @NEdQualification IS NOT NULL AND @NEdEducationTypeId IS NOT NULL BEGIN
-		EXEC [dbo].[UserEd_Insert] default, @NUserEdId, @NUserId, @NEdName, @NEdDate, @NEdQualification, @NEdEducationTypeId, @NDocNumber,
+	IF @NEdName IS NOT NULL AND @NEdDate4 IS NOT NULL AND @NEdQualification IS NOT NULL AND @NEdEducationTypeId IS NOT NULL BEGIN
+		EXEC [dbo].[UserEd_Insert] default, @NUserEdId, @NUserId, @NEdName, @NEdDate4, @NEdQualification, @NEdEducationTypeId, @NDocNumber,
 			NULL, 0
 	END	ELSE PRINT N'Пропуск внесения записи по позиции образования 4'
 	SET @NEdEducationTypeId = NULL
 	SET @NEdName = NULL
-	SET @NEdDate = NULL
 	SET @NEdQualification = NULL
 	SET @NDocNumber = NULL
 	SET @NUserEdId = NULL
@@ -3060,7 +3543,6 @@ BEGIN TRY
 
 	-- Вставка данных по должностной позиции
 	DECLARE @NUPHUserPositionHistoryId INT = NULL
-	DECLARE @NUPHChangeDate datetime = NULL
 	DECLARE @NUPHUserPositionId INT = NULL
 	
 	-- Проверка типа по должностной позиции 1
@@ -3069,26 +3551,17 @@ BEGIN TRY
 		IF @NUPHUserPositionId IS NULL RAISERROR(N'Наименование должностной позиции 1 задано некорректно!', 16, 1)
 		END
 	
-	IF N'@Дата назначения_1' IS NOT NULL AND N'@Дата назначения_1' &lt;&gt; ''
-	BEGIN TRY 
-		SET @NUPHChangeDate = CONVERT(datetime, N'@Дата назначения_1', 104)
-	END TRY	
-	BEGIN CATCH
-		RAISERROR(N'Дата назначения по должностной позиции 1 задана некорректно!', 16, 1)
-	END CATCH	
-	
 	SET @NUPHUserPositionHistoryId = (SELECT MAX([UserPositionHistory].[UserPositionHistoryId]) + 1 FROM [UserPositionHistory]) 
 	IF @NUPHUserPositionHistoryId IS NULL SET @NUPHUserPositionHistoryId = 1
 	
 	-- Вставка записи по должностной позиции 1
-	IF @NUPHChangeDate IS NOT NULL AND @NUPHUserPositionId IS NOT NULL BEGIN
-		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate, @NUPHUserPositionId
+	IF @NUPHChangeDate1 IS NOT NULL AND @NUPHUserPositionId IS NOT NULL BEGIN
+		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate1, @NUPHUserPositionId
 		UPDATE [UserProp] SET
 			[UserProp].[UserPositionId] = @NUPHUserPositionId
 		WHERE [UserProp].[UserId] = @NUserId
 		END
 	ELSE PRINT N'Пропуск внесения записи по должностной позиции 1'
-	SET @NUPHChangeDate  = NULL
 	SET @NUPHUserPositionId = NULL
 	
 	-- Проверка типа по должностной позиции 2
@@ -3097,22 +3570,13 @@ BEGIN TRY
 		IF @NUPHUserPositionId IS NULL RAISERROR(N'Наименование должностной позиции 2 задано некорректно!', 16, 1)
 		END
 	
-	IF N'@Дата назначения_2' IS NOT NULL AND N'@Дата назначения_2' &lt;&gt; ''
-	BEGIN TRY 
-		SET @NUPHChangeDate = CONVERT(datetime, N'@Дата назначения_2', 104)
-	END TRY	
-	BEGIN CATCH
-		RAISERROR(N'Дата назначения по должностной позиции 2 задана некорректно!', 16, 1)
-	END CATCH	
-	
 	SET @NUPHUserPositionHistoryId = (SELECT MAX([UserPositionHistory].[UserPositionHistoryId]) + 1 FROM [UserPositionHistory]) 
 	IF @NUPHUserPositionHistoryId IS NULL SET @NUPHUserPositionHistoryId = 1
 	
-	-- Вставка записи по должностной позиции 1
-	IF @NUPHChangeDate IS NOT NULL AND @NUPHUserPositionId IS NOT NULL
-		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate, @NUPHUserPositionId
+	-- Вставка записи по должностной позиции 2
+	IF @NUPHChangeDate2 IS NOT NULL AND @NUPHUserPositionId IS NOT NULL
+		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate2, @NUPHUserPositionId
 	ELSE PRINT N'Пропуск внесения записи по должностной позиции 2'
-	SET @NUPHChangeDate  = NULL
 	SET @NUPHUserPositionId = NULL
 	
 	-- Проверка типа по должностной позиции 3
@@ -3121,22 +3585,13 @@ BEGIN TRY
 		IF @NUPHUserPositionId IS NULL RAISERROR(N'Наименование должностной позиции 3 задано некорректно!', 16, 1)
 		END
 	
-	IF N'@Дата назначения_3' IS NOT NULL AND N'@Дата назначения_3' &lt;&gt; ''
-	BEGIN TRY 
-		SET @NUPHChangeDate = CONVERT(datetime, N'@Дата назначения_3', 104)
-	END TRY	
-	BEGIN CATCH
-		RAISERROR(N'Дата назначения по должностной позиции 3 задана некорректно!', 16, 1)
-	END CATCH	
-	
 	SET @NUPHUserPositionHistoryId = (SELECT MAX([UserPositionHistory].[UserPositionHistoryId]) + 1 FROM [UserPositionHistory]) 
 	IF @NUPHUserPositionHistoryId IS NULL SET @NUPHUserPositionHistoryId = 1
 	
 	-- Вставка записи по должностной позиции 3
-	IF @NUPHChangeDate IS NOT NULL AND @NUPHUserPositionId IS NOT NULL
-		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate, @NUPHUserPositionId
+	IF @NUPHChangeDate3 IS NOT NULL AND @NUPHUserPositionId IS NOT NULL
+		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate3, @NUPHUserPositionId
 	ELSE PRINT N'Пропуск внесения записи по должностной позиции 3'
-	SET @NUPHChangeDate  = NULL
 	SET @NUPHUserPositionId = NULL
 	
 	-- Проверка типа по должностной позиции 4
@@ -3145,22 +3600,13 @@ BEGIN TRY
 		IF @NUPHUserPositionId IS NULL RAISERROR(N'Наименование должностной позиции 4 задано некорректно!', 16, 1)
 		END
 	
-	IF N'@Дата назначения_4' IS NOT NULL AND N'@Дата назначения_4' &lt;&gt; ''
-	BEGIN TRY 
-		SET @NUPHChangeDate = CONVERT(datetime, N'@Дата назначения_4', 104)
-	END TRY	
-	BEGIN CATCH
-		RAISERROR(N'Дата назначения по должностной позиции 4 задана некорректно!', 16, 1)
-	END CATCH	
-	
 	SET @NUPHUserPositionHistoryId = (SELECT MAX([UserPositionHistory].[UserPositionHistoryId]) + 1 FROM [UserPositionHistory]) 
 	IF @NUPHUserPositionHistoryId IS NULL SET @NUPHUserPositionHistoryId = 1
 	
 	-- Вставка записи по должностной позиции 1
-	IF @NUPHChangeDate IS NOT NULL AND @NUPHUserPositionId IS NOT NULL
-		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate, @NUPHUserPositionId
+	IF @NUPHChangeDate4 IS NOT NULL AND @NUPHUserPositionId IS NOT NULL
+		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate4, @NUPHUserPositionId
 	ELSE PRINT N'Пропуск внесения записи по должностной позиции 4'
-	SET @NUPHChangeDate  = NULL
 	SET @NUPHUserPositionId = NULL
 	
 	-- Проверка типа по должностной позиции 5
@@ -3169,22 +3615,13 @@ BEGIN TRY
 		IF @NUPHUserPositionId IS NULL RAISERROR(N'Наименование должностной позиции 5 задано некорректно!', 16, 1)
 		END
 	
-	IF N'@Дата назначения_5' IS NOT NULL AND N'@Дата назначения_5' &lt;&gt; ''
-	BEGIN TRY 
-		SET @NUPHChangeDate = CONVERT(datetime, N'@Дата назначения_5', 104)
-	END TRY	
-	BEGIN CATCH
-		RAISERROR(N'Дата назначения по должностной позиции 5 задана некорректно!', 16, 1)
-	END CATCH	
-	
 	SET @NUPHUserPositionHistoryId = (SELECT MAX([UserPositionHistory].[UserPositionHistoryId]) + 1 FROM [UserPositionHistory]) 
 	IF @NUPHUserPositionHistoryId IS NULL SET @NUPHUserPositionHistoryId = 1
 	
 	-- Вставка записи по должностной позиции 5
-	IF @NUPHChangeDate IS NOT NULL AND @NUPHUserPositionId IS NOT NULL
-		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate, @NUPHUserPositionId
+	IF @NUPHChangeDate5 IS NOT NULL AND @NUPHUserPositionId IS NOT NULL
+		EXEC [dbo].[UserPositionHistory_Insert] default, @NUPHUserPositionHistoryId, @NUserId, @NUPHChangeDate5, @NUPHUserPositionId
 	ELSE PRINT N'Пропуск внесения записи по должностной позиции 5'
-	SET @NUPHChangeDate  = NULL
 	SET @NUPHUserPositionId = NULL
 END TRY
 
@@ -3193,10 +3630,19 @@ BEGIN CATCH
 		BEGIN
 			ROLLBACK TRANSACTION
 			PRINT N'Откат транзакции.'
-			DECLARE @NERRORMESSAGE NVARCHAR(1000) = ERROR_MESSAGE()
+			SET @NERRORMESSAGE = ERROR_MESSAGE()
 			RAISERROR(@NERRORMESSAGE, 16, 1);            	
 		END
 END CATCH
+
+IF @NError IS NOT NULL
+	IF @@TRANCOUNT &gt; 0
+		BEGIN
+			ROLLBACK TRANSACTION
+			PRINT N'Откат транзакции.'
+			SET @NERRORMESSAGE = ERROR_MESSAGE()
+			RAISERROR(@NERRORMESSAGE, 16, 1);            	
+		END
 
 IF @@TRANCOUNT &gt; 0
 	BEGIN
@@ -3264,6 +3710,6 @@ IF @@TRANCOUNT &gt; 0
       <ImageBuffer>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</ImageBuffer>
     </ItemChanger>
   </Items>
-  <SelectedObjectIndex>13</SelectedObjectIndex>
+  <SelectedObjectIndex>14</SelectedObjectIndex>
   <EditorType>1</EditorType>
 </ItemChangerList>
