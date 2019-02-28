@@ -189,13 +189,13 @@ namespace gk.SQLConfigurator
                                 val = ConvertValueToSqlString(val);
                                 // TODO: Переписать логику для совместимости с SQLCMD $(var)
                                 if (val == "null")
-                                    sql = sql.Replace("N'@" + pair.Key + "'", val).Replace("'@" + pair.Key + "'", val);
+                                    sql = sql.Replace("N'$(" + pair.Key + ")'", val).Replace("'$(" + pair.Key + ")'", val);
                                 else
-                                    sql = sql.Replace("@" + pair.Key, val);
+                                    sql = sql.Replace("$(" + pair.Key + ")", val);
 
                             }
                             else
-                                sql = sql.Replace("@" + pair.Key, "");
+                                sql = sql.Replace("$(" + pair.Key + ")", "");
                         }
 
                         if (!SaveAsSql)
