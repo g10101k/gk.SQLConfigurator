@@ -976,6 +976,7 @@ DECLARE @NUserId int = (SELECT TOP 1 [User].[UserId] FROM [User] WHERE [User].[N
 DECLARE @NStatusId int = (SELECT TOP 1 [Status].[StatusId] FROM [Status] WHERE [Status].[Code] = 'AEBatchRequestNew')
 DECLARE @NPriorityId int = (SELECT TOP 1 [Priority].[PriorityId] FROM [Priority] WHERE [Priority].[Name] = 'Средний')
 DECLARE @NAEBatchStatudID int = (SELECT TOP 1 [Status].[StatusId] FROM [Status] WHERE [Status].[Code] = 'AEBatchNew')
+DECLARE @NDescriptionOU NVARCHAR(512) = NULL
 
 SET @NAEUid = (SELECT TOP 1 [AE].[AEUid] FROM [AE] WHERE [AE].[Name] = N'$(Наименование ОУ)' AND [AE].[Code] = N'$(Условное обозначение\Код ОУ)');
 IF @NAEUid IS NULL BEGIN
@@ -987,8 +988,9 @@ IF @NAEUid IS NULL BEGIN
 	DECLARE @NAEName NVARCHAR(150) = N'$(Наименование ОУ)'
 	IF (@NAEName IS NULL OR @NAEName = '') SET @NAEName = 'Новый объект учета - ' + @NGenerate 
 	DECLARE @NAECode NVARCHAR(50) = N'$(Условное обозначение\Код ОУ)'
-	IF (@NAECode IS NULL OR @NAECode = '') SET @NAECode = 'Новый код учета - ' + @NGenerate 	
-	EXEC [dbo].[AE_Insert] default, @NAEUid, @NAEName, @NAECode, N'$(Описание ОУ)', NULL, NULL,
+	IF (@NAECode IS NULL OR @NAECode = '') SET @NAECode = 'Новый код учета - ' + @NGenerate
+	IF N'$(Описание ОУ)' &lt;&gt; '' AND N'$(Описание ОУ)' IS NOT NULL SET @NDescriptionOU = N'$(Описание ОУ)'
+	EXEC [dbo].[AE_Insert] default, @NAEUid, @NAEName, @NAECode, @NDescriptionOU, NULL, NULL,
 		NULL, NULL, @NProductUid, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL;
 	UPDATE [AE] SET
 		[AE].[PckgTypeUid] = (SELECT TOP 1 [PckgType].[PckgTypeUid] FROM [PckgType] INNER JOIN [ObjectProp] ON 
@@ -1415,6 +1417,7 @@ DECLARE @NHumanEffectId int = NULL
 DECLARE @NOwnerOrgUnitId int = NULL
 DECLARE @NStorageOrgUnitId int = NULL
 DECLARE @NGenerate nvarchar(10) = SUBSTRING(CONVERT(NVARCHAR(100), HASHBYTES('MD5', CAST(SYSDATETIME() AS NVARCHAR)), 2), 0, 12)
+DECLARE @NDescriptionOU NVARCHAR(512) = NULL
 
 IF (@NAEBatchRequestUid IS NOT NULL) 
 	SET @NAEBatchUid = (SELECT [AEBatchRequest].[AEBatchUid] FROM [AEBatchRequest] WHERE [AEBatchRequest].AEBatchRequestUid = @NAEBatchRequestUid AND [AEBatchRequest].[AEUid] = @NAEUid)
@@ -1423,13 +1426,15 @@ DECLARE @NAEName NVARCHAR(150) = N'$(Наименование ОУ)'
 IF (@NAEName IS NULL OR @NAEName = '') SET @NAEName = 'Новый объект учета - ' + @NGenerate 
 
 DECLARE @NAECode NVARCHAR(50) = N'$(Условное обозначение\Код ОУ)'
-IF (@NAECode IS NULL OR @NAECode = '') SET @NAECode = 'Новый код учета - ' + @NGenerate 
+IF (@NAECode IS NULL OR @NAECode = '') SET @NAECode = 'Новый код учета - ' + @NGenerate   
+
+IF N'$(Описание ОУ)' &lt;&gt; '' AND N'$(Описание ОУ)' IS NOT NULL SET @NDescriptionOU = N'$(Описание ОУ)'
 
 /* Правка по ОУ */
 UPDATE [AE] SET 
 	[AE].[Name] = @NAEName,
 	[AE].[Code] = @NAECode, 
-	[AE].[Description] = N'$(Описание ОУ)',
+	[AE].[Description] = @NDescriptionOU,
 	[AE].[ProductUid] = (SELECT [Product].[ProductUid] FROM [Product] WHERE [Product].[Name] = N'$(Продукт ОУ)'),
 	[AE].[PckgTypeUid] = (SELECT [PckgType].[PckgTypeUid] FROM [PckgType] INNER JOIN [ObjectProp] ON 
 		[PckgType].[PckgTypeUid] = [ObjectProp].[ObjectPropUid] WHERE [ObjectProp].[Name] =  N'$(Количество - тип тары)')
@@ -1832,18 +1837,28 @@ BEGIN TRY
 	declare @AEBatchUids as table (AEBatchUid uniqueidentifier)
     insert into @AEBatchUids
     select [AEBatchUid]
-    from [AEBatch] where AEUid = @AEUID
+    from [AEBatch] where AEUid = @AEUID 
+    
+    PRINT N'[AEBatchTest]:';
+	DELETE FROM [AEBatchTest] WHERE [AEBatchUid]  IN (
+		SELECT [AEBatchUid] FROM @AEBatchUids
+	);
+    
+    PRINT N'[AEBatchRequestTest]:';
+	DELETE FROM AEBatchRequestTest WHERE [AEBatchRequestUid] IN (
+		SELECT [AEBatchRequestUid] FROM [AEBatchRequest] WHERE [AEBatchRequest].[AEBatchUid] IN (
+		SELECT [AEBatchUid] FROM @AEBatchUids)
+	);
 	
     PRINT N'[AEBatchRequest]:';
 	DELETE FROM AEBatchRequest WHERE [AEBatchUid]  IN (
 		SELECT [AEBatchUid] FROM @AEBatchUids
-	);	
-
-		
+	);
+	
 	PRINT N'[AEBatch]:';
 	DELETE FROM [AEBatch] WHERE [AEBatchUid]  IN (
 		SELECT [AEBatchUid] FROM @AEBatchUids
-	);	
+	);
 
 	PRINT N'[Period]:'
 	DECLARE @ShelfLifePeriodId INT;
@@ -3525,6 +3540,6 @@ IF @@TRANCOUNT &gt; 0
       <ImageBuffer>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</ImageBuffer>
     </ItemChanger>
   </Items>
-  <SelectedObjectIndex>16</SelectedObjectIndex>
-  <EditorType>0</EditorType>
+  <SelectedObjectIndex>12</SelectedObjectIndex>
+  <EditorType>2</EditorType>
 </ItemChangerList>
