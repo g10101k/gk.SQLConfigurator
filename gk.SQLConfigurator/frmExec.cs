@@ -189,7 +189,7 @@ namespace gk.SQLConfigurator
                                 val = ConvertValueToSqlString(val);
                                 
                                 if (val == "null")
-                                    sql = sql.Replace("N'$(" + pair.Key + ")'", val).Replace("'$(" + pair.Key + ")'", val);
+                                    sql = sql.Replace("N'$(" + pair.Key + ")'", val).Replace("'$(" + pair.Key + ")'", val).Replace("$(" + pair.Key + ")", val);
                                 else
                                     sql = sql.Replace("$(" + pair.Key + ")", val);
 
