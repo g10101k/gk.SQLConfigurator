@@ -2,7 +2,7 @@
 <ItemChangerList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <Items>
     <ItemChanger>
-      <Name>Продукты</Name>
+      <Name>Product</Name>
       <GetSQL>select 
 	'x' as [Select(x)], 
 	* 
@@ -10,7 +10,7 @@ from
 	[product]
 where {0} </GetSQL>
       <GetSQLWhereString>Name like '**'</GetSQLWhereString>
-      <CreateSql>insert into [product] values ('@ProductUid', '@Code', '@Name', @IsActive, @InAccrScope)	</CreateSql>
+      <CreateSql>insert into [product] values ('$(ProductUid)', '$(Code)', '$(Name)', $(IsActive), $(InAccrScope)	</CreateSql>
       <EditSql>UPDATE [Product] SET 
 	Code = '$(Code)', 
 	Name = '$(Name)', 
@@ -19,7 +19,7 @@ where {0} </GetSQL>
 WHERE
 	ProductUid = '$(ProductUid)'</EditSql>
       <CreateoreditSql>raiserror (-1,-1, 'Not implemented');  </CreateoreditSql>
-      <DeleteSql>delete from Product where ProductUid = '@ProductUid'</DeleteSql>
+      <DeleteSql>delete from Product where ProductUid = '$(ProductUid)'</DeleteSql>
       <ImageBuffer>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</ImageBuffer>
     </ItemChanger>
   </Items>
