@@ -40,6 +40,11 @@ namespace gk.SQLConfigurator
         public ItemChangerCollection Items { get; set; }
         public int SelectedObjectIndex { get; set; }
         public int EditorType { get; set; }
+        /// <summary>
+        /// Текущая версия набора скриптов
+        /// </summary>
+        public string CurrentVersion { get; set; }
+
         public ItemChangerList() { }
     }
 
@@ -152,6 +157,7 @@ namespace gk.SQLConfigurator
                 }
             }
         }
+
         public ItemChanger(string _name, string _getSQL, string _createSql, string _editSql, string _createoreditSql, string _deleteSql, System.Drawing.Bitmap _icon)
         {
             Name = _name;

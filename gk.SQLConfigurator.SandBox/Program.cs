@@ -68,7 +68,7 @@ namespace ForTest
         {
             try
             {
-                Icon = (Bitmap)Image.FromFile(args[0], true);
+                frmSettings.checkUpdate_Click();
 
             }
             catch (System.IO.FileNotFoundException) {}

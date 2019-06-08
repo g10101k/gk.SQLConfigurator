@@ -34,20 +34,21 @@ using System.Diagnostics;
 using Microsoft.Win32;
 using System.IO;
 using System.Xml.Serialization;
-
-using gk.Log;
-
 using System.Threading;
+using System.Threading.Tasks;
+
+
 
 
 namespace gk.SQLConfigurator
 {
-   public partial class ThisAddIn
+    public partial class ThisAddIn
     {
         private SQLConfiguratorRibbon ribbon;
+        private object lc = new object();
         private SqlConnection cnt;
         private SqlConnectionStringBuilder cnsb;
-        public ItemChangerList ICList = new ItemChangerList();
+        public static ItemChangerList ICList = new ItemChangerList();
 
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
@@ -55,9 +56,10 @@ namespace gk.SQLConfigurator
             //ribbon_AttachConsole();
 #endif
             cnt = new SqlConnection();
-            connectToSql();
-            //Thread t = new Thread(connectToSql);
-            //t.Start();
+
+            //connectToSql();
+            Thread t = new Thread(connectToSql);
+            t.Start();
         }
 
         public void ReadICL()
@@ -68,7 +70,18 @@ namespace gk.SQLConfigurator
                 string path = dir + "SQLItems.xml";
                 if (!System.IO.Directory.Exists(dir))
                     System.IO.Directory.CreateDirectory(dir);
+                ICList = LoadItemChangerList(path);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("(ReadICL)", ex);
+            }
+        }
 
+        public static ItemChangerList LoadItemChangerList(string path)
+        {
+            try
+            {
                 if (!File.Exists(path))
                 {
                     File.WriteAllText(path, global::gk.SQLConfigurator.Properties.Resources.SQLItems);
@@ -76,15 +89,17 @@ namespace gk.SQLConfigurator
 
                 XmlSerializer formatter = new XmlSerializer(typeof(ItemChangerList));
 
-                using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate))
+                using (FileStream fs = new FileStream(path, FileMode.OpenOrCreate, FileAccess.Read))
                 {
-                    ICList = (ItemChangerList)formatter.Deserialize(fs);
+                    return (ItemChangerList)formatter.Deserialize(fs);
                 }
+
             }
-            catch
-            { 
-                
+            catch (Exception ex)
+            {
+                Logger.Error("(LoadItemChangerList)", ex);
             }
+            return null;
         }
 
         private void ThisAddIn_Shutdown(object sender, System.EventArgs e)
@@ -97,20 +112,28 @@ namespace gk.SQLConfigurator
                 }
                 SaveICL();
             }
-            catch 
+            catch (Exception ex)
             {
-
+                Logger.Error("(ThisAddIn_Shutdown)", ex);
             }
         }
 
         public void SaveICL()
         {
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\gk.SQLConfigurator\SQLItems.xml";
-
-            XmlSerializer formatter = new XmlSerializer(typeof(ItemChangerList));
-            using (FileStream fs = new FileStream(path, FileMode.Truncate))
+            try
             {
-                formatter.Serialize(fs, ICList);
+                // TODO: Если не изменилось - не сохранять
+                string path = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\gk.SQLConfigurator\SQLItems.xml";
+
+                XmlSerializer formatter = new XmlSerializer(typeof(ItemChangerList));
+                using (FileStream fs = new FileStream(path, FileMode.Truncate))
+                {
+                    formatter.Serialize(fs, ICList);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("(ThisAddIn_Shutdown)", ex);
             }
         }
 
@@ -119,60 +142,88 @@ namespace gk.SQLConfigurator
             ribbon.btnAction.Enabled = b;
         }
 
+        bool ConnectInProcess = false;
+
         private void connectToSql()
         {
-            cnsb = new SqlConnectionStringBuilder(Properties.Settings.Default.ConnectionString);
-            cnsb.ConnectTimeout = 60;
-            cnsb.AsynchronousProcessing = true;
-            if (cnt.State == ConnectionState.Open)
-                cnt.Close();
-            cnt.ConnectionString = cnsb.ConnectionString;
-            try
+            System.Action action = () =>
             {
-                cnt.Open();
-
-                if (cnt.State == ConnectionState.Open)
+                lock (lc)
                 {
-                    //SqlDataReader reader;
+                    ConnectInProcess = true;
+                    cnsb = new SqlConnectionStringBuilder(Properties.Settings.Default.ConnectionString);
+                    cnsb.AsynchronousProcessing = true;
+                    if (cnt.State == ConnectionState.Open)
+                        cnt.Close();
+                    cnt.ConnectionString = cnsb.ConnectionString;
                     try
                     {
-                        //SqlCommand cmd = new SqlCommand(@"select * from SysDatabaseVersion", cnt);
-                        //reader = cmd.ExecuteReader();
-                        //reader.Read();
-                        //Version curVersionDB = new Version(Convert.ToInt32(reader["DatabaseVersionId"]), Convert.ToInt32(reader["MajorVersion"]), Convert.ToInt32(reader["MinorVersion"]), Convert.ToInt32(reader["Revision"]));
-                        ribbon.lConnectState.Label = "Состояние: Подключено";
-                        ribbon.lServer.Label = string.Format("Сервер: {0}", cnsb.DataSource);
-                        ribbon.lDb.Label = string.Format("База данных: {0}", cnsb.InitialCatalog);
-                        setBtnState(true);
-                        //reader.Close();
+                        cnt.Open();
+
+                        if (cnt.State == ConnectionState.Open)
+                        {
+                            //SqlDataReader reader;
+                            try
+                            {
+                                //SqlCommand cmd = new SqlCommand(@"select * from SysDatabaseVersion", cnt);
+                                //reader = cmd.ExecuteReader();
+                                //reader.Read();
+                                //Version curVersionDB = new Version(Convert.ToInt32(reader["DatabaseVersionId"]), Convert.ToInt32(reader["MajorVersion"]), Convert.ToInt32(reader["MinorVersion"]), Convert.ToInt32(reader["Revision"]));
+                                ribbon.lConnectState.Label = "Состояние: Подключено";
+                                ribbon.lServer.Label = string.Format("Сервер: {0}", cnsb.DataSource);
+                                ribbon.lDb.Label = string.Format("База данных: {0}", cnsb.InitialCatalog);
+                                setBtnState(true);
+                                //reader.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                ribbon.lConnectState.Label = "Состояние: Отключено";
+                                ribbon.lServer.Label = string.Format("Сервер: {0}", "");
+                                ribbon.lDb.Label = string.Format("База данных: {0}", "");
+                                Logger.Error("(connectToSql.action)", ex);
+                                setBtnState(false);
+                            }
+                        }
+                        else
+                        {
+                            ribbon.lConnectState.Label = "Состояние: Отключено";
+                            ribbon.lServer.Label = string.Format("Сервер: {0}", "");
+                            ribbon.lDb.Label = string.Format("База данных: {0}", "");
+                            setBtnState(false);
+                        }
                     }
                     catch (Exception ex)
                     {
                         ribbon.lConnectState.Label = "Состояние: Отключено";
                         ribbon.lServer.Label = string.Format("Сервер: {0}", "");
                         ribbon.lDb.Label = string.Format("База данных: {0}", "");
-                        gLogger.WriteDebug(ex.ToString());
+                        Logger.Error("(connectToSql.action)", ex);
                         setBtnState(false);
                     }
                 }
-                else
-                {
-                    ribbon.lConnectState.Label = "Состояние: Отключено";
-                    ribbon.lServer.Label = string.Format("Сервер: {0}", "");
-                    ribbon.lDb.Label = string.Format("База данных: {0}", "");
-                    setBtnState(false);
-                }
-            }
-            catch (Exception ex)
+                ConnectInProcess = false;
+
+            };
+            System.Action animation = () =>
             {
-                ribbon.lConnectState.Label = "Состояние: Отключено";
-                ribbon.lServer.Label = string.Format("Сервер: {0}", "");
-                ribbon.lDb.Label = string.Format("База данных: {0}", "");
-                gLogger.WriteDebug(ex.ToString());
-                setBtnState(false);
-            }
+                int sleep = 300;
+                while (ConnectInProcess)
+                {
+
+                    ribbon.btnConnect.Image = global::gk.SQLConfigurator.Properties.Resources.database_lightning;
+                    Thread.Sleep(sleep);
+                    ribbon.btnConnect.Image = global::gk.SQLConfigurator.Properties.Resources.database;
+                    Thread.Sleep(sleep);
+                }
+                ribbon.btnConnect.Image = global::gk.SQLConfigurator.Properties.Resources.database;
+
+            };
+            new Task(action).Start();
+            new Task(animation).Start();
             return;
         }
+
+
 
         protected override Microsoft.Office.Core.IRibbonExtensibility CreateRibbonExtensibilityObject()
         {
@@ -182,7 +233,6 @@ namespace gk.SQLConfigurator
 
             ribbon.ButtonClicked += ribbon_connectSetingsButtonClick;
             ribbon.btnExecuteToDBClicked += ribbon_btnExcecuteToDB;
-            ribbon.AttachConsole += ribbon_AttachConsole;
             ribbon.btSqlEditClicked += ribbon_btSqlEditClick;
             ribbon.btnSQLSaveCliked += ribbon_btnSQLSaveCliked;
             ribbon.btnSettingCliked += ribbon_btnSettingCliked;
@@ -214,7 +264,7 @@ namespace gk.SQLConfigurator
                     }
                     break;
                 case 2: // Добавить
-                    f.sql = it.CreateSql; 
+                    f.sql = it.CreateSql;
                     if (DialogService.ShowDialog(f) == DialogResult.OK)
                     {
                         it.CreateSql = f.sql;
@@ -254,6 +304,7 @@ namespace gk.SQLConfigurator
                 cnsb = f.cnsb;
                 connectToSql();
             }
+            UpdateICConteiner();
             f.Dispose();
         }
 
@@ -296,36 +347,20 @@ namespace gk.SQLConfigurator
         {
             ribbon_ActionCLick(false, false);
         }
-        
+
         private void ribbon_btnSQLSaveCliked()
         {
             ribbon_ActionCLick(true, false);
         }
 
-        private void ribbon_AttachConsole()
-        {
-            try
-            {
-                if (!gLogger.Showed)
-                {
-                    //gLogger.ShowForm(xlMain);
-                    DialogService.ShowDialog(gLogger.Instance);
-
-                }
-                else
-                {
-                    gLogger.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                gLogger.WriteDebug(ex.Message);
-            }
-        }
-
         private void ribbon_btnSettingCliked()
         {
             DialogService.ShowDialog(new frmSelectTech(ICList));
+            UpdateICConteiner();
+        }
+
+        public void UpdateICConteiner()
+        {
             ribbon.UpdateICConteiner();
         }
 
@@ -341,10 +376,11 @@ namespace gk.SQLConfigurator
             this.Shutdown += new System.EventHandler(ThisAddIn_Shutdown);
         }
 
-#endregion
+        #endregion
     }
 
-    class sqlparam {
+    class sqlparam
+    {
         public string WhereString { get; set; }
     }
 
@@ -352,6 +388,7 @@ namespace gk.SQLConfigurator
     {
         public static DialogResult ShowDialog(Form dialog)
         {
+            dialog.StartPosition = FormStartPosition.CenterParent;
             NativeWindow mainWindow = new NativeWindow();
             mainWindow.AssignHandle(Process.GetCurrentProcess().MainWindowHandle);
             DialogResult dialogResult = dialog.ShowDialog(mainWindow);
@@ -362,7 +399,7 @@ namespace gk.SQLConfigurator
         {
             NativeWindow mainWindow = new NativeWindow();
             mainWindow.AssignHandle(Process.GetCurrentProcess().MainWindowHandle);
-            DialogResult dialogResult = MessageBox.Show(mainWindow, message, "gk.SQLConfigurator", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            DialogResult dialogResult = MessageBox.Show(mainWindow, message, Properties.Settings.Default.PanelName, MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
             mainWindow.ReleaseHandle();
             return dialogResult;
         }
@@ -379,11 +416,9 @@ namespace gk.SQLConfigurator
         {
             NativeWindow mainWindow = new NativeWindow();
             mainWindow.AssignHandle(Process.GetCurrentProcess().MainWindowHandle);
-            DialogResult dialogResult = MessageBox.Show(mainWindow, message);
+            DialogResult dialogResult = MessageBox.Show(mainWindow, message, Properties.Settings.Default.PanelName, MessageBoxButtons.OK, MessageBoxIcon.Information);
             mainWindow.ReleaseHandle();
             return dialogResult;
         }
     }
-
-
 }

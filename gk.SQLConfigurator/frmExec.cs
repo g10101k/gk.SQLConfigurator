@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
-using gk.Log;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Data.SqlClient;
 using System.IO;
@@ -93,7 +92,7 @@ namespace gk.SQLConfigurator
 
         private void FrmExec_SqlInfoEvent(string s)
         {
-            gLogger.WriteDebug(s);
+            Logger.Debug(s);
         }
 
         private void FrmExec_SaveFile(string s)
@@ -106,19 +105,19 @@ namespace gk.SQLConfigurator
             }
             catch (Exception ex)
             {
-                gLogger.WriteError(ex, s);
+                Logger.Error(s, ex);
             }
         }
 
         private void FrmExec_DebugInThread(string s)
         {
-            gLogger.WriteDebug(s);
+            Logger.Debug(s);
         }
 
         private void FrmExec_ErrorInThread(Exception ex, string s)
         {
             //MessageBox.Show(xlMain, ex.Message + "\r\n" + ex.StackTrace);
-            gLogger.WriteError(ex, s);
+            Logger.Error(s, ex);
         }
 
         private void FrmExec_UpdateProgressbar(int start, int end, int cur)
@@ -142,7 +141,7 @@ namespace gk.SQLConfigurator
             this.Close();
         }
 
-        public void EditObjectUniversal()
+        private void EditObjectUniversal()
         {
             try
             {
@@ -151,8 +150,8 @@ namespace gk.SQLConfigurator
                 int lLastCol = wSheet.Cells[1, wSheet.Columns.Count].End(Excel.XlDirection.xlToLeft).Column; // находим последнюю колонку
                 int lLastRow = wSheet.Cells[wSheet.Rows.Count, 1].End(Excel.XlDirection.xlUp).Row; // Последнюю строку
 
-                Dictionary<String, int> HeaderList = new Dictionary<String, int>();
-                if (wSheet.Cells[1, 1].Value.ToString().ToLower() != "select(x)")
+                Dictionary<string, int> HeaderList = new Dictionary<String, int>();
+                if (wSheet.Cells[1, 1]?.Value.ToString().ToLower() != "select(x)")
                     return;
 
                 // Ищем колонки
@@ -241,8 +240,10 @@ namespace gk.SQLConfigurator
                 this.BeginInvoke(EndExecuteEvent);
             }
             catch (Exception ex) {
-                this.Close();
+                //this.Close();
                 this.BeginInvoke(ErrorInThread, new object[] { ex, "EditObjectUniversal" });
+                this.BeginInvoke(EndExecuteEvent);
+
             }
         }
 

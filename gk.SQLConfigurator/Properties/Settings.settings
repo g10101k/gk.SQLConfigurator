@@ -12,7 +12,13 @@
       <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="ConnectionString" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Data Source=192.168.36.151;Initial Catalog=I-LDS RNKursk;Integrated Security=False;User ID=sa;Password=;Connect Timeout=5</Value>
+      <Value Profile="(Default)">Data Source=192.168.36.151;Initial Catalog=I-LDS RNKursk;Integrated Security=False;User ID=sa;Password=;Connect Timeout=20</Value>
+    </Setting>
+    <Setting Name="PanelName" Type="System.String" Scope="User">
+      <Value Profile="(Default)">gk.SqlConfigurator</Value>
+    </Setting>
+    <Setting Name="UpdatePath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">\\localhost\Users\ITyulyakov\gk.SQLConfigurator\SQLItems — копия.xml</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -66,25 +66,20 @@ namespace gk.SQLConfigurator
             this.group2 = this.Factory.CreateRibbonGroup();
             this.btnAction = this.Factory.CreateRibbonButton();
             this.btnSQLSave = this.Factory.CreateRibbonButton();
-            this.label1 = this.Factory.CreateRibbonLabel();
             this.editorTypeSelect = this.Factory.CreateRibbonGallery();
             this.cmbItemChanger = this.Factory.CreateRibbonGallery();
             this.btSqlEdit = this.Factory.CreateRibbonButton();
             this.btnSetting = this.Factory.CreateRibbonButton();
-            this.group4 = this.Factory.CreateRibbonGroup();
-            this.button4 = this.Factory.CreateRibbonButton();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.group2.SuspendLayout();
-            this.group4.SuspendLayout();
             this.SuspendLayout();
             // 
             // tab1
             // 
             this.tab1.Groups.Add(this.group1);
             this.tab1.Groups.Add(this.group2);
-            this.tab1.Groups.Add(this.group4);
-            this.tab1.Label = "I-LDS";
+            this.tab1.Label = global::gk.SQLConfigurator.Properties.Settings.Default.PanelName;
             this.tab1.Name = "tab1";
             // 
             // group1
@@ -129,7 +124,6 @@ namespace gk.SQLConfigurator
             // 
             this.group2.Items.Add(this.btnAction);
             this.group2.Items.Add(this.btnSQLSave);
-            this.group2.Items.Add(this.label1);
             this.group2.Items.Add(this.editorTypeSelect);
             this.group2.Items.Add(this.cmbItemChanger);
             this.group2.Items.Add(this.btSqlEdit);
@@ -156,24 +150,20 @@ namespace gk.SQLConfigurator
             this.btnSQLSave.ShowImage = true;
             this.btnSQLSave.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSQLSave_Click);
             // 
-            // label1
-            // 
-            this.label1.Label = "Режим экспорта";
-            this.label1.Name = "label1";
-            // 
             // editorTypeSelect
             // 
             this.editorTypeSelect.ColumnCount = 1;
+            this.editorTypeSelect.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
             ribbonDropDownItemImpl1.Image = global::gk.SQLConfigurator.Properties.Resources.database_go;
-            ribbonDropDownItemImpl1.Label = "Get";
+            ribbonDropDownItemImpl1.Label = "Получить";
             ribbonDropDownItemImpl2.Image = global::gk.SQLConfigurator.Properties.Resources.database_edit;
-            ribbonDropDownItemImpl2.Label = "Edit";
+            ribbonDropDownItemImpl2.Label = "Изменить";
             ribbonDropDownItemImpl3.Image = global::gk.SQLConfigurator.Properties.Resources.database_add;
-            ribbonDropDownItemImpl3.Label = "Create";
+            ribbonDropDownItemImpl3.Label = "Создать";
             ribbonDropDownItemImpl4.Image = global::gk.SQLConfigurator.Properties.Resources.database_refresh;
-            ribbonDropDownItemImpl4.Label = "Create Or edit";
+            ribbonDropDownItemImpl4.Label = "Создать/Изменить";
             ribbonDropDownItemImpl5.Image = global::gk.SQLConfigurator.Properties.Resources.database_delete;
-            ribbonDropDownItemImpl5.Label = "Delete";
+            ribbonDropDownItemImpl5.Label = "Удалить";
             this.editorTypeSelect.Items.Add(ribbonDropDownItemImpl1);
             this.editorTypeSelect.Items.Add(ribbonDropDownItemImpl2);
             this.editorTypeSelect.Items.Add(ribbonDropDownItemImpl3);
@@ -181,6 +171,8 @@ namespace gk.SQLConfigurator
             this.editorTypeSelect.Items.Add(ribbonDropDownItemImpl5);
             this.editorTypeSelect.Label = "Режим";
             this.editorTypeSelect.Name = "editorTypeSelect";
+            this.editorTypeSelect.RowCount = 5;
+            this.editorTypeSelect.ShowImage = true;
             this.editorTypeSelect.ShowItemSelection = true;
             this.editorTypeSelect.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.editorTypeSelect_Click);
             // 
@@ -212,21 +204,6 @@ namespace gk.SQLConfigurator
             this.btnSetting.ShowImage = true;
             this.btnSetting.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetting_Click);
             // 
-            // group4
-            // 
-            this.group4.Items.Add(this.button4);
-            this.group4.Label = "Отладка";
-            this.group4.Name = "group4";
-            // 
-            // button4
-            // 
-            this.button4.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            this.button4.Image = global::gk.SQLConfigurator.Properties.Resources.application_osx_terminal;
-            this.button4.Label = "Вывод отладки в консоль";
-            this.button4.Name = "button4";
-            this.button4.ShowImage = true;
-            this.button4.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button4_Click);
-            // 
             // SQLConfiguratorRibbon
             // 
             this.Name = "SQLConfiguratorRibbon";
@@ -239,16 +216,11 @@ namespace gk.SQLConfigurator
             this.group1.PerformLayout();
             this.group2.ResumeLayout(false);
             this.group2.PerformLayout();
-            this.group4.ResumeLayout(false);
-            this.group4.PerformLayout();
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        internal Microsoft.Office.Tools.Ribbon.RibbonGroup group4;
-        internal Microsoft.Office.Tools.Ribbon.RibbonButton button4;
         public Microsoft.Office.Tools.Ribbon.RibbonGallery cmbItemChanger;
         internal Microsoft.Office.Tools.Ribbon.RibbonGroup group2;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnAction;
@@ -262,7 +234,6 @@ namespace gk.SQLConfigurator
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btSqlEdit;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnSQLSave;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnSetting;
-        internal Microsoft.Office.Tools.Ribbon.RibbonLabel label1;
         public Microsoft.Office.Tools.Ribbon.RibbonTab tab1;
     }
 

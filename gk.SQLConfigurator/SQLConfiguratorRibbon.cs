@@ -48,7 +48,7 @@ namespace gk.SQLConfigurator
         public void UpdateICConteiner()
         {
             this.cmbItemChanger.Items.Clear();
-            foreach (ItemChanger ic in addin.ICList.Items)
+            foreach (ItemChanger ic in ThisAddIn.ICList.Items)
             {
                 try
                 {
@@ -58,16 +58,15 @@ namespace gk.SQLConfigurator
                     ddi.Image = ic._Icon;
                     ddi.Label = ic.Name;
                     ddi.Tag = ic;
-                    //new frmSelectTest(ddi.Tag).Show();
                     this.cmbItemChanger.Items.Add(ddi);
                 }
                 catch { }
             }
 
-            cmbItemChanger.SelectedItemIndex = addin.ICList.SelectedObjectIndex;
+            cmbItemChanger.SelectedItemIndex = ThisAddIn.ICList.SelectedObjectIndex;
             gallery1_Click(null, null);
 
-            editorTypeSelect.SelectedItemIndex = addin.ICList.EditorType;
+            editorTypeSelect.SelectedItemIndex = ThisAddIn.ICList.EditorType;
             editorTypeSelect_Click(null, null);
         }
 
@@ -80,7 +79,7 @@ namespace gk.SQLConfigurator
         private void gallery1_Click(object sender, RibbonControlEventArgs e)
         {
             SelectedObjectIndex = cmbItemChanger.SelectedItemIndex;
-            addin.ICList.SelectedObjectIndex = cmbItemChanger.SelectedItemIndex;
+            ThisAddIn.ICList.SelectedObjectIndex = cmbItemChanger.SelectedItemIndex;
             addin.SaveICL();
             cmbItemChanger.Image = cmbItemChanger.Items[cmbItemChanger.SelectedItemIndex].Image;
             cmbItemChanger.Label = cmbItemChanger.Items[cmbItemChanger.SelectedItemIndex].Label;
@@ -106,10 +105,13 @@ namespace gk.SQLConfigurator
 
         private void editorTypeSelect_Click(object sender, RibbonControlEventArgs e)
         {
-            addin.ICList.EditorType = editorTypeSelect.SelectedItemIndex;
+            ThisAddIn.ICList.EditorType = editorTypeSelect.SelectedItemIndex;
             addin.SaveICL();
             editorTypeSelect.Label = editorTypeSelect.Items[editorTypeSelect.SelectedItemIndex].Label;
             btnAction.Image = editorTypeSelect.Items[editorTypeSelect.SelectedItemIndex].Image;
+            editorTypeSelect.Image = editorTypeSelect.Items[editorTypeSelect.SelectedItemIndex].Image;
+
+            
         }
 
         private void btSqlEdit_Click(object sender, RibbonControlEventArgs e)
