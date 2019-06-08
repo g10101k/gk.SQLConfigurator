@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ItemChangerList xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<ItemChangerList xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Items>
     <ItemChanger>
       <Name>LDS.Продукты</Name>
@@ -9,31 +9,32 @@
 from 
 	[product]
 where {0} </GetSQL>
-      <GetSQLWhereString>Name like '**'</GetSQLWhereString>
-      <CreateSql>insert into [product] values ('@ProductUid', '@Code', '@Name', @IsActive, @InAccrScope)	</CreateSql>
-      <EditSql>UPDATE [Product] SET 
+      <GetSQLWhereString>Name like '*'</GetSQLWhereString>
+      <CreateSql>DECLARE @ProductUid uniqueidentifier = NEWID();
+EXEC [dbo].[Product_Insert] @ProductUid, '$(Code)', '$(Name)', $(IsActive), NULL, '$(Code)', '$(Name)', $(InAccrScope)	
+</CreateSql>
+      <EditSql>update [Product] set 
 	Code = '$(Code)', 
 	Name = '$(Name)', 
-	IsActive = $(IsActive), 
-	InAccrScope = $(InAccrScope) 
-WHERE
+	IsActive = @IsActive, 
+	InAccrScope = @InAccrScope 
+where
 	ProductUid = '$(ProductUid)'</EditSql>
       <CreateoreditSql>raiserror (-1,-1, 'Not implemented');  </CreateoreditSql>
-      <DeleteSql>delete from Product where ProductUid = '@ProductUid'</DeleteSql>
+      <DeleteSql>delete from Product where ProductUid = '$(ProductUid)'</DeleteSql>
       <ImageBuffer>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</ImageBuffer>
     </ItemChanger>
     <ItemChanger>
       <Name>LDS.Лаборатории</Name>
-      <GetSQL>
-SELECT 
+      <GetSQL>SELECT 
 	'x' as [Select(x)],
 	[SubdivisionId], 
 	[Code], 
 	[Name], 
 	[Description], 
 	[SubdivisionUID]
-FROM [dbo].[Subdivision]
-WHERE
+from [dbo].[Subdivision]
+where 
 	{0}</GetSQL>
       <GetSQLWhereString>Name like '*'</GetSQLWhereString>
       <CreateSql>raiserror (-1,-1, 'Not implemented');  </CreateSql>
@@ -44,58 +45,18 @@ WHERE
     </ItemChanger>
     <ItemChanger>
       <Name>LDS.Журналы</Name>
-      <GetSQL>SELECT 
-	'x' as [Select(x)],
-	[SampleLogId], 
-	[Code], 
-	[Name], 
-	[Description], 
-	[UserId],
-	[IsClosed], 
-	[Common], 
-	[SampleLogType], 
-	[UseCode], 
-	[CodeMaskId], 
-	[SampleModel], 
-	[ReselectCodeMaskId], 
-	[AutorizationMode], 
-	[ShowPropertiesOnReceive], 
-	[PrintLabelOnSave], 
-	[PreviewLabelOnPrint], 
-	[DisableMaskedCodeEdit]
-FROM [dbo].[SampleLog]
-WHERE 
-	{0}</GetSQL>
-      <GetSQLWhereString>[Name] like '*'</GetSQLWhereString>
+      <GetSQL>RAISERROR (-1,-1, 'Not implemented');  </GetSQL>
+      <GetSQLWhereString>Name like "*"</GetSQLWhereString>
       <CreateSql>RAISERROR (-1,-1, 'Not implemented');  </CreateSql>
-      <EditSql>UPDATE [dbo].[SampleLog] 
-SET  
-    [Code] = N'$(Code)', 
-    [Name] = N'$(Name)', 
-    [Description] = N'$(Description)', 
-    [UserId] = $(UserId), 
-    [IsClosed] = $(IsClosed), 
-    [Common] = $(Common), 
-    [SampleLogType] = $(SampleLogType), 
-    [UseCode] = $(UseCode), 
-    [CodeMaskId] = $(CodeMaskId), 
-    [SampleModel] = $(SampleModel), 
-    [ReselectCodeMaskId] = $(ReselectCodeMaskId), 
-    [AutorizationMode] = $(AutorizationMode),
-    [ShowPropertiesOnReceive] = $(ShowPropertiesOnReceive), 
-    [PrintLabelOnSave] = $(PrintLabelOnSave), 
-    [PreviewLabelOnPrint] = $(PreviewLabelOnPrint), 
-    [DisableMaskedCodeEdit] = $(DisableMaskedCodeEdit)
-WHERE 
-    [SampleLogId] = $(SampleLogId)</EditSql>
+      <EditSql>RAISERROR (-1,-1, 'Not implemented');  </EditSql>
       <CreateoreditSql>RAISERROR (-1,-1, 'Not implemented');  </CreateoreditSql>
       <DeleteSql>RAISERROR (-1,-1, 'Not implemented');  </DeleteSql>
       <ImageBuffer>iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAUZSURBVFhHxdfJTxtXHAdwut6atlLh1msTpVLU9tBKvVRqD1H/irZSDz30VEVqkwj10HQBUhIgYVFC8AIGQ9iMScELXtlXs9jsGBsbe4wN2HjBNvPt79lmNwSKTJ/0FaPxm/l95r2ZeUMWgP81p7U3Jw1NiK7NRGwWvWZAIfiG9r2a/Oly2rsThkYgtAJse4HYFjZcixhWChrK8m69neqT0ZYzyQBBOyHcQDxII8YaD4elG9qm4m+pT0ZHJGfS2JQEBF3gowEqvpMAgA9j3W6CUlr4HfXLCOKV2z/98PlhgD8J4OMAw8R8NBJaX5O49Ff9C0loQFWPPpUUGrkY6hbBWEfDk9/b6sq+ltWWfdrZ+OQzds7kqdO3Nyy6Os6ka8SwpgFDXfUYVNVhQs+mwHYYsBMDv70JRDxAwIaRf0pgGxDCNSHD2rwegdVxcFYTFqb6MN6vxKjxBUYNcozq5RjWy2AytMKir+VYzWTprKzXP7jV3u2ZaAfCK+A3lxBfn0PcNwOT7vnJgDBHWcW0Ih/WfiEcpla4ZzQ0NSOIbDrBx0LU/2CL0rF0H/F+eCY7wGqy2gxw5eovSrhGZYlhDdm6EbRqEVhUYUxLgK3TARYCLPXtA3y2YQS4eUQCHM0WFWXHxKhw2As+SE8UgnCb2nH1ZwV7CVxhgOwkoJUeN08CsGXVEUB9YcBOCsBHt+i+9WJniwA7AayOtu0CshkghwGcI800rxxCdgagucwkYKSVAEoGyNkHDNMdH3FfAsBPF9tyHOAYpDs+7CRAT2YB8U262GawmocBA1Qs5LgEwAYcQ03HASv9UgLYMwxw0BOxjpXBhqMAFex9dVTIdgkAH1YG6tMAemvpzbZ0CQAvXaz0OMDWKyHAIgF6MwuIrtHF1qUB9FQD/oXjgNRyvLcaXhjAYbmn9jhguVsMbM4dArDFCWE6KLKW+h5gS3H8ggA31aomgOoIwCgiwOwhwHRPI6xjHXDPDyAW8tHJUi1GoxGm1fC/ALbdsBrFRwFqWPVCYMOyB/ATwDkug3WwHmadECOKpzBpJfDYzIkTIkqgiIsABecEuLBkEB0B3FZjUScA1s0IpwCbC2pszHTAa5HT8tkM15iU1n0RzF1PMaqqgn/VQggPLcdnB/BBNp2rBBCmAWgrCTB5CLBOgDWzHNwEA9TTK7QG9v4qLBkrMKasoI8PM2ZUhfQ9IEqMFjerhY++B5IAzwkAJxb1VWkAmiQg4uhHcNlAU9CFjdlOGoF2rE21gBt/Tkt2LZxDInprVtJVPMYyLeFzmiLYh2rgnpLDu2ikkRlHyGtFNERf0nyMAHTjxunjZHudnqZV+ksA3TOwmnuAa3e6YNURwE/zyw0j5uylkdAjuKSCf76Drr4Bk6oKGBoKoBTfg0L8G7S192BWl2Ba/QA6aT4UNX9CKcnHYEcV5kYUCProvb/XCAFC7NB9w3OwGgS4ducA4PpdDZ3wb7QJC9Ei2M0DtLIIH0ImKkKbuBjy6hK01zxKRE5pq04muZ9SXUz9iiCj87RWFaClMh/NlXmp0PazAsgE96GV3Mf1u137gBu5GpSXP0JRaRkeviS7fR6UlqNT+FcibPvgb6eF9WG1buQeAHyS2+nP/l6C80ZS8QfySh6n/e1lYTV3Ae9QPqZ8SfnqjLn54Y8i3e7J2Dbbd6TPaWG1WE1WO/F9zjaY5qx5n/IR5YtU2Dbbl67vSWE19/43OG97jfIW5b1U2Dbbd86WlfUv1O5SeewZwv0AAAAASUVORK5CYII=</ImageBuffer>
     </ItemChanger>
     <ItemChanger>
       <Name>LDS.Пользователи</Name>
-      <GetSQL>SELECT 
-    'x' AS [Select(x)], 
+      <GetSQL>select 
+    'x' as [Select(x)], 
     u.UserId,
     u.Name,
     u.FullName,
@@ -106,255 +67,97 @@ WHERE
     u.UserUID,
     '' as NewPassword,
     stuff((
-        SELECT '|' + [Role].[Name]
-        FROM [dbo].[UserRole] ur 
-            INNER JOIN [dbo].[Role] ON [Role].[RoleId] = ur.[RoleId]
-        WHERE ur.UserId = u.UserId
+        select ',' + convert(nvarchar, ug.[GroupId])
+        from [dbo].[UserGroup] ug 
+        where ug.UserId = u.UserId
         FOR XML PATH ('')
-    ), 1, 1, '') RoleIds ,
-    stuff((
-        SELECT '|' + [Group].[Name]
-        FROM [dbo].[UserGroup] ug 
-            INNER JOIN [dbo].[Group] ON [Group].[GroupId] = ug.GroupId 
-        WHERE ug.UserId = u.UserId
-        FOR XML PATH ('')
-    ), 1, 1, '') GroupIds,
-    STUFF((
-        SELECT '|' + s.Code
-        FROM dbo.SubdivisionUser su 
-            INNER JOIN dbo.Subdivision s ON s.SubdivisionId = su.SubdivisionId
-        WHERE su.UserId = u.UserId
-        FOR XML PATH ('')
-    ), 1, 1, '') SubdivisionIds,
-    WindowsLogin
-FROM 
-	[dbo].[User] u 
-	LEFT JOIN [UserMapping] um ON um.UserId = u.UserId
-WHERE {0}</GetSQL>
-      <GetSQLWhereString>[Description] like '*IP*' </GetSQLWhereString>
-      <CreateSql>DECLARE @UserUid nvarchar(max) = N'$(UserUID)'
-DECLARE @UserName nvarchar(max) = N'$(Name)'
-DECLARE @FullName nvarchar(max) = N'$(FullName)'
-DECLARE @Description nvarchar(max) = N'$(Description)'
-DECLARE @UsrGroups nvarchar(max) = '$(GroupIds)'
-DECLARE @usrSubdivs nvarchar(max) = '$(SubdivisionIds)'
-DECLARE @usrRoles nvarchar(max) = N'$(RoleIds)'
-DECLARE @newPassword nvarchar(max)  = N'$(NewPassword)'
-DECLARE @WindowsLogin nvarchar(max) = N'$(WindowsLogin)'
-DECLARE @UserId int
-  
-SET @UserId = (SELECT TOP 1 UserId FROM [User] WHERE [Name] = @UserName) 
-
-IF @UserId IS NULL
+    ), 1, 1, '') GroupIds
+from [dbo].[User] u 
+where {0}</GetSQL>
+      <GetSQLWhereString>Name like '*'</GetSQLWhereString>
+      <CreateSql>DECLARE @newPassword nvarchar(max) = N'@NewPassword'
+DECLARE @userUID nvarchar(max) = '@UserUID'
+IF @userUID = '' 
 BEGIN
-    IF @UserUid = N'' 
-    BEGIN
-        SELECT @UserUid=newid()
-    END
-            
-    INSERT INTO [dbo].[User]([Name], [FullName], [Hash], [Salt], [Description], [Enable], [UserUID]) 
-        VALUES(@UserName, @FullName, $(Hash), $(Salt), @Description, $(Enable), @UserUid)
-    
-    SET @UserId = (SELECT TOP 1 UserId FROM [User] WHERE UserUID = @UserUid)
-    
-    -- Группы пользователя	
-    DECLARE @groupstbl TABLE (id int)
-    
-    INSERT INTO @groupstbl
-    SELECT GroupId
-    FROM [Group]
-    WHERE [Name] in (SELECT Item FROM [dbo].[spc_sys_ParseString](@usrGroups, '|'))
-    
-    INSERT INTO UserGroup (UserId, GroupId)
-    SELECT @UserId, id 
-    FROM @groupstbl 
-    WHERE 1=1
-        AND id NOT IN (SELECT groupid FROM [UserGroup] WHERE UserId =  @userid) 
-        AND id IN (SELECT g2.GroupId FROM [group] g2)
-    
-    -- Лаборатории
-    
-    DECLARE @SubdivisionIds TABLE (id int) 
-    
-    INSERT INTO @SubdivisionIds
-    SELECT SubdivisionId 
-    FROM [Subdivision]
-    WHERE [Code] IN (SELECT Item FROM [dbo].[spc_sys_ParseString](@usrSubdivs, '|'))
-    
-    INSERT INTO SubdivisionUser (SubdivisionId, UserId)
-    SELECT id, @userid
-    FROM @SubdivisionIds 
-    WHERE 1=1
-        AND id NOT IN (SELECT SubdivisionId FROM [SubdivisionUser] WHERE UserId = @userid) 
-        AND id IN (SELECT g2.SubdivisionId FROM [Subdivision] g2)    
-        
-    -- Роли
-    
-    DECLARE @RoleIds TABLE (id int) 
-    INSERT INTO @RoleIds
-    SELECT RoleId 
-    FROM [Role]
-    WHERE [Name] IN (SELECT Item FROM [dbo].[spc_sys_ParseString](@usrRoles, '|'))
-    
-    INSERT INTO UserRole (RoleId, UserId)
-    SELECT id, @userid
-    FROM @RoleIds 
-    WHERE 1=1
-        AND id NOT IN (SELECT RoleId FROM [UserRole] WHERE UserId = @userid) 
-        AND id IN (SELECT g2.RoleId FROM [UserRole] g2)   
-        
-    -- Задаем пароль:
-    IF (@newPassword &lt;&gt; '' AND @newPassword &lt;&gt; 'null')
-        EXEC dbo.LDSExtension_SetUserPassword @userid, @newPassword;
-    -- Сопоставление пользователя
-    DECLARE @ID INT = (SELECT UserID FROM UserMapping WHERE UserId = @UserId);
-    
-    IF (@WindowsLogin &lt;&gt; '' AND @WindowsLogin &lt;&gt; 'null')
-    BEGIN 
-        IF @ID IS NULL 
-            INSERT INTO UserMapping (UserID, WindowsLogin) VALUES (@UserId, @WindowsLogin);
-        ELSE
-            UPDATE UserMapping SET WindowsLogin = @WindowsLogin WHERE UserID = @UserId; 
-    END;
-END;  
-ELSE
-	RAISERROR(N'Имя пользователья должно быть уникальным!', 16, 1)</CreateSql>
-      <EditSql>UPDATE [User] SET 
-	Name = '$(Name)', 
-	FullName = '$(FullName)', 
-	Description = '$(Description)', 
-	Hash = $(Hash), 
-	Salt = $(Salt), 
-	Enable = $(Enable)
-WHERE
-	UserId = $(UserId)
+    SELECT @userUID=newid()
+END
 
+INSERT INTO [dbo].[User]([Name], [FullName], [Hash], [Salt], [Description], [Enable], [UserUID]) 
+	VALUES(N'@Name', N'@FullName', @Hash, @Salt, N'@Description', @Enable, @userUID)
+</CreateSql>
+      <EditSql>update [User] set 
+	Name = '@Name', 
+	FullName = '@FullName', 
+	Description = '@Description', 
+	Hash = @Hash, 
+	Salt = @Salt, 
+	Enable = @Enable
+where
+	UserId = @UserId
+	
+declare @groupstbl table (id int)
+declare @userid int = @UserId
+declare @usrGroups nvarchar(max) = '@GroupIds'
 
--- Группы пользователя	
-DECLARE @groupstbl TABLE (id int)
-DECLARE @userid int = $(UserId)
-DECLARE @usrGroups nvarchar(max) = '$(GroupIds)'
-INSERT INTO @groupstbl
-SELECT GroupId
-FROM [Group]
-WHERE [Name] in (SELECT Item FROM [dbo].[spc_sys_ParseString](@usrGroups, '|'))
+insert into @groupstbl
+select convert(int, Item) from [dbo].[spc_sys_ParseString](@usrGroups, ',')
 
-DELETE FROM usergroup WHERE groupid NOT IN (SELECT * FROM @groupstbl) AND userid = @userid
+delete from usergroup where groupid not in (select * from @groupstbl) and userid = @userid
 
-INSERT INTO usergroup (UserId, GroupId)
-SELECT @userid, id 
-FROM @groupstbl 
-WHERE 1=1
-    AND id NOT IN (SELECT groupid FROM [usergroup] WHERE UserId =  @userid) 
-    AND id IN (SELECT g2.GroupId FROM [group] g2)
+insert into usergroup (UserId, GroupId)
+select @userid, id 
+from @groupstbl 
+where 1=1
+    and id not in (select groupid from [usergroup] where UserId =  @userid) 
+    and id in (select g2.GroupId from [group] g2)
 
--- Лаборатории
-DECLARE @usrSubdivs nvarchar(max) = '$(SubdivisionIds)'
-DECLARE @SubdivisionIds TABLE (id int) 
-
-INSERT INTO @SubdivisionIds
-SELECT SubdivisionId 
-FROM [Subdivision]
-WHERE [Code] IN (SELECT Item FROM [dbo].[spc_sys_ParseString](@usrSubdivs, '|'))
-
-DELETE FROM SubdivisionUser WHERE SubdivisionId NOT IN (SELECT * FROM @SubdivisionIds) AND userid = @userid
-
-INSERT INTO SubdivisionUser (SubdivisionId, UserId)
-SELECT id, @userid
-FROM @SubdivisionIds 
-WHERE 1=1
-    AND id NOT IN (SELECT SubdivisionId FROM [SubdivisionUser] WHERE UserId = @userid) 
-    AND id IN (SELECT g2.SubdivisionId FROM [Subdivision] g2)    
-    
--- Роли
-DECLARE @usrRoles nvarchar(max) = '$(RoleIds)'
-DECLARE @RoleIds TABLE (id int) 
-INSERT INTO @RoleIds
-SELECT RoleId 
-FROM [Role]
-WHERE [Name] IN (SELECT Item FROM [dbo].[spc_sys_ParseString](@usrRoles, '|'))
-
-DELETE FROM UserRole WHERE RoleId NOT IN (SELECT * FROM @RoleIds) AND userid = @userid
-INSERT INTO UserRole (RoleId, UserId)
-SELECT id, @userid
-FROM @RoleIds 
-WHERE 1=1
-    AND id NOT IN (SELECT RoleId FROM [UserRole] WHERE UserId = @userid) 
-    AND id IN (SELECT g2.RoleId FROM [UserRole] g2)   
-    
--- Задаем пароль:
-DECLARE @newPassword nvarchar(max)  = '$(NewPassword)'
-
-IF (@newPassword &lt;&gt; '' AND @newPassword &lt;&gt; 'null')
-	EXEC dbo.LDSExtension_SetUserPassword @userid, @newPassword;
--- Сопоставление пользователя
-DECLARE @ID INT = (SELECT UserID FROM UserMapping WHERE UserId = $(UserId));
-
-DECLARE @PrimaryRoleId int =  (SELECT TOP 1 id FROM @RoleIds);
-DECLARE @PrimarySubdivisionId int =  (SELECT TOP 1 id FROM @SubdivisionIds);
-
-
-IF @ID IS NULL
-	INSERT INTO UserMapping (UserID, WindowsLogin, PrimaryRoleId, PrimarySubdivisionId) 
-	VALUES (@userid, '$(WindowsLogin)', @PrimaryRoleId, @PrimarySubdivisionId);
-ELSE
-	UPDATE UserMapping 
-	SET 
-		WindowsLogin = '$(WindowsLogin)',
-		PrimaryRoleId = @PrimaryRoleId,
-		PrimarySubdivisionId = @PrimarySubdivisionId
-	WHERE 
-		UserID = @userid;</EditSql>
+declare @newPassword nvarchar(max)  = '@NewPassword'
+if (@newPassword &lt;&gt; '' and @newPassword &lt;&gt; 'null')
+exec dbo.LDSExtension_SetUserPassword @userid, @newPassword</EditSql>
       <CreateoreditSql>RAISERROR (-1,-1, 'Not implemented');  </CreateoreditSql>
-      <DeleteSql>DECLARE @Name nvarchar(max) = '$(Name)'
+      <DeleteSql>declare @userID int
 
-BEGIN TRANSACTION;
-BEGIN TRY
-    DECLARE @UserID int
+	if not exists(select * from [User] where name = '@Name')
+	begin
+		print '@Name' + ' не найден *************************************************************' 
+	end
+	ELSE	
+		select @userID=userid from [user] where name = '@Name'
 
-    SELECT @UserID = UserId FROM [User] WHERE [Name] = @Name
-    DECLARE @NewID int = 1 -- администратор
+		--если пользователь уже засветился в операциях ЛИМС
+		declare @oldID int =@userID
+		declare @newID int =1--администратор
+		
+		update chkp set UserId = @newID where UserId=@oldID
+		update ChkPSign set UserId = @newID where UserId=@oldID
+		update ControlChart set UserId = @newID where UserId=@oldID
+		update LL set UserId = @newID where UserId=@oldID
+		update QCfGNoplog set UserId = @newID where UserId=@oldID
+		update QCfGNuser set UserId = @newID where UserId=@oldID
+		update samplelog set UserId = @newID where UserId=@oldID
+		update SampleLogProof set UserId = @newID where UserId=@oldID
+		update SampleLogViewUser set UserId = @newID where UserId=@oldID
 
-    UPDATE ChkP SET UserId = @NewID WHERE UserId=@UserID
-    UPDATE ChkPSign SET UserId = @NewID WHERE UserId = @UserID
-    UPDATE ControlChart SET UserId = @NewID WHERE UserId = @UserID
-    UPDATE LL SET UserId = @NewID WHERE UserId = @UserID
-    UPDATE QCfGNoplog SET UserId = @NewID WHERE UserId = @UserID
-    UPDATE QCfGNuser SET UserId = @NewID WHERE UserId = @UserID
-    UPDATE SampleLog SET UserId = @NewID WHERE UserId = @UserID
-    UPDATE SampleLogProof SET UserId = @NewID WHERE UserId = @UserID
-    UPDATE SampleLogViewUser SET UserId = @NewID WHERE UserId = @UserID
-    
-    UPDATE [dbo].[AEBatchRequest] SET UserId = @NewID WHERE UserId = @UserID
-    UPDATE [dbo].[SpendingLog] SET RecipientUserId = @NewID WHERE RecipientUserId = @UserID
-    UPDATE [dbo].[SpendingLog] SET UserId = @NewID WHERE UserId = @UserID
-    UPDATE [dbo].[Room] SET UserId = @NewID WHERE UserId = @UserID
-     
-    UPDATE TaskContentSecurity SET UserId = @NewID WHERE UserId = @UserID
-    UPDATE TaskRuleEventFreq SET AutorId = @NewID WHERE AutorId = @UserID
-    UPDATE TrainingControl SET UserId = @NewID WHERE UserId = @UserID
-    UPDATE Traininguser SET UserId = @NewID WHERE UserId = @UserID       
-            
-    DELETE FROM TrainingUser WHERE UserId = @UserID
-    DELETE FROM UserEd WHERE UserId = @UserID
-    DELETE FROM UserMapping WHERE UserId = @UserID
-    DELETE FROM UserPositionHistory WHERE UserId=@UserID
-    DELETE FROM TrainingControl WHERE UserId=@UserID
-    
-    DELETE FROM SignUser WHERE UserId=@UserID
-    DELETE FROM SubdivisionUser WHERE UserId=@UserID
-    DELETE FROM UserGroup WHERE UserId=@UserID
-    DELETE FROM UserProp WHERE UserId=@UserID
-    DELETE FROM UserRole WHERE UserId=@UserID
-    DELETE FROM [User] WHERE UserId=@UserID
-END TRY	
-BEGIN CATCH
-    PRINT ERROR_MESSAGE();
-    IF @@TRANCOUNT &gt; 0
-	    ROLLBACK TRANSACTION;
-END CATCH
-IF @@TRANCOUNT &gt; 0
-    COMMIT TRANSACTION;</DeleteSql>
+		update TaskContentSecurity set UserId = @newID where UserId=@oldID
+		update TaskRuleEventFreq set AutorId = @newID where AutorId=@oldID
+		update TrainingControl set UserId = @newID where UserId=@oldID
+		update Traininguser set UserId = @newID where UserId=@oldID
+
+				
+		delete from TrainingUser where UserId=@userID
+		delete from UserEd where UserId=@userID
+		delete from UserMapping where UserId=@userID
+		delete from UserPositionHistory where UserId=@userID
+		delete from TrainingControl where UserId=@userID
+		delete from NotificationUser where UserId=@userID
+
+		delete from signuser where UserId=@userID
+		delete from SubdivisionUser where UserId=@userID
+		delete from UserGroup where UserId=@userID
+		delete from UserProp where UserId=@userID
+		delete from UserRole where UserId=@userID
+		delete from [User] where UserId=@userID
+		</DeleteSql>
       <ImageBuffer>iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29mdHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAmwSURBVFhHrVYHVFRnFjYbT+KuiYDCWGIsGOKGxLjGVUOiFBGwRUBjjNEoQQ2hOgxDRwEpYQaQ3otiQAWBEZAygBRFJShFkdAJKr0oTRyX6Jf73tg47hF3T+4533n/e/+997v/97c3aQJ7k6sqG8lXny6xUp8BvoY8C2uN6RJLNblIpl/q9tfbG4arZJQYUmsteQh2zkao0XwEHlgAwe55OKQ7CzwNDmw1Z8BgpcxCxl8a9tfZ2wy53QYFxPMWQHToY6Q7L0OK02eIPfgpfPYogb9+Dg6skoeNpjzMV8v4W6nJjvJU5WClNh1W6tPBV5eTcFVl/i+V3jRdLedrvY6DY+ZzIXJSRprLSmR6rEaGmxpO2X2J4B8/g5OeEg6sVCAiWdivn42gA58g3vZzxPFVEG6+AsLdyrDVmQvrtXIwXDVNifK+tkpTaZ4lznocJNl8gDTn5USuhhyBDuErnDm8HhFma+Ck/wksVWXgrKuI9CNfIleojlxvTWR6rsVpBzXy+QKeu5aDr/UhbNZOB+V9W5p+YpthTfMr3DULJ/mLKbkKEa/Deb+tyA/YBZHb1wgxWQf7DQto5LOQ6vw5crw0IBZqUQHrkSPciGRnHcRYakC4RwU2m5bBVnsuzFVlfSn3a00Hx0ZzJhXAQayFEs37Kpzz1ILYZzuOWW2A/ZaPYK//KSy+lIFg1z+R5bEGYm8t5PluQv5RPeQd/Rpn3baQrw68DVThsGUFrLU/gq2WvIRyT5VSvNo4Nms5cP92Djx2zIfr1/PgpDsf5qSK+/dLUXWWjwcNoTBb+Q+Emi5Hupsqcn3W47y/PoqCvqXnLpz12IEoy83wMdTAIf1V4Ov8C3baM5lpmCGleLVx+Oq0BvRnoiadh6IoA1yI2Ye+az4YrQvG3XIfNOQ44KcV0xB1cDnJrYZMrw2kwDacD/wesXypSrZ6S2C2Tgk8IufrLIODzixsUp6qQvknXIzyRiqy+fYb5YlMCPTEY6w5AkPV/ugpE6CtxI3gzhbgY/Ah3Eklt+2KOKy/EBZrZ7IqlSdz0V/pjd+LnGGkrggr7aWwpwIo92zC31iWV9i0zcpTzXi0wusy+HjcGo3h6gCW/M5FN7QUOKOl6DBtsXlEvgg1aVwURe5BcfQP6PlVgJGaQHSW/oyWQmc05TsilKcNCw1l2GkpMAXMIkyoALNdFpl8Pq33ctx+jDWFo59kb7/kwZLX5zqgOt2a9r88HL9SxEAFqdQdj4eNYRioOorOK55oJr/abDvcPGeNZOEOGK+eD3ttVgEOyzCBMRXKr1F8Z2+S82Y2cTeNvrXIBY1EziQWeenRGTADXM2FEAdsx+Nb0UTux5K3FrqgPsceN9L4tGAtcdRoNXjqc2jLzsEPKpxvn+Sf0BgVFL9b+m5i6QljdJd6ouX8IdRm0agybRBEJ6HtutngaijBWX8xHrVG0SIV4vaFI1SkI25mWKMi5SDKUyzA015EO+A9OG5cQP4K557kntCYKuUM/z01Ld59J66KbHAthYcrp8xxIcGYLqN5VMBMOG1WpPtiEa7EGbNrpKXgEH7LtEVVKhdlSeZI9thKJ+XHOLxFCQ7r34elxoxayvsuy/AKe8PnaOCK4LCY82Gxp3GjIIjI+UgO2ItI163ws92Ag6vfYa5kSvoenYjv48g2ZXRc8UCDmNZHmhXKz1igJP4AHHUXs0U6bphLKnBgoSpTR/nlpDQv2xtCH79NQSHhkmNxv+BaRRUYu3U1mqS0RAmNPDNsN37x0oXdRgUqYjIs1d6CDSkRsM0QFZn2KKPtd11kiezw7+FupgLPLdvgQMcwT+PvtA6mwHTNlAbimS6lG2+Tff2CiuPiEtDY0IDh4WG0t3dgbOwxJPf70Fh6AuVZnihOtEJxsj1CbFThrrUOp3cm4KLhCGpCW3Az1x4Z4ftJJX0I6B6wMVBGoes1lBo9RNJ3p+CqvRJffTzpCHHJSimf22Qa+aVUURq6e7rR3NyC0rKryC8oRmFxCYZHJfjPY+D+H48w9HgMzWWDKLTswAVuF1pFD1iVHkjaUZXBpTVignOhuxDjogPPH5VRUipG0902NOcO4pJVL8T77gxE78jTJc5xO2Gat68/WltbUVFZhWxxPnLyzkNMyMmlNmHkwQgGR0ZQ7NGEPLMGdBQNQ9LxBwZujOER1TAGCToaC1GZ7YX8Y0YQx3FxOS8WjbcbUF93GwM3x/Cw8xE6S4ZRaNsI0d7yFOKdLKWfNEkhJCwS1TdrcDYjE+nnspCRmf0MaRnnkH+xECWCJlw80oSh+gfoKxvFnZRR/H6MEPcAo0NUwqM/MCQZw92Rh+gdHEFbfx9aGjrQSv2txyVoI38mbqRJgivezUjaU3aJuNkiOP4BQfiVZE9KTkVy6tlxOCNKRWJyCtIMrmOgchTt4iE0Rg6hKVoKpt0YNYThoVEMjg6jd+AeOu/2oLWrjfqH0RRFiHnuy8QPXB9FukkFczJOYwsQevuhoLAY8SdPI+FU4ngknkJ8aCqyDlajq3AItSEDqAu7h7rwJ6B2bfA9NJ24h4H7g+i734/Ovi7Ux91FXfB/8aX4rqJBZFpVMQUosAUcOuyKzKxsxByLQ+zxE+Nx4jhi/U8hjSq+lXoPNf59qAnsHY+AXtz07UVdbC8p0I/amB7U0Dvz/SVfir8luguRRdmzu4HD49uS3CKER0YjLCJqHEKjIhAmjEOKURma4ntRIWhDpbAdN3y7cd2n8zm8CYIu3PCi70IC8/5C/w3fLjaOiW9K6MEZ08vPCzC3sOz38fVjRxwcGo6AoBD4Bwaz8AsKhL8gDAl7L6I+uhtVHh1IMMlChccdVHm2o5KeT9sV7ndw0jQbZW6/S9+f9FV6tuH6zx1INM9Fudtt1Md045d9hc8KkP1kyad6ZuZcOB12gcDbly2CHX1EJCECwTEhCNHNoXnsQrlrG1LNi3HyJzGuurTimssdFk+/x+5PQ5JZASro/cW+swdLkGicx7brIjoRuC39WQFvEeYpKCjofPPNzqy9BvuafzQywVMcMDKGofF+eG2PRxavHNUk4SWHWqSaFCGFgXGhFNRONS2GyPQCofjlPkKxXTUbn2l1DT5bz/Q/LYA5laYQmN+lJYQvCBoEzRfxocLSnd76yYjfXwCx1XVccPgNlxxrUfIMdfQ+Hk/7mDbjn8OrZOOFW89ARVFbj/KOO5aZQ4H5bWYuC2Z7MNU9xUzCB+/JLtThagqynDZGNHvoJeB/BRPH1RRmMXko3zwCo/5rG/Mj8UqVJgDjz8Qx8UweRvXX+jt60V6l0kRg/Jk4Jv7JPTBp0p9XJnxec8QnEwAAAABJRU5ErkJggg==</ImageBuffer>
     </ItemChanger>
     <ItemChanger>
@@ -389,13 +192,23 @@ where {0}
 </GetSQL>
       <GetSQLWhereString>[Code] like '*'</GetSQLWhereString>
       <CreateSql>raiserror (-1,-1, 'Not implemented');  </CreateSql>
+<<<<<<< HEAD
       <EditSql>UPDATE [ST] SET 
 	Name = '$(Name)', 
 	Code= '$(Code)'
 WHERE
 	STUid= '$(STUid)'</EditSql>
+=======
+      <EditSql>update [ST] set 
+	Name = '@Name', 
+	Code= '@Code'
+where
+	STUid= '@STUid'
+
+</EditSql>
+>>>>>>> f9e2b8ba9e83f893be806983a34e31492008d1fa
       <CreateoreditSql>raiserror (-1,-1, 'Not implemented');  </CreateoreditSql>
-      <DeleteSql>	DECLARE @STUID AS UNIQUEIDENTIFIER = '$(STUid)'
+      <DeleteSql>	DECLARE @STUID AS UNIQUEIDENTIFIER = '@STUid'
     BEGIN TRANSACTION;
     BEGIN TRY
 
@@ -671,7 +484,7 @@ inner join [dbo].[OrgUnitProps] oup on oup.OrgUnitId = ou.OrgUnitId
 where  {0}
 order by [RO.OrgUnitPath]
 </GetSQL>
-      <GetSQLWhereString>[OrgUnitPath] like '*рнпк*'</GetSQLWhereString>
+      <GetSQLWhereString>[OrgUnitPath] not like '*рнпк*'</GetSQLWhereString>
       <CreateSql>declare @parent int = (select [OrgUnitId] from [dbo].[OrgUnit] ou where ou.[Name] = '@ParentName')
 
 insert into [dbo].[OrgUnit]([Code], [Name], [Description], [ParentUnitId], [OrgUnitUid], [OrgUnitLevelId], [Flags]) 
@@ -685,236 +498,164 @@ where
   OrgUnitUid= '@OrgUnitUid'
 </EditSql>
       <CreateoreditSql>raiserror (-1,-1, 'Not implemented');  </CreateoreditSql>
-      <DeleteSql>DECLARE @OrgUnitNameParam NVARCHAR(max) = N'$(Name)'
-DECLARE @orgUnitId int, 
-	@parentUnitId int,
-	@orgUnitLevelId int, 
-	@code nvarchar (50), 
-	@description nvarchar (255),
-	@orgUnitLevelName nvarchar (150),
-	@orgUnitUid uniqueidentifier,
-	@flags INT --изменение Гордейчук Виктор от 02.02.2017
+      <DeleteSql>		
+		declare 
+		@orgUnitId int,
+		@parentUnitId int,
+		@orgUnitLevelId int, 
+		@code nvarchar (50), 
+		@description nvarchar (255),
+		@orgUnitLevelName nvarchar (150),
+		@orgUnitUid uniqueidentifier,
+		@flags INT --изменение Гордейчук Виктор от 02.02.2017
 
-SELECT 
-	@orgUnitId = [OrgUnitId],
-	@code = [Code],
-	@description=[Description],
-	@parentUnitId=ParentUnitId,
-	@orgUnitLevelId=OrgUnitLevelId,
-	@orgUnitUid=OrgUnitUid,
-	@flags =Flags --изменение Гордейчук Виктор от 02.02.2017
-FROM [dbo].[OrgUnit] 
-WHERE [Name] = @OrgUnitNameParam
+		select 
+			@orgUnitId = [OrgUnitId],
+			@code = [Code],
+			@description=[Description],
+			@parentUnitId=ParentUnitId,
+			@orgUnitLevelId=OrgUnitLevelId,
+			@orgUnitUid=OrgUnitUid,
+			@flags =Flags --изменение Гордейчук Виктор от 02.02.2017
+		from [dbo].[OrgUnit] 
+		where [Name] = '@Name'
 
 
-IF (@orgUnitId IS NOT NULL)
-BEGIN		
-	DECLARE @orgUnitname nvarchar(max)
-	DECLARE mycursor cursor for
-		SELECT c.name 
-		FROM [OrgUnit] 
-		LEFT JOIN [OrgUnit] c on c.[ParentUnitId] = [OrgUnit].OrgUnitid
-		WHERE OrgUnit.Name = @OrgUnitNameParam
-
-	OPEN mycursor;
-	FETCH NEXT from mycursor into @orgUnitname;
-	
-	WHILE @@FETCH_STATUS = 0
-	BEGIN
-		IF @orgUnitname IS NOT NULL
-		BEGIN
-			PRINT @orgUnitname
-			EXEC dbo._prm_OrgUnit_Delete @orgUnitname --рекурсивное удаление детей
-		END
-		FETCH NEXT FROM mycursor INTO @orgUnitname
-	END			
-
-	DECLARE @count int = 0
-	SELECT @count = count(c.name)
-	FROM [OrgUnit] 
-	LEFT JOIN [OrgUnit] C on c.ParentUnitId=[OrgUnit].orgUnitid
-	WHERE [OrgUnit].[Name] = @OrgUnitNameParam
-
-	
-	IF @count=0
-	BEGIN
-		DECLARE @Subdivisionid int
-		SELECT @Subdivisionid=Subdivisionid
-			FROM Subdivision
-			INNER JOIN OrgUnit ON OrgUnit.OrgUnitid=Subdivision.Subdivisionid
-			WHERE OrgUnit.[Name] = @OrgUnitNameParam
-		IF (@Subdivisionid IS NOT NULL) --это лаборатория, нужно ее отвязать от всех объектов ЛИМС
-		BEGIN	
-			DECLARE @oldsd int = @Subdivisionid
-			DECLARE @newsd int 
-			SELECT @newsd=Subdivisionid from Subdivision where name='Без лаборатории'
-
-			UPDATE [AODTech] SET subdivisionid=null
-			UPDATE [UserPosition] SET subdivisionid=null
-			UPDATE [StdDocUsingContext] SET subdivisionid=@newsd WHERE subdivisionid=@oldsd
-			DELETE FROM [SampleContext] WHERE subdivisionid=@oldsd
-			DELETE FROM [EqpSubdivision] WHERE subdivisionid=@oldsd
-			DELETE FROM [SubdivisionUser]  WHERE subdivisionid=@oldsd 
-			DELETE FROM [SubdivisionTechTest] WHERE subdivisionid=@oldsd
-			DELETE FROM [SubdivisionProduct] WHERE subdivisionid=@oldsd
-			DELETE FROM [SubdivisionTech]  WHERE subdivisionid=@oldsd
-			DELETE FROM [ObjectSubdivision] WHERE subdivisionid=@oldsd
-			DELETE FROM [TechTestEqp] WHERE subdivisionid=@oldsd
-			DELETE FROM [AESubdivision] WHERE subdivisionid=@oldsd   
-			DELETE FROM [LLTTask] WHERE subdivisionid=@oldsd
-            DELETE FROM [RoomTestEventFreq] WHERE RoomTermsTestUid in (SELECT RoomTermsTestUid FROM [RoomTermsTest] WHERE subdivisionid=@oldsd)
-            DELETE FROM [RoomTermsTest] WHERE subdivisionid=@oldsd
-            UPDATE [AEBatch] SET SourceOrgUnitId = @newsd  WHERE SourceOrgUnitId = @oldsd
-            UPDATE [AEBatch] SET CurrentOrgUnitId = @newsd  WHERE CurrentOrgUnitId = @oldsd			
-			UPDATE STCPTVer SET subdivisionid=@newsd WHERE subdivisionid=@oldsd
-			UPDATE SampleTech SET subdivisionid=@newsd WHERE subdivisionid=@oldsd
-			UPDATE CheckProcInfo  SET subdivisionid=@newsd WHERE subdivisionid=@oldsd
-			UPDATE ClbrGraph  SET subdivisionid=@newsd WHERE subdivisionid=@oldsd			
-		END
-
-			--удаление помещений
-			DECLARE @roomuid uniqueidentifier
-			DECLARE @roomname nvarchar(max)
-			DECLARE @RV timestamp
-			DECLARE myROOMcursor CURSOR FOR
-				SELECT ROOM.roomuid,  ROOM.rv, ROOM.name
-				FROM ROOM 
+		if not(@orgUnitId is NULL)
+		begin		
+			declare @orgUnitname nvarchar(max)
+			declare mycursor cursor for
+				SELECT c.name 
+				FROM [OrgUnit] 
+				left join [OrgUnit] C on c.ParentUnitId=[OrgUnit].orgUnitid
 				WHERE 1=1
-				AND ROOMuid IN (
-					SELECT ROOMuid
-					FROM RoomOrgUnit
-					LEFT JOIN OrgUnit ON OrgUnit.OrgUnitId=RoomOrgUnit.OrgUnitId
-					WHERE OrgUnit.NAME =@OrgUnitNameParam
-				)
+				and OrgUnit.Name ='@Name'
+
+			open mycursor;
+			fetch next from mycursor into @orgUnitname;
+				while @@FETCH_STATUS = 0
+				begin
+					print @orgUnitname
+					exec dbo._prm_OrgUnit_Delete @orgUnitname --рекурсивное удаление детей
+					fetch next from mycursor into @orgUnitname
+				end			
+
+			declare @count int=0
+			SELECT @count=count(c.name)
+			FROM [OrgUnit] 
+			left join [OrgUnit] C on c.ParentUnitId=[OrgUnit].orgUnitid
+			WHERE 1=1
+			and OrgUnit.Name ='@Name'
+
 			
-		DECLARE @OldOUId int = (SELECT OrgUnit.OrgUnitId FROM OrgUnit WHERE OrgUnit.[Name] = @OrgUnitNameParam)
-		DECLARE @NewOUId int = (SELECT Subdivisionid from Subdivision where [Name] = 'Без лаборатории')
-		
-		-- Удаляем привязки к партиям объектов учета
-		UPDATE [AEBatchRequest] SET [AEBatchRequest].[OwnerOrgUnitId] = @NewOUId  WHERE [AEBatchRequest].[OwnerOrgUnitId] = @OldOUId
-        UPDATE [AEBatchRequest] SET [AEBatchRequest].[StorageOrgUnitId] = @NewOUId  WHERE [AEBatchRequest].[StorageOrgUnitId] = @OldOUId	
-		UPDATE [AEBatch] SET [AEBatch].[SourceOrgUnitId] = @NewOUId  WHERE [AEBatch].[SourceOrgUnitId] = @OldOUId
-        UPDATE [AEBatch] SET [AEBatch].[CurrentOrgUnitId] = @NewOUId  WHERE [AEBatch].[CurrentOrgUnitId] = @OldOUId	
-        
-		OPEN myROOMcursor;
-		FETCH NEXT FROM myROOMcursor INTO @roomuid, @RV,@roomname;
-		WHILE @@FETCH_STATUS = 0
-		BEGIN
-			PRINT @roomname
-			EXEC dbo._prm_room_Delete @roomuid, @RV
-			FETCH NEXT FROM myROOMcursor INTO @roomuid, @RV,@roomname;
-		END
-		CLOSE myROOMcursor;
-		DEALLOCATE myROOMcursor;
+			if @count=0
+			begin
+
+				declare @Subdivisionid int
+				select @Subdivisionid=Subdivisionid
+					from Subdivision
+					inner join OrgUnit on OrgUnit.OrgUnitid=Subdivision.Subdivisionid
+					where OrgUnit.name='@Name'
+				if not(@Subdivisionid is NULL)--это лаборатория, нужно ее отвязать от всех объектов ЛИМС
+				begin	
+					declare @oldsd int =@Subdivisionid
+					declare @newsd int 
+					select @newsd=Subdivisionid from Subdivision where name='Без лаборатории'
+
+					update [AODTech] set subdivisionid=null
+					update [UserPosition] set subdivisionid=null
+					update [StdDocUsingContext] set subdivisionid=@newsd where subdivisionid=@oldsd
+					delete from [SampleContext] where subdivisionid=@oldsd
+					delete from [EqpSubdivision] where subdivisionid=@oldsd
+					delete from [SubdivisionUser]  where subdivisionid=@oldsd 
+					delete from [SubdivisionTechTest] where subdivisionid=@oldsd
+					delete from [SubdivisionProduct] where subdivisionid=@oldsd
+					delete from [SubdivisionTech]  where subdivisionid=@oldsd
+					delete from [ObjectSubdivision] where subdivisionid=@oldsd
+					delete from [TechTestEqp] where subdivisionid=@oldsd
+					delete from [AESubdivision] where subdivisionid=@oldsd   
+					delete from [LLTTask] where subdivisionid=@oldsd
+                    delete from [RoomTestEventFreq] where RoomTermsTestUid in (select RoomTermsTestUid from  [RoomTermsTest] where subdivisionid=@oldsd)
+                    delete from [RoomTermsTest] where subdivisionid=@oldsd
+					update STCPTVer set subdivisionid=@newsd where subdivisionid=@oldsd
+					update SampleTech set subdivisionid=@newsd where subdivisionid=@oldsd
+					update CheckProcInfo  set subdivisionid=@newsd where subdivisionid=@oldsd
+					update ClbrGraph  set subdivisionid=@newsd where subdivisionid=@oldsd
+					
+				end
+
+					--удаление помещений
+					declare @roomuid uniqueidentifier
+					declare @roomname nvarchar(max)
+					declare @RV timestamp
+					declare myROOMcursor cursor for
+						SELECT ROOM.roomuid,  ROOM.rv, ROOM.name
+						FROM ROOM 
+						WHERE 1=1
+						and ROOMuid in(
+							select ROOMuid
+							from RoomOrgUnit
+							left join OrgUnit on OrgUnit.OrgUnitId=RoomOrgUnit.OrgUnitId
+							where OrgUnit.Name ='@Name'
+						)
+					open myROOMcursor;
+					fetch next from myROOMcursor into @roomuid, @RV,@roomname;
+					while @@FETCH_STATUS = 0
+					begin
+						print @roomname
+						exec dbo._prm_room_Delete @roomuid, @RV
+						fetch next from myROOMcursor into @roomuid, @RV,@roomname;
+					end
+					close myROOMcursor;
+					DEALLOCATE myROOMcursor;
 
 
-		EXEC [dbo].[spc_OrgUnit_Delete] 
-		   DEFAULT
-		  ,@orgUnitId
-		  ,@code
-		  ,@OrgUnitNameParam
-		  ,@description
-		  ,@parentUnitId
-		  ,@orgUnitUid
-		  ,@orgUnitLevelId
-		  ,@flags --изменение Гордейчук Виктор от 02.02.2017
-	END
-END 
-ELSE
-BEGIN
-	RAISERROR (N'Error - OrgUnit with Name = &lt;%s&gt; not found!', -- Message text.
-	   10, -- Severity,
-	   1, -- State,
-	   @OrgUnitNameParam -- 1 argument.
-	   )
-END
+				EXEC [dbo].[spc_OrgUnit_Delete] 
+				   DEFAULT
+				  ,@orgUnitId
+				  ,@code
+				  ,'@Name'
+				  ,@description
+				  ,@parentUnitId
+				  ,@orgUnitUid
+				  ,@orgUnitLevelId
+				  ,@flags --изменение Гордейчук Виктор от 02.02.2017
+			end
+		end 
+		else
+		begin
+			raiserror (N'Error - OrgUnit with Name = &lt;%s&gt; not found!', -- Message text.
+			   10, -- Severity,
+			   1, -- State,
+			   '@Name' -- 1 argument.
+			   )
+		end
 </DeleteSql>
       <ImageBuffer>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</ImageBuffer>
     </ItemChanger>
     <ItemChanger>
       <Name>LDS.Точки контроля</Name>
-      <GetSQL>SELECT
-    'x' as [Select(x)],
-    [CP].CPUid,
-    [OrgUnitProps].[OrgUnitPath] AS [OrgUnitPathRO],
-    [CP].[Name] AS [Name],
-    '' AS [NewName],
-    [CP].[Code] AS [Code],
-    [CPVer].[Description] AS [Description],
-    [OrgUnit].[Name] AS [OrgUnitName],
-    [CP].[UseExtractionPoint] AS [UseExtractionPoint],
-    [CP].[IsActive] AS [IsActive],
-    [CP].[AllowNewEP] AS [AllowNewEP],
-    [CP].[EPIsRequired] AS [EPIsRequired],
-    stuff((
-        SELECT '|' + [p].[Name]
-        FROM [dbo].[CPProduct] cpp 
-            INNER JOIN [dbo].[Product] p ON p.[ProductUid] = cpp.[ProductUid]
-        WHERE cpp.CPUid = CP.CPUid
-        FOR XML PATH ('')
-    ), 1, 1, '') Products 
-FROM 
+      <GetSQL>select
+    'x' as [Select(x)], 
+    [CP].[Name] as [Name],
+    '' as [NewName],
+    [CP].[Code] as [Code],
+    [CPVer].[Description] as [Description],
+    [OrgUnit].Name as [OrgUnitName],
+    [CP].[UseExtractionPoint] as [UseExtractionPoint],
+    [CP].[IsActive] as [IsActive],
+    [CP].[AllowNewEP] as [AllowNewEP],
+    [CP].[EPIsRequired] as [EPIsRequired]
+from 
     [CP] 
-    INNER JOIN [CPVer] ON [CPVer].[CPUid] = [CP].[CPUid]
-    INNER JOIN [CPOrgUnit] ON [CPOrgUnit].[CPUid] = [CP].[CPUid]
-    INNER JOIN [OrgUnit] ON [OrgUnit].[OrgUnitId] = [CPOrgUnit].[OrgUnitId]
-    INNER JOIN [OrgUnitProps] ON [OrgUnitProps].[OrgUnitId] = [CPOrgUnit].[OrgUnitId]
-WHERE {0}
+    inner join [CPVer] on [CPVer].CPUid = [CP].CPUid
+    inner join [CPOrgUnit] on [CPOrgUnit].CPUid = [CP].CPUid
+    inner join [OrgUnit] on [OrgUnit].OrgUnitId = [CPOrgUnit].OrgUnitId
+where {0}
 </GetSQL>
-      <GetSQLWhereString>[CP].[Name] like '*РНПК*'</GetSQLWhereString>
-      <CreateSql>DECLARE @OrgUnitId int
-DECLARE @CPUid uniqueidentifier
-DECLARE @Name nvarchar(150) = '$(Name)'
-DECLARE @Code nvarchar(150) = '$(Name)'
-DECLARE @OrgUnitName nvarchar(max) = N'$(OrgUnitName)'
-DECLARE @UseExtractionPoint int = $(UseExtractionPoint);
-DECLARE @IsActive int = $(IsActive);
-DECLARE @AllowNewEP int = $(AllowNewEP) ;
-DECLARE @EPIsRequired int = $(EPIsRequired);
-DECLARE @Description nvarchar(max) = N'$(Description)'
-
-
-SELECT @OrgUnitId = [OrgUnitId] FROM [dbo].[OrgUnit] WHERE [Name] = @OrgUnitName      
-IF (@OrgUnitId IS NULL) 
-BEGIN
-    RAISERROR (N'Error - OrgUnit with Name = &lt;%s&gt; not found!', 16, 1, @OrgUnitName)
-END
-ELSE
-BEGIN
-    SELECT TOP 1 @CPUid = [CPUid] FROM [dbo].[CP] WHERE [Code] = @Code OR [Name] = @Name
-    IF @CPUid IS NULL
-    BEGIN    
-        SET @CPUid = newid();
-        EXEC [dbo].[CP_Insert]
-            @CPUid,
-            @Code,
-            @Name,
-            @UseExtractionPoint,
-            @IsActive,
-            @AllowNewEP,
-            @EPIsRequired,
-            @Description  
-        EXEC [dbo].[spc_CPOrgUnit_Insert]
-            DEFAULT,
-            @CPUid,
-            @OrgUnitId
-    END
-    ELSE
-        RAISERROR (N'Error - CP Exist = &lt;%s, %s&gt;!', 16, 1, @Code, @Name);
-END
-</CreateSql>
-      <EditSql>UPDATE [dbo].[CP] 
-SET 
-	[Code]=N'$(Code)', 
-	[Name]=N'$(Name)', 
-	[UseExtractionPoint]=$(UseExtractionPoint), 
-	[IsActive]=$(IsActive), 
-	[AllowNewEP]=$(AllowNewEP), 
-	[EPIsRequired]=$(EPIsRequired)
-WHERE  
-	[CPUid]='$(CPUid)'
-
-</EditSql>
+      <GetSQLWhereString>[CP].[Name] like '*'</GetSQLWhereString>
+      <CreateSql>raiserror (-1,-1, 'Not implemented');  </CreateSql>
+      <EditSql>raiserror (-1,-1, 'Not implemented');  </EditSql>
       <CreateoreditSql>declare @OrgUnitId int
 declare @CPUid uniqueidentifier
 declare @NName nvarchar(150) = '@NewName'
@@ -963,25 +704,36 @@ else begin --'Создаем ТК'
 end
 
 </CreateoreditSql>
-      <DeleteSql>DECLARE @CPUid uniqueidentifier
-DECLARE @Name nvarchar(max) = '$(Name)'		
-SELECT @CPUid = CPUid FROM [dbo].[CP] WHERE [CP].[name] = @Name
-
-IF (@CPUid IS NOT NULL)
-BEGIN	
-	DECLARE @OrgUnitId int
-	SELECT @OrgUnitId = [OrgUnitId] FROM [dbo].[CPOrgUnit] WHERE [CPOrgUnit].[CPUid] = @CPUid	
-	IF (@OrgUnitId IS NOT NULL) 
-	BEGIN
-	    EXEC [dbo].[spc_CPOrgUnit_Delete] DEFAULT, @CPUid, @OrgUnitId
-	END
+      <DeleteSql>declare @OrgUnitId int
+	declare @CPUid uniqueidentifier
+		
+	select @CPUid = CPUid from [dbo].[CP] where [CP].[name] = '@Name'	
 	
-	EXEC [dbo].[CP_Delete] DEFAULT, @CPUid
-END 
-ELSE
-BEGIN
-	RAISERROR (N'Error - CP with Name = &lt;%s&gt; not found!', 18, 1, @Name)
-END</DeleteSql>
+	
+	if not(@CPUid is NULL)
+		begin		
+			select @OrgUnitId = [OrgUnitId] from [dbo].[CPOrgUnit] where [CPOrgUnit].[CPUid] = @CPUid	
+			if not(@OrgUnitId is NULL) 
+				begin
+				exec [dbo].[spc_CPOrgUnit_Delete]
+					default,
+					@CPUid,
+					@OrgUnitId
+				end
+			exec [dbo].[CP_Delete]
+				default,
+				@CPUid
+		end 
+		else
+		begin
+			raiserror (N'Error - CP with Name = &lt;%s&gt; not found!', -- Message text.
+			   10, -- Severity,
+			   1, -- State,
+			   '@Name' -- 1 argument.
+			   )
+		end
+
+</DeleteSql>
       <ImageBuffer>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</ImageBuffer>
     </ItemChanger>
     <ItemChanger>
@@ -1072,10 +824,12 @@ IF @@TRANCOUNT &gt; 0
     </ItemChanger>
     <ItemChanger>
       <Name>LDS.ОУ</Name>
-      <GetSQL>/* Не изменять!!!
+      <GetSQL>
+/* Не изменять!!!
 AEUid (Ключ ОУ) 
 AEBatchRequestUid (Ключ заявки)
 */
+SET LANGUAGE Russian;
 SELECT 
 	'x' AS [Select(x)], 
 	[AE].[AEUid] AS "AEUid (Ключ ОУ)",
@@ -1085,7 +839,7 @@ SELECT
 	STUFF((
         SELECT ';' + CONVERT(NVARCHAR, [EntityType].[Name])
         FROM [EntityType] 
-        INNER JOIN [AEType] ON [AEType].AEUid = [AE].AEUid
+        INNER JOIN [AEType] ON [AEType].AEUid = [AE].[AEUid]
         WHERE [EntityType].[EntityTypeUid] = [AEType].[EntityTypeUid]
         FOR XML PATH ('')
     ), 1, 1, '') AS "Тип ОУ", 
@@ -1212,7 +966,8 @@ SELECT
 	LEFT JOIN [OrgUnit] [t9] ON [AEBatchRequest].[OwnerOrgUnitId] = [t9].[OrgUnitid]
 WHERE [AE].{0}</GetSQL>
       <GetSQLWhereString>Name like '*'</GetSQLWhereString>
-      <CreateSql>DECLARE @NRV timestamp = NULL
+      <CreateSql>SET LANGUAGE Russian;
+DECLARE @NRV timestamp = NULL
 DECLARE @NAEUid uniqueidentifier = NULL
 DECLARE @NAEBatchRequestUid uniqueidentifier = NULL
 DECLARE @NAEBatchUid uniqueidentifier = NULL
@@ -1611,7 +1366,7 @@ IF @NAEBatchUid IS NULL BEGIN
 				SET @NAcceptanceDate = CONVERT(datetime, CONVERT(INT, N'$(Дата акта приемки)') - 2)
 			END TRY
 			BEGIN CATCH
-				SET @NAcceptanceDate = NULL;
+				SET @NAcceptanceDate = GETDATE();
 			END CATCH
 		END CATCH
 	
@@ -1663,6 +1418,7 @@ END</CreateSql>
 AEUid (Ключ ОУ) 
 AEBatchRequestUid (Ключ заявки)
 */
+SET LANGUAGE Russian;
 DECLARE @NRV timestamp
 DECLARE @NAEUid uniqueidentifier = '$(AEUid (Ключ ОУ))'
 DECLARE @NAEBatchRequestUid uniqueidentifier = '$(AEBatchRequestUid (Ключ заявки))'
@@ -2087,8 +1843,8 @@ IF @NAEBatchUid IS NOT NULL BEGIN
 			[AEBatch].[InAccrScope] = @NInAccrScope
 	WHERE [AEBatch].[AEBatchUid] = @NAEBatchUid
 END</EditSql>
-      <DeleteSql>DECLARE @aeuid as uniqueidentifier = '$(AEUid (Ключ ОУ))'
-
+      <DeleteSql>SET LANGUAGE Russian;
+DECLARE @aeuid as uniqueidentifier = '$(AEUid (Ключ ОУ))'
 BEGIN TRANSACTION;
 BEGIN TRY
 
@@ -2194,6 +1950,7 @@ IF @@TRANCOUNT &gt; 0
       <GetSQL>/* Не изменять и не удалять!!!
 AEBatchTestUid (Ключ хар-ки партии ОУ) 
 */
+SET LANGUAGE Russian;
 SELECT 
 	'x' AS [Select(x)],
 	[AEBatchTest].[AEBatchTestUid] AS "AEBatchTestUid (Ключ хар-ки партии ОУ)",
@@ -2226,7 +1983,8 @@ SELECT
 	LEFT JOIN [DigitalSet] ON [AEBatchTestDigit].[DigitalSetId] = [DigitalSet].[DigitalSetId]
 WHERE [AEBatch].{0}</GetSQL>
       <GetSQLWhereString>AEBatchUid like '*'</GetSQLWhereString>
-      <CreateSql>DECLARE @NPartyOU NVARCHAR(600) = N'$(Партия ОУ)'
+      <CreateSql>SET LANGUAGE Russian;
+DECLARE @NPartyOU NVARCHAR(600) = N'$(Партия ОУ)'
 DECLARE @NAEName NVARCHAR(150) = NULL
 DECLARE @NStdDocName NVARCHAR(150) = NULL
 DECLARE @NGradeVerName NVARCHAR(150) = NULL
@@ -2378,7 +2136,8 @@ IF @@TRANCOUNT &gt; 0
 		COMMIT TRANSACTION
 		PRINT N'Применение транзакции.'
 	END</CreateSql>
-      <EditSql>DECLARE @NRID INT = 0
+      <EditSql>SET LANGUAGE Russian;
+DECLARE @NRID INT = 0
 DECLARE @NAEBatchUid uniqueidentifier = NULL
 DECLARE @NAEBatchTestUid uniqueidentifier = '$(AEBatchTestUid (Ключ хар-ки партии ОУ))'
 DECLARE @NLAbbreviation NVARCHAR(50) = N'$(Единица измерения)'
@@ -2506,8 +2265,8 @@ IF @@TRANCOUNT &gt; 0
 		COMMIT TRANSACTION
 		PRINT N'Применение транзакции.'
 	END</EditSql>
-      <DeleteSql>DECLARE @NAEBatchTestUid AS uniqueidentifier = '$(AEBatchTestUid (Ключ хар-ки партии ОУ))'
-
+      <DeleteSql>SET LANGUAGE Russian;
+DECLARE @NAEBatchTestUid AS uniqueidentifier = '$(AEBatchTestUid (Ключ хар-ки партии ОУ))'
 BEGIN TRANSACTION
 BEGIN TRY
 	IF (SELECT SUM(1) FROM [AEBatchTest] WHERE [AEBatchTest].[AEBatchTestUid] = @NAEBatchTestUid) &gt; 0 BEGIN
@@ -2541,15 +2300,28 @@ IF @@TRANCOUNT &gt; 0
     </ItemChanger>
     <ItemChanger>
       <Name>LDS.ОУ_Характеристика_Показатели</Name>
-      <GetSQL>DECLARE @N int = 0
-SELECT ROW_NUMBER() OVER (ORDER BY @N) AS "№ п/п", [Test].[Name] AS "Показатель", CASE WHEN [Test].[TestType] = 0 THEN 'Аналоговый'
-ELSE CASE WHEN [Test].[TestType] = 1 THEN 'Дискретный' END END AS "Тип показателя" FROM [Test] WHERE [Test].[TestType] IN (0,1)</GetSQL>
+      <GetSQL>SET LANGUAGE Russian;
+DECLARE @N int = 0
+SELECT 
+	ROW_NUMBER() OVER (ORDER BY @N) AS "№ п/п", 
+	[Test].[Name] AS "Показатель", 
+	CASE WHEN [Test].[TestType] = 0 THEN 'Аналоговый'
+		ELSE CASE WHEN [Test].[TestType] = 1 THEN 'Дискретный' END END AS "Тип показателя",
+	STUFF((
+        SELECT ';' + CONVERT(NVARCHAR(300), [EngUnit].[LAbbreviation])
+        FROM [EngUnit] 
+        WHERE [Test].[EngUnitClassId] = [EngUnit].[ClassId]
+        FOR XML PATH ('')
+    ), 1, 1, '') AS "Единицы измерения"
+	FROM [Test] 
+	WHERE [Test].[TestType] IN (0,1)</GetSQL>
       <GetSQLWhereString>Name like '*'</GetSQLWhereString>
       <ImageBuffer>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</ImageBuffer>
     </ItemChanger>
     <ItemChanger>
       <Name>LDS.ОУ_Применимость</Name>
-      <GetSQL>SELECT 
+      <GetSQL>SET LANGUAGE Russian;
+SELECT 
 	'x' AS [Select(x)],
 	[AEStdDoc].[AEStdDocUid] AS "AEStdDocUid (Ключ применимости ОУ)",
 	CASE WHEN [AE].[Name] IS NULL AND [StdDoc].[Name] IS NULL AND [GradeVer].[Name] IS NULL AND [AEBatch].[Num] IS NULL THEN NULL ELSE
@@ -2638,7 +2410,8 @@ IF @@TRANCOUNT &gt; 0
 		COMMIT TRANSACTION
 		PRINT N'Применение транзакции.'
 	END</CreateSql>
-      <EditSql>DECLARE @NPartyOU NVARCHAR(600) = N'$(Партия ОУ)'
+      <EditSql>SET LANGUAGE Russian;
+DECLARE @NPartyOU NVARCHAR(600) = N'$(Партия ОУ)'
 DECLARE @NAEName NVARCHAR(150) = NULL
 DECLARE @NStdDocName NVARCHAR(150) = NULL
 DECLARE @NGradeVerName NVARCHAR(150) = NULL
@@ -2752,7 +2525,8 @@ INNER JOIN [StdDoc] ON [StdDocVer].[StdDocUid] = [StdDoc].[StdDocUid]</GetSQL>
     </ItemChanger>
     <ItemChanger>
       <Name>LDS.Персонал</Name>
-      <GetSQL>DECLARE @FIOPersonal Table (UserUID uniqueidentifier, F NVARCHAR(255), I NVARCHAR(255), O NVARCHAR(255), NameShort NVARCHAR(150)) 
+      <GetSQL>SET LANGUAGE Russian;
+DECLARE @FIOPersonal Table (UserUID uniqueidentifier, F NVARCHAR(255), I NVARCHAR(255), O NVARCHAR(255), NameShort NVARCHAR(150)) 
 DECLARE @TableSkills Table (UserId int, BirthAddress NVARCHAR(1024), WorkInfo NVARCHAR(1024), ActionFun NVARCHAR(1024))
 DECLARE @NR Table (CompanyIndex NVARCHAR(255), id INT)
 DECLARE @NRID INT = 0
@@ -2859,7 +2633,8 @@ SELECT
 	LEFT JOIN [Status] ON [UserProp].[StatusId] = [Status].[StatusId]
 WHERE [User].{0}</GetSQL>
       <GetSQLWhereString>FullName like '*'</GetSQLWhereString>
-      <CreateSql>DECLARE @NGenerate NVARCHAR(10) = SUBSTRING(CONVERT(NVARCHAR(100), HASHBYTES('MD5', CAST(SYSDATETIME() AS NVARCHAR)), 2), 0, 12)
+      <CreateSql>SET LANGUAGE Russian;
+DECLARE @NGenerate NVARCHAR(10) = SUBSTRING(CONVERT(NVARCHAR(100), HASHBYTES('MD5', CAST(SYSDATETIME() AS NVARCHAR)), 2), 0, 12)
 DECLARE @NUserUID uniqueidentifier = NEWID()
 DECLARE @NUserId INT = NULL
 DECLARE @NFullName NVARCHAR(150)
@@ -3287,7 +3062,8 @@ IF @@TRANCOUNT &gt; 0
 		COMMIT TRANSACTION
 		PRINT N'Применение транзакции.'
 	END</CreateSql>
-      <EditSql>DECLARE @NGenerate NVARCHAR(10) = SUBSTRING(CONVERT(NVARCHAR(100), HASHBYTES('MD5', CAST(SYSDATETIME() AS NVARCHAR)), 2), 0, 12)
+      <EditSql>SET LANGUAGE Russian;
+DECLARE @NGenerate NVARCHAR(10) = SUBSTRING(CONVERT(NVARCHAR(100), HASHBYTES('MD5', CAST(SYSDATETIME() AS NVARCHAR)), 2), 0, 12)
 DECLARE @NUserUID uniqueidentifier = N'$(UserUID (Ключ персонала))'
 DECLARE @NUserId INT = NULL
 DECLARE @NFullName NVARCHAR(150)
@@ -3737,9 +3513,9 @@ IF @@TRANCOUNT &gt; 0
 		COMMIT TRANSACTION
 		PRINT N'Применение транзакции.'
 	END</EditSql>
-      <DeleteSql>DECLARE @NUserUID AS uniqueidentifier = '$(UserUID (Ключ персонала))'
+      <DeleteSql>SET LANGUAGE Russian;
+DECLARE @NUserUID AS uniqueidentifier = '$(UserUID (Ключ персонала))'
 DECLARE @NUserId INT = NULL
-
 BEGIN TRANSACTION
 BEGIN TRY
 	IF (SELECT SUM(1) FROM [User] WHERE [User].[UserUID] = @NUserUID) &gt; 0 
@@ -3797,6 +3573,7 @@ IF @@TRANCOUNT &gt; 0
 	END</DeleteSql>
       <ImageBuffer>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</ImageBuffer>
     </ItemChanger>
+<<<<<<< HEAD
     <ItemChanger>
       <Name>LDS.Группы пользователей</Name>
       <GetSQL>select 
@@ -3984,3 +3761,9 @@ exec dbo.StdDoc_Insert  @StdDocUid='FDAF9AE4-F145-497B-BAC7-83AB10A53BB4',@Code=
   <EditorType>1</EditorType>
   <CurrentVersion>1.4.3.4</CurrentVersion>
 </ItemChangerList>
+=======
+  </Items>
+  <SelectedObjectIndex>0</SelectedObjectIndex>
+  <EditorType>4</EditorType>
+</ItemChangerList>
+>>>>>>> f9e2b8ba9e83f893be806983a34e31492008d1fa
