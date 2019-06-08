@@ -137,7 +137,7 @@ namespace gk.SQLConfigurator
             }
         }
 
-        private void setBtnState(bool b)
+        private void SetBtnState(bool b)
         {
             ribbon.btnAction.Enabled = b;
         }
@@ -162,18 +162,12 @@ namespace gk.SQLConfigurator
 
                         if (cnt.State == ConnectionState.Open)
                         {
-                            //SqlDataReader reader;
                             try
                             {
-                                //SqlCommand cmd = new SqlCommand(@"select * from SysDatabaseVersion", cnt);
-                                //reader = cmd.ExecuteReader();
-                                //reader.Read();
-                                //Version curVersionDB = new Version(Convert.ToInt32(reader["DatabaseVersionId"]), Convert.ToInt32(reader["MajorVersion"]), Convert.ToInt32(reader["MinorVersion"]), Convert.ToInt32(reader["Revision"]));
                                 ribbon.lConnectState.Label = "Состояние: Подключено";
                                 ribbon.lServer.Label = string.Format("Сервер: {0}", cnsb.DataSource);
                                 ribbon.lDb.Label = string.Format("База данных: {0}", cnsb.InitialCatalog);
-                                setBtnState(true);
-                                //reader.Close();
+                                SetBtnState(true);
                             }
                             catch (Exception ex)
                             {
@@ -181,7 +175,7 @@ namespace gk.SQLConfigurator
                                 ribbon.lServer.Label = string.Format("Сервер: {0}", "");
                                 ribbon.lDb.Label = string.Format("База данных: {0}", "");
                                 Logger.Error("(connectToSql.action)", ex);
-                                setBtnState(false);
+                                SetBtnState(false);
                             }
                         }
                         else
@@ -189,7 +183,7 @@ namespace gk.SQLConfigurator
                             ribbon.lConnectState.Label = "Состояние: Отключено";
                             ribbon.lServer.Label = string.Format("Сервер: {0}", "");
                             ribbon.lDb.Label = string.Format("База данных: {0}", "");
-                            setBtnState(false);
+                            SetBtnState(false);
                         }
                     }
                     catch (Exception ex)
@@ -198,7 +192,7 @@ namespace gk.SQLConfigurator
                         ribbon.lServer.Label = string.Format("Сервер: {0}", "");
                         ribbon.lDb.Label = string.Format("База данных: {0}", "");
                         Logger.Error("(connectToSql.action)", ex);
-                        setBtnState(false);
+                        SetBtnState(false);
                     }
                 }
                 ConnectInProcess = false;
@@ -229,13 +223,13 @@ namespace gk.SQLConfigurator
         {
             ReadICL();
             ribbon = new SQLConfiguratorRibbon();
-            ribbon.addin = this;
+            ribbon.Addin = this;
 
-            ribbon.ButtonClicked += ribbon_connectSetingsButtonClick;
-            ribbon.btnExecuteToDBClicked += ribbon_btnExcecuteToDB;
-            ribbon.btSqlEditClicked += ribbon_btSqlEditClick;
-            ribbon.btnSQLSaveCliked += ribbon_btnSQLSaveCliked;
-            ribbon.btnSettingCliked += ribbon_btnSettingCliked;
+            ribbon.BtnConnectSetings += ribbon_connectSetingsButtonClick;
+            ribbon.BtnExecuteToDBClicked += ribbon_btnExcecuteToDB;
+            ribbon.BtSqlEditClicked += ribbon_btSqlEditClick;
+            ribbon.BtnSQLSaveCliked += ribbon_btnSQLSaveCliked;
+            ribbon.BtnSettingCliked += ribbon_btnSettingCliked;
 
             return Globals.Factory.GetRibbonFactory().CreateRibbonManager(new IRibbonExtension[] { ribbon });
         }
@@ -307,7 +301,11 @@ namespace gk.SQLConfigurator
             UpdateICConteiner();
             f.Dispose();
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="SaveAsSql"></param>
+        /// <param name="Check"></param>
         public void ribbon_ActionCLick(bool SaveAsSql, bool Check)
         {
             if (cnt != null)

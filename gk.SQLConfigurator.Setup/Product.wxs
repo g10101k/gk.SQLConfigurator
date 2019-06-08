@@ -5,8 +5,8 @@
   <?define ProductCode="8E41648F-F8E5-460E-B7E6-779C9A3F0ADE"?>
   <?define UpgradeCode="77A8B37C-B34D-4944-B070-06F5DAEECF24"?>
   <?define Manufacturer="InduSoft"?>
-  
-  <Product Id="$(var.ProductCode)" Name="$(var.ProductName)" Language="1049" Version="$(var.ProductVersion)" Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">		
+
+  <Product Id="$(var.ProductCode)" Name="$(var.ProductName)" Language="1049" Version="$(var.ProductVersion)" Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
     <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
 
@@ -22,23 +22,18 @@
     <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
   </Product>
 
-	<Fragment>
-		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="ProgramFilesFolder">
-        <Directory Id="IndusoftFolder" Name="Indusoft">
-          <Directory Id="INSTALLFOLDER" Name="gk.SQLConfigurator">
-            <Directory Id="ResDir" Name="Resources" />
-          </Directory>
+  <Fragment>
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLFOLDER" Name="gk.SQLConfigurator">
+          <Directory Id="ResDir" Name="Resources" />
         </Directory>
       </Directory>
-  
     </Directory>
+  </Fragment>
 
-
-	</Fragment>
-
-	<Fragment>
-    <ComponentGroup Id="RegistryEntries" >      
+  <Fragment>
+    <ComponentGroup Id="RegistryEntries" >
       <Component Id="_4EA1363B_55EF_4AC1_83A0_95209E20A3F9" Guid="01EC594D-FA6C-460B-9D0B-69C1AD0F01D1" Transitive="no" Directory="TARGETDIR">
         <RegistryKey Root="HKLM" Key="Software" ForceCreateOnInstall="no" ForceDeleteOnUninstall="no"  />
       </Component>
@@ -100,10 +95,6 @@
       <Component Id="__7A7682C6_622F_4960_929B_599D96E5AA10" Guid="76E421DE-BE54-4C6B-82CE-61B1FB14A4A7" Transitive="no" Directory="TARGETDIR">
         <RegistryValue Root="HKCU" Key="Software\Microsoft\Office\Excel\Addins\gk.SQLConfigurator" Type="integer" Name="LoadBehavior" Value="3" />
       </Component>
-      <!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
-			<!-- <Component Id="ProductComponent"> -->
-				<!-- TODO: Insert files, registry keys, and other resources here. -->
-			<!-- </Component> -->
-		</ComponentGroup>
-	</Fragment>
+    </ComponentGroup>
+  </Fragment>
 </Wix>

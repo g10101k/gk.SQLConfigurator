@@ -1,11 +1,13 @@
-﻿<#@ template debug="false" hostspecific="true" language="C#" #><#@ import namespace="System.IO" #><#@ import namespace="System.Collections.Generic" #><#@ output extension=".wxs" #><# 
-
-List<string> list = new List<string>();
+﻿<#@ template debug="true" hostspecific="true" language="C#" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".wxs" #>
+<# List<string> list = new List<string>();
 List<string> imgList = new List<string>();
 List<string> resList = new List<string>();
 string model = this.Host.ResolvePath("gk.SQLConfigurator.tt");
 var fi = new FileInfo(model);
-var pt = fi.Directory + @"\bin\debug"; 
+var pt = fi.Directory + @"\bin\debug";  
 
 		    foreach (var fileName in Directory.GetFiles(pt, "*.*", SearchOption.TopDirectoryOnly))
             {     

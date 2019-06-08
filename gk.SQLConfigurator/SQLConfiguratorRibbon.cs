@@ -29,16 +29,14 @@ namespace gk.SQLConfigurator
 {
     public partial class SQLConfiguratorRibbon
     {
-        public event Action ButtonClicked;
-        public event Action getFromDB;
-        public event Action btnExecuteToDBClicked;
-        public event Action AttachConsole;
-        public event Action btSqlEditClicked;
-        //public event Action Log;
-        public event Action btnSQLSaveCliked;
-        public event Action btnSettingCliked;
-        public ThisAddIn addin;
+        
+        public event Action BtnConnectSetings;
+        public event Action BtnExecuteToDBClicked;
+        public event Action BtSqlEditClicked;
+        public event Action BtnSQLSaveCliked;
+        public event Action BtnSettingCliked;
 
+        public ThisAddIn Addin { get; set; }
         public int SelectedObjectIndex { get; set; }
         private void gLDSRibbon_Load(object sender, RibbonUIEventArgs e)
         {
@@ -47,89 +45,80 @@ namespace gk.SQLConfigurator
 
         public void UpdateICConteiner()
         {
-            this.cmbItemChanger.Items.Clear();
-            foreach (ItemChanger ic in ThisAddIn.ICList.Items)
+            try
             {
-                try
+                this.cmbItemChanger.Items.Clear();
+                foreach (ItemChanger ic in ThisAddIn.ICList.Items)
                 {
-                    if (ic._Icon == null)
-                        ic._Icon = global::gk.SQLConfigurator.Properties.Resources.brick;
-                    Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ddi = this.Factory.CreateRibbonDropDownItem();
-                    ddi.Image = ic._Icon;
-                    ddi.Label = ic.Name;
-                    ddi.Tag = ic;
-                    this.cmbItemChanger.Items.Add(ddi);
+                    try
+                    {
+                        if (ic._Icon == null)
+                            ic._Icon = Properties.Resources.brick;
+                        RibbonDropDownItem ddi = this.Factory.CreateRibbonDropDownItem();
+                        ddi.Image = ic._Icon;
+                        ddi.Label = ic.Name;
+                        ddi.Tag = ic;
+                        this.cmbItemChanger.Items.Add(ddi);
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Error("(UpdateICConteiner.foreach)", ex);
+                    }
                 }
-                catch { }
+
+                cmbItemChanger.SelectedItemIndex = ThisAddIn.ICList.SelectedObjectIndex;
+                gallery1_Click(null, null);
+
+                editorTypeSelect.SelectedItemIndex = ThisAddIn.ICList.EditorType;
+                editorTypeSelect_Click(null, null);
             }
-
-            cmbItemChanger.SelectedItemIndex = ThisAddIn.ICList.SelectedObjectIndex;
-            gallery1_Click(null, null);
-
-            editorTypeSelect.SelectedItemIndex = ThisAddIn.ICList.EditorType;
-            editorTypeSelect_Click(null, null);
+            catch (Exception ex)
+            {
+                Logger.Error("(UpdateICConteiner)", ex);
+            }
         }
 
-        private void button1_Click(object sender, RibbonControlEventArgs e)
+        private void btnConnectSetings_Click(object sender, RibbonControlEventArgs e)
         {
-            if (ButtonClicked != null)
-                ButtonClicked();
+            BtnConnectSetings?.Invoke();
         }
 
         private void gallery1_Click(object sender, RibbonControlEventArgs e)
         {
             SelectedObjectIndex = cmbItemChanger.SelectedItemIndex;
             ThisAddIn.ICList.SelectedObjectIndex = cmbItemChanger.SelectedItemIndex;
-            addin.SaveICL();
+            Addin.SaveICL();
             cmbItemChanger.Image = cmbItemChanger.Items[cmbItemChanger.SelectedItemIndex].Image;
             cmbItemChanger.Label = cmbItemChanger.Items[cmbItemChanger.SelectedItemIndex].Label;
         }
 
-        private void button3_Click(object sender, RibbonControlEventArgs e)
+        private void btnExecuteToDB_Click(object sender, RibbonControlEventArgs e)
         {
-            if (getFromDB != null)
-                getFromDB();
-        }
-
-        private void button2_Click_1(object sender, RibbonControlEventArgs e)
-        {
-            if (btnExecuteToDBClicked != null)
-                btnExecuteToDBClicked();
-        }
-
-        private void button4_Click(object sender, RibbonControlEventArgs e)
-        {
-            if (AttachConsole != null)
-                AttachConsole();
+            BtnExecuteToDBClicked?.Invoke();
         }
 
         private void editorTypeSelect_Click(object sender, RibbonControlEventArgs e)
         {
             ThisAddIn.ICList.EditorType = editorTypeSelect.SelectedItemIndex;
-            addin.SaveICL();
+            Addin.SaveICL();
             editorTypeSelect.Label = editorTypeSelect.Items[editorTypeSelect.SelectedItemIndex].Label;
             btnAction.Image = editorTypeSelect.Items[editorTypeSelect.SelectedItemIndex].Image;
             editorTypeSelect.Image = editorTypeSelect.Items[editorTypeSelect.SelectedItemIndex].Image;
-
-            
         }
 
         private void btSqlEdit_Click(object sender, RibbonControlEventArgs e)
         {
-            if (btSqlEditClicked != null)
-                btSqlEditClicked();
+            BtSqlEditClicked?.Invoke();
         }
 
         private void btnSQLSave_Click(object sender, RibbonControlEventArgs e)
         {
-            if (btnSQLSaveCliked != null)
-                btnSQLSaveCliked();
+            BtnSQLSaveCliked?.Invoke();
         }
 
         private void btnSetting_Click(object sender, RibbonControlEventArgs e)
         {
-            if (btnSettingCliked != null)
-                btnSettingCliked();
+            BtnSettingCliked?.Invoke();
         }
     }
 }

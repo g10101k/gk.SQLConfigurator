@@ -2,8 +2,6 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
     <ComponentGroup Id="gk.SQLConfiguratorFiles">
-      <ComponentRef Id="gk.Log.dll"/>
-      <ComponentRef Id="gk.Log.pdb"/>
       <ComponentRef Id="gk.SQLConfigurator.dll"/>
       <ComponentRef Id="gk.SQLConfigurator.dll.config"/>
       <ComponentRef Id="gk.SQLConfigurator.dll.manifest"/>
@@ -24,12 +22,6 @@
   
     <Fragment>
     <DirectoryRef Id="INSTALLFOLDER" FileSource="$(var.gk.SQLConfigurator.TargetDir)">
-      <Component Id="gk.Log.dll" Guid="*">
-        <File Name="gk.Log.dll"/>
-      </Component>
-      <Component Id="gk.Log.pdb" Guid="*">
-        <File Name="gk.Log.pdb"/>
-      </Component>
       <Component Id="gk.SQLConfigurator.dll" Guid="*">
         <File Name="gk.SQLConfigurator.dll"/>
       </Component>

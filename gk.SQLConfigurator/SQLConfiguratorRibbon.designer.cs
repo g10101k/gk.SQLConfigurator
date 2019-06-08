@@ -54,6 +54,7 @@ namespace gk.SQLConfigurator
             Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl1 = this.Factory.CreateRibbonDropDownItem();
             Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl2 = this.Factory.CreateRibbonDropDownItem();
             Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl3 = this.Factory.CreateRibbonDropDownItem();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SQLConfiguratorRibbon));
             Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl4 = this.Factory.CreateRibbonDropDownItem();
             Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl5 = this.Factory.CreateRibbonDropDownItem();
             this.tab1 = this.Factory.CreateRibbonTab();
@@ -70,15 +71,18 @@ namespace gk.SQLConfigurator
             this.cmbItemChanger = this.Factory.CreateRibbonGallery();
             this.btSqlEdit = this.Factory.CreateRibbonButton();
             this.btnSetting = this.Factory.CreateRibbonButton();
+            this.group3 = this.Factory.CreateRibbonGroup();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.group2.SuspendLayout();
+            this.group3.SuspendLayout();
             this.SuspendLayout();
             // 
             // tab1
             // 
             this.tab1.Groups.Add(this.group1);
             this.tab1.Groups.Add(this.group2);
+            this.tab1.Groups.Add(this.group3);
             this.tab1.Label = global::gk.SQLConfigurator.Properties.Settings.Default.PanelName;
             this.tab1.Name = "tab1";
             // 
@@ -89,7 +93,7 @@ namespace gk.SQLConfigurator
             this.group1.Items.Add(this.lConnectState);
             this.group1.Items.Add(this.separator1);
             this.group1.Items.Add(this.btnConnect);
-            this.group1.Label = "Соединение";
+            this.group1.Label = "Подключение";
             this.group1.Name = "group1";
             // 
             // lServer
@@ -118,17 +122,13 @@ namespace gk.SQLConfigurator
             this.btnConnect.Label = "Выбрать БД";
             this.btnConnect.Name = "btnConnect";
             this.btnConnect.ShowImage = true;
-            this.btnConnect.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button1_Click);
+            this.btnConnect.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnConnectSetings_Click);
             // 
             // group2
             // 
             this.group2.Items.Add(this.btnAction);
             this.group2.Items.Add(this.btnSQLSave);
-            this.group2.Items.Add(this.editorTypeSelect);
-            this.group2.Items.Add(this.cmbItemChanger);
-            this.group2.Items.Add(this.btSqlEdit);
-            this.group2.Items.Add(this.btnSetting);
-            this.group2.Label = "Сохранить";
+            this.group2.Label = "Действия";
             this.group2.Name = "group2";
             // 
             // btnAction
@@ -139,7 +139,7 @@ namespace gk.SQLConfigurator
             this.btnAction.Label = "Выполнить";
             this.btnAction.Name = "btnAction";
             this.btnAction.ShowImage = true;
-            this.btnAction.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.button2_Click_1);
+            this.btnAction.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnExecuteToDB_Click);
             // 
             // btnSQLSave
             // 
@@ -158,7 +158,7 @@ namespace gk.SQLConfigurator
             ribbonDropDownItemImpl1.Label = "Получить";
             ribbonDropDownItemImpl2.Image = global::gk.SQLConfigurator.Properties.Resources.database_edit;
             ribbonDropDownItemImpl2.Label = "Изменить";
-            ribbonDropDownItemImpl3.Image = global::gk.SQLConfigurator.Properties.Resources.database_add;
+            ribbonDropDownItemImpl3.Image = ((System.Drawing.Image)(resources.GetObject("ribbonDropDownItemImpl3.Image")));
             ribbonDropDownItemImpl3.Label = "Создать";
             ribbonDropDownItemImpl4.Image = global::gk.SQLConfigurator.Properties.Resources.database_refresh;
             ribbonDropDownItemImpl4.Label = "Создать/Изменить";
@@ -204,6 +204,15 @@ namespace gk.SQLConfigurator
             this.btnSetting.ShowImage = true;
             this.btnSetting.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetting_Click);
             // 
+            // group3
+            // 
+            this.group3.Items.Add(this.editorTypeSelect);
+            this.group3.Items.Add(this.cmbItemChanger);
+            this.group3.Items.Add(this.btSqlEdit);
+            this.group3.Items.Add(this.btnSetting);
+            this.group3.Label = "Настройки";
+            this.group3.Name = "group3";
+            // 
             // SQLConfiguratorRibbon
             // 
             this.Name = "SQLConfiguratorRibbon";
@@ -216,6 +225,8 @@ namespace gk.SQLConfigurator
             this.group1.PerformLayout();
             this.group2.ResumeLayout(false);
             this.group2.PerformLayout();
+            this.group3.ResumeLayout(false);
+            this.group3.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -235,6 +246,7 @@ namespace gk.SQLConfigurator
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnSQLSave;
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnSetting;
         public Microsoft.Office.Tools.Ribbon.RibbonTab tab1;
+        internal Microsoft.Office.Tools.Ribbon.RibbonGroup group3;
     }
 
     partial class ThisRibbonCollection
