@@ -68,7 +68,7 @@ namespace ForTest
         {
             try
             {
-                frmSettings.checkUpdate_Click();
+                //ThisAddIn.CheckUpdate_Click();
 
             }
             catch (System.IO.FileNotFoundException) {}

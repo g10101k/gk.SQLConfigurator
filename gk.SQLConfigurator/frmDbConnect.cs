@@ -25,16 +25,16 @@ using System.IO;
 
 namespace gk.SQLConfigurator
 {
-    public partial class frmSettings : Form
+    public partial class frmDbConnect : Form
     {
         public SqlConnection cnt;
         public SqlConnectionStringBuilder cnsb;
-        public frmSettings()
+        public frmDbConnect()
         {
             InitializeComponent();
         }
 
-        public frmSettings(SqlConnection _cnt, SqlConnectionStringBuilder _cnsb)
+        public frmDbConnect(SqlConnection _cnt, SqlConnectionStringBuilder _cnsb)
         {
             cnt = _cnt;
             cnsb = _cnsb;
@@ -96,7 +96,6 @@ namespace gk.SQLConfigurator
                 this.Enabled = false;
                 database.Items.Clear();
                 cnt.Open();
-                //EXEC sp_databases;
                 if (cnt.State == ConnectionState.Open)
                 {
                     DataTable schemaTable = cnt.GetSchema("Databases");
@@ -126,69 +125,6 @@ namespace gk.SQLConfigurator
                 txtPassword.Enabled = true;
                 txtUser.Enabled = true;
             }
-        }
-
-        private void btnUpdateConfig_Click(object sender, EventArgs e)
-        {
-            checkUpdate_Click();
-
-            // Обновить
-        }
-
-        public static void checkUpdate_Click()
-        {
-            try
-            {
-                string path = Properties.Settings.Default.UpdatePath;
-                string xml = "";
-                if (path.ToLower().StartsWith(@"\\"))
-                {
-                    StreamReader sr = new StreamReader(path);
-                    xml = sr.ReadToEnd();
-                }
-                else if (path.ToLower().StartsWith("ftp") || path.ToLower().StartsWith("http"))
-                {
-                    // Объект запроса
-                    HttpWebRequest rew = (HttpWebRequest)WebRequest.Create(path);
-                    // Отправить запрос и получить ответ
-                    HttpWebResponse resp = (HttpWebResponse)rew.GetResponse();
-                    // Получить поток
-                    Stream str = resp.GetResponseStream();
-                    // Выводим в TextBox
-                    int ch;
-                    string message = "";
-                    for (int i = 1; ; i++)
-                    {
-                        ch = str.ReadByte();
-                        if (ch == -1) break;
-                        message += (char)ch;
-                    }
-                    xml = message;
-
-                    // Закрыть поток
-                    str.Close();
-                }
-                // Получить файл
-                // Проверить версию
-                // Оповестить
-                string nverstring = gk.SQLConfigurator.ThisAddIn.LoadItemChangerList(path).CurrentVersion;
-                if (!string.IsNullOrEmpty(nverstring))
-                {
-                    Version n = Version.Parse(nverstring);
-                    Version c = Version.Parse(ThisAddIn.ICList.CurrentVersion);
-                    if (n > c)
-                    {
-                        if (DialogResult.OK == MessageBox.Show("Обновление конфигурации", "", MessageBoxButtons.OKCancel, MessageBoxIcon.Question))
-                        {
-                            ThisAddIn.ICList = gk.SQLConfigurator.ThisAddIn.LoadItemChangerList(path);
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Logger.Error("(checkUpdate_Click)", ex);
-            }
-        }
+        }       
     }
 }

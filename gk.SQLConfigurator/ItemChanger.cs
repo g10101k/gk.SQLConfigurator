@@ -44,7 +44,7 @@ namespace gk.SQLConfigurator
         /// Текущая версия набора скриптов
         /// </summary>
         public string CurrentVersion { get; set; }
-
+        public string PanelName { get; set; }
         public ItemChangerList() { }
     }
 

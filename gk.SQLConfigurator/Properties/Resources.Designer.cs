@@ -61,6 +61,16 @@ namespace gk.SQLConfigurator.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Доступна новая верися файла конфигурации. 
+        ///Обновить?.
+        /// </summary>
+        internal static string AvaibleNewConfigVersion {
+            get {
+                return ResourceManager.GetString("AvaibleNewConfigVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap brick {
@@ -195,7 +205,7 @@ namespace gk.SQLConfigurator.Properties {
         ///&lt;ItemChangerList xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;
         ///  &lt;Items&gt;
         ///    &lt;ItemChanger&gt;
-        ///      &lt;Name&gt;LDS.Продукты&lt;/Name&gt;
+        ///      &lt;Name&gt;Product&lt;/Name&gt;
         ///      &lt;GetSQL&gt;select 
         ///	&apos;x&apos; as [Select(x)], 
         ///	* 
@@ -203,9 +213,8 @@ namespace gk.SQLConfigurator.Properties {
         ///	[product]
         ///where {0} &lt;/GetSQL&gt;
         ///      &lt;GetSQLWhereString&gt;Name like &apos;**&apos;&lt;/GetSQLWhereString&gt;
-        ///      &lt;CreateSql&gt;insert into [product] values (&apos;@ProductUid&apos;, &apos;@Code&apos;, &apos;@Name&apos;, @IsActive, @InAccrScope)	&lt;/CreateSql&gt;
-        ///      &lt;EditSql&gt;UPDATE [Product] SET 
-        ///	Code [остаток строки не уместился]&quot;;.
+        ///      &lt;CreateSql&gt;insert into [product] values (&apos;$(ProductUid)&apos;, &apos;$(Code)&apos;, &apos;$(Name)&apos;, $(IsActive), $(InAccrScope)	&lt;/CreateSql&gt;
+        ///      &lt;EditSql&gt;UPDATE [Product] S [остаток строки не уместился]&quot;;.
         /// </summary>
         internal static string SQLItems {
             get {

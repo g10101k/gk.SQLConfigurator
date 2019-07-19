@@ -17,7 +17,7 @@
  */
 namespace gk.SQLConfigurator
 {
-    partial class frmSettings
+    partial class frmDbConnect
     {
         /// <summary>
         /// Required designer variable.
@@ -55,7 +55,6 @@ namespace gk.SQLConfigurator
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.chkdWindowsAuth = new System.Windows.Forms.CheckBox();
-            this.btnUpdateConfig = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // button2
@@ -148,21 +147,11 @@ namespace gk.SQLConfigurator
             this.chkdWindowsAuth.UseVisualStyleBackColor = true;
             this.chkdWindowsAuth.CheckedChanged += new System.EventHandler(this.chkdWindowsAuth_CheckedChanged);
             // 
-            // btnUpdateConfig
-            // 
-            this.btnUpdateConfig.Location = new System.Drawing.Point(12, 185);
-            this.btnUpdateConfig.Name = "btnUpdateConfig";
-            this.btnUpdateConfig.Size = new System.Drawing.Size(24, 23);
-            this.btnUpdateConfig.TabIndex = 8;
-            this.btnUpdateConfig.UseVisualStyleBackColor = true;
-            this.btnUpdateConfig.Click += new System.EventHandler(this.btnUpdateConfig_Click);
-            // 
-            // frmSettings
+            // frmDbConnect
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(261, 226);
-            this.Controls.Add(this.btnUpdateConfig);
             this.Controls.Add(this.chkdWindowsAuth);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -173,7 +162,7 @@ namespace gk.SQLConfigurator
             this.Controls.Add(this.database);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button2);
-            this.Name = "frmSettings";
+            this.Name = "frmDbConnect";
             this.Text = "Настройка БД";
             this.Load += new System.EventHandler(this.frmSettings_Load);
             this.ResumeLayout(false);
@@ -192,6 +181,5 @@ namespace gk.SQLConfigurator
         private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox chkdWindowsAuth;
-        private System.Windows.Forms.Button btnUpdateConfig;
     }
 }

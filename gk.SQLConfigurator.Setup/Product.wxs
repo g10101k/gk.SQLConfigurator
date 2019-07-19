@@ -4,7 +4,7 @@
   <?define ProductVersion="!(bind.FileVersion.gk.SQLConfigurator.dll)" ?>
   <?define ProductCode="8E41648F-F8E5-460E-B7E6-779C9A3F0ADE"?>
   <?define UpgradeCode="77A8B37C-B34D-4944-B070-06F5DAEECF24"?>
-  <?define Manufacturer="InduSoft"?>
+  <?define Manufacturer="g10101k"?>
 
   <Product Id="$(var.ProductCode)" Name="$(var.ProductName)" Language="1049" Version="$(var.ProductVersion)" Manufacturer="$(var.Manufacturer)" UpgradeCode="$(var.UpgradeCode)">
     <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />

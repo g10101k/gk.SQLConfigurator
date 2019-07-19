@@ -36,7 +36,13 @@ using System.IO;
 using System.Xml.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
-
+using System.Configuration;
+using System;
+using System.Data;
+using System.Windows.Forms;
+using System.Data.SqlClient;
+using System.Net;
+using System.IO;
 
 
 
@@ -49,28 +55,39 @@ namespace gk.SQLConfigurator
         private SqlConnection cnt;
         private SqlConnectionStringBuilder cnsb;
         public static ItemChangerList ICList = new ItemChangerList();
+        public static string ConfigDir {
+            get {
+                return Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\gk.SQLConfigurator\";
+            }
+        }
 
+        public static string ConfigName
+        {
+            get
+            {
+                return "SQLItems.xml";
+            }
+        }
+        public static string ConfigPath
+        {
+            get
+            {
+                return ConfigDir + ConfigName;
+            }
+        }
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
-#if (DEBUG)
-            //ribbon_AttachConsole();
-#endif
             cnt = new SqlConnection();
-
-            //connectToSql();
-            Thread t = new Thread(connectToSql);
-            t.Start();
+            ConnectToSql();
         }
 
         public void ReadICL()
         {
             try
             {
-                string dir = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\gk.SQLConfigurator\";
-                string path = dir + "SQLItems.xml";
-                if (!System.IO.Directory.Exists(dir))
-                    System.IO.Directory.CreateDirectory(dir);
-                ICList = LoadItemChangerList(path);
+                if (!System.IO.Directory.Exists(ConfigDir))
+                    System.IO.Directory.CreateDirectory(ConfigDir);
+                ICList = LoadItemChangerList(ConfigPath);
             }
             catch (Exception ex)
             {
@@ -133,7 +150,7 @@ namespace gk.SQLConfigurator
             }
             catch (Exception ex)
             {
-                Logger.Error("(ThisAddIn_Shutdown)", ex);
+                Logger.Error("(SaveICL)", ex);
             }
         }
 
@@ -144,7 +161,7 @@ namespace gk.SQLConfigurator
 
         bool ConnectInProcess = false;
 
-        private void connectToSql()
+        private void ConnectToSql()
         {
             System.Action action = () =>
             {
@@ -221,7 +238,12 @@ namespace gk.SQLConfigurator
 
         protected override Microsoft.Office.Core.IRibbonExtensibility CreateRibbonExtensibilityObject()
         {
+
+            // Читаем настройки
             ReadICL();
+            // Проверяем обнову
+            CheckUpdate_Click();
+
             ribbon = new SQLConfiguratorRibbon();
             ribbon.Addin = this;
 
@@ -288,15 +310,15 @@ namespace gk.SQLConfigurator
         private void ribbon_connectSetingsButtonClick()
         {
             if (cnt == null)
-                connectToSql();
-            frmSettings f = new frmSettings(cnt, cnsb);
+                ConnectToSql();
+            frmDbConnect f = new frmDbConnect(cnt, cnsb);
             DialogService.ShowDialog(f);
 
             if (f.DialogResult == DialogResult.OK)
             {
                 cnt = f.cnt;
                 cnsb = f.cnsb;
-                connectToSql();
+                ConnectToSql();
             }
             UpdateICConteiner();
             f.Dispose();
@@ -360,6 +382,71 @@ namespace gk.SQLConfigurator
         public void UpdateICConteiner()
         {
             ribbon.UpdateICConteiner();
+        }
+
+        public static void CheckUpdate_Click()
+        {
+            try
+            {
+                string path = Properties.Settings.Default.UpdatePath;
+                string xml = "";
+                if (path.ToLower().StartsWith(@"\\"))
+                {
+                    StreamReader sr = new StreamReader(path);
+                    xml = sr.ReadToEnd();
+                }
+                else if (path.ToLower().StartsWith("ftp") || path.ToLower().StartsWith("http"))
+                {
+                    // Объект запроса
+                    HttpWebRequest rew = (HttpWebRequest)WebRequest.Create(path);
+                    // Отправить запрос и получить ответ
+                    HttpWebResponse resp = (HttpWebResponse)rew.GetResponse();
+                    // Получить поток
+                    Stream str = resp.GetResponseStream();
+                    // Выводим в TextBox
+                    int ch;
+                    string message = "";
+                    for (int i = 1; ; i++)
+                    {
+                        ch = str.ReadByte();
+                        if (ch == -1) break;
+                        message += (char)ch;
+                    }
+                    xml = message;
+
+                    // Закрыть поток
+                    str.Close();
+                }
+                // Получить файл
+                // Проверить версию
+                // Оповестить
+                string nverstring = gk.SQLConfigurator.ThisAddIn.LoadItemChangerList(path).CurrentVersion;
+                if (!string.IsNullOrEmpty(nverstring))
+                {
+                    Version n = Version.Parse(nverstring);
+                    Version c = Version.Parse(ThisAddIn.ICList.CurrentVersion);
+                    if (n > c)
+                    {
+                        if (DialogResult.OK == MessageBox.Show(Properties.Resources.AvaibleNewConfigVersion, "", MessageBoxButtons.OKCancel, MessageBoxIcon.Question))
+                        {
+                            try
+                            {
+                                string dest = ThisAddIn.ConfigDir + DateTime.Now.ToString().Replace(":", string.Empty) + ThisAddIn.ConfigName + ".bak";
+                                File.Copy(ThisAddIn.ConfigPath, dest);
+                                ThisAddIn.ICList = gk.SQLConfigurator.ThisAddIn.LoadItemChangerList(path);
+                            }
+                            catch (IOException copyError)
+                            {
+                                Logger.Error("(checkUpdate_Click_Copy_and_Update)", copyError);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error("(checkUpdate_Click)", ex);
+            }
         }
 
         #region VSTO generated code

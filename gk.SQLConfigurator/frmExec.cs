@@ -205,18 +205,17 @@ namespace gk.SQLConfigurator
                             {
                                 wSheet.Rows[i].Select();
                                 wSheet.Rows[i].Font.Color = System.Drawing.Color.Black;
+                                wSheet.Cells[i, 2].ClearComments();
                                 cmd.CommandTimeout = 360;
 
                                 int c = cmd.ExecuteNonQuery();
-
-                                /*if (c > 0) 
-                                    wSheet.Rows[i].Font.Color = System.Drawing.Color.Black;
-                                else
-                                    wSheet.Rows[i].Font.Color = System.Drawing.Color.Red;*/
                             }
                             catch (Exception ex)
                             {
                                 wSheet.Rows[i].Font.Color = System.Drawing.Color.Red;
+                                wSheet.Cells[i, 2].AddComment(ex.Message);
+                                wSheet.Cells[i, 2].Comment.Shape.TextFrame.AutoSize = true;
+
                                 this.BeginInvoke(ErrorInThread, new object[] { ex, "EditObjectUniversal" });
                             }
                             this.BeginInvoke(DebugInThread, new object[] { sql });
