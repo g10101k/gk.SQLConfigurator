@@ -422,6 +422,7 @@ namespace gk.SQLConfigurator
         {
             val = (val.ToLower() == "true") ? "1" : val;
             val = (val.ToLower() == "false") ? "0" : val;
+            val = val.Replace("'", "''");
             return val;
         }
 

@@ -61,12 +61,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\gk.SQLConfigurator\gk.SQLConfigurator.csproj">
-      <Project>{c6d0578c-654c-4237-a30b-a0ffb7a166a0}</Project>
-      <Name>gk.SQLConfigurator</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -75,6 +69,12 @@
     <Content Include="log4net.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\gk.SQLConfigurator\gk.SQLConfigurator.csproj">
+      <Project>{c6d0578c-654c-4237-a30b-a0ffb7a166a0}</Project>
+      <Name>gk.SQLConfigurator</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
