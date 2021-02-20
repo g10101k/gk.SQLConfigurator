@@ -101,7 +101,7 @@ namespace gk.SQLConfigurator
 
         private void btnCheck_Click(object sender, EventArgs e)
         {
-            addin.ribbon_ActionCLick(false, true);
+            addin.ExecuteAction(false, true);
         }
 
         private void editor_KeyDown(object sender, KeyEventArgs e)

@@ -55,8 +55,10 @@ namespace gk.SQLConfigurator
         private SqlConnection cnt;
         private SqlConnectionStringBuilder cnsb;
         public static ItemChangerList ICList = new ItemChangerList();
-        public static string ConfigDir {
-            get {
+        public static string ConfigDir
+        {
+            get
+            {
                 return Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + @"\gk.SQLConfigurator\";
             }
         }
@@ -323,16 +325,17 @@ namespace gk.SQLConfigurator
             UpdateICConteiner();
             f.Dispose();
         }
+
         /// <summary>
-        /// 
+        /// Выполнение действия над записями
         /// </summary>
-        /// <param name="SaveAsSql"></param>
-        /// <param name="Check"></param>
-        public void ribbon_ActionCLick(bool SaveAsSql, bool Check)
+        /// <param name="SaveAsSql">Сохранять в SQL file</param>
+        /// <param name="Check">Проверка из формы редактирования</param>
+        public void ExecuteAction(bool SaveAsSql, bool Check)
         {
             if (cnt != null)
             {
-                if (cnt.State == ConnectionState.Open)
+                if (cnt.State == ConnectionState.Open || SaveAsSql)
                 {
                     switch (ribbon.editorTypeSelect.SelectedItemIndex)
                     {
@@ -358,19 +361,20 @@ namespace gk.SQLConfigurator
                     }
                 }
                 else
+                {
                     DialogService.ShowMessage("Отсутствует подключение к серверу");
-
+                }
             }
         }
 
         private void ribbon_btnExcecuteToDB()
         {
-            ribbon_ActionCLick(false, false);
+            ExecuteAction(false, false);
         }
 
         private void ribbon_btnSQLSaveCliked()
         {
-            ribbon_ActionCLick(true, false);
+            ExecuteAction(true, false);
         }
 
         private void ribbon_btnSettingCliked()

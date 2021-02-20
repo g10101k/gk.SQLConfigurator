@@ -67,11 +67,11 @@ namespace gk.SQLConfigurator
             this.group2 = this.Factory.CreateRibbonGroup();
             this.btnAction = this.Factory.CreateRibbonButton();
             this.btnSQLSave = this.Factory.CreateRibbonButton();
+            this.group3 = this.Factory.CreateRibbonGroup();
             this.editorTypeSelect = this.Factory.CreateRibbonGallery();
             this.cmbItemChanger = this.Factory.CreateRibbonGallery();
             this.btSqlEdit = this.Factory.CreateRibbonButton();
             this.btnSetting = this.Factory.CreateRibbonButton();
-            this.group3 = this.Factory.CreateRibbonGroup();
             this.tab1.SuspendLayout();
             this.group1.SuspendLayout();
             this.group2.SuspendLayout();
@@ -150,6 +150,15 @@ namespace gk.SQLConfigurator
             this.btnSQLSave.ShowImage = true;
             this.btnSQLSave.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSQLSave_Click);
             // 
+            // group3
+            // 
+            this.group3.Items.Add(this.editorTypeSelect);
+            this.group3.Items.Add(this.cmbItemChanger);
+            this.group3.Items.Add(this.btSqlEdit);
+            this.group3.Items.Add(this.btnSetting);
+            this.group3.Label = "Настройки";
+            this.group3.Name = "group3";
+            // 
             // editorTypeSelect
             // 
             this.editorTypeSelect.ColumnCount = 1;
@@ -203,15 +212,6 @@ namespace gk.SQLConfigurator
             this.btnSetting.Name = "btnSetting";
             this.btnSetting.ShowImage = true;
             this.btnSetting.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.btnSetting_Click);
-            // 
-            // group3
-            // 
-            this.group3.Items.Add(this.editorTypeSelect);
-            this.group3.Items.Add(this.cmbItemChanger);
-            this.group3.Items.Add(this.btSqlEdit);
-            this.group3.Items.Add(this.btnSetting);
-            this.group3.Label = "Настройки";
-            this.group3.Name = "group3";
             // 
             // SQLConfiguratorRibbon
             // 
