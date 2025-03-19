@@ -24,6 +24,8 @@ using System.Windows.Forms;
 using System.Xml;
 using System.IO;
 using System.Xml.Serialization;
+using gk.SQLConfigurator.Enums;
+using gk.SQLConfigurator.Config;
 
 namespace gk.SQLConfigurator
 {
@@ -35,12 +37,29 @@ namespace gk.SQLConfigurator
         public event Action BtSqlEditClicked;
         public event Action BtnSQLSaveCliked;
         public event Action BtnSettingCliked;
+        public event Action<DatabaseType> ChangeDbType;
 
         public ThisAddIn Addin { get; set; }
         public int SelectedObjectIndex { get; set; }
         private void gLDSRibbon_Load(object sender, RibbonUIEventArgs e)
         {
             UpdateICConteiner();
+            SetDBType();
+            DbTypeGallery_Click(null, null);
+        }
+
+        private void SetDBType()
+        {
+            DatabaseType databaseType = ApplicationConfig.Instance.ConnectionCfg.DBType;
+
+            string databaseTypeName = nameof(DatabaseType);
+
+            RibbonDropDownItem dbTypeItem = DbTypeGallery.Items.FirstOrDefault(item => item.Label == databaseTypeName);
+
+            if (dbTypeItem == default(RibbonDropDownItem))
+                DbTypeGallery.SelectedItem = DbTypeGallery.Items.First();
+
+            DbTypeGallery.SelectedItem = dbTypeItem;
         }
 
         public void UpdateICConteiner()
@@ -119,6 +138,18 @@ namespace gk.SQLConfigurator
         private void btnSetting_Click(object sender, RibbonControlEventArgs e)
         {
             BtnSettingCliked?.Invoke();
+        }
+
+        private void DbTypeGallery_Click(object sender, RibbonControlEventArgs e)
+        {
+            RibbonDropDownItem item = DbTypeGallery.SelectedItem;
+
+            if (item == null) return;
+
+            ChangeDbType.Invoke((DatabaseType)Enum.Parse(typeof(DatabaseType), item.Label, true));
+
+            DbTypeGallery.Label = item.Label;
+            DbTypeGallery.Image = item.Image;
         }
     }
 }

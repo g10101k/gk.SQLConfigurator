@@ -54,13 +54,16 @@ namespace gk.SQLConfigurator
             Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl1 = this.Factory.CreateRibbonDropDownItem();
             Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl2 = this.Factory.CreateRibbonDropDownItem();
             Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl3 = this.Factory.CreateRibbonDropDownItem();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SQLConfiguratorRibbon));
             Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl4 = this.Factory.CreateRibbonDropDownItem();
             Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl5 = this.Factory.CreateRibbonDropDownItem();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SQLConfiguratorRibbon));
+            Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl6 = this.Factory.CreateRibbonDropDownItem();
+            Microsoft.Office.Tools.Ribbon.RibbonDropDownItem ribbonDropDownItemImpl7 = this.Factory.CreateRibbonDropDownItem();
             this.tab1 = this.Factory.CreateRibbonTab();
             this.group1 = this.Factory.CreateRibbonGroup();
-            this.lServer = this.Factory.CreateRibbonLabel();
+            this.DbTypeGallery = this.Factory.CreateRibbonGallery();
             this.lDb = this.Factory.CreateRibbonLabel();
+            this.lServer = this.Factory.CreateRibbonLabel();
             this.lConnectState = this.Factory.CreateRibbonLabel();
             this.separator1 = this.Factory.CreateRibbonSeparator();
             this.btnConnect = this.Factory.CreateRibbonButton();
@@ -88,23 +91,42 @@ namespace gk.SQLConfigurator
             // 
             // group1
             // 
-            this.group1.Items.Add(this.lServer);
+            this.group1.Items.Add(this.DbTypeGallery);
             this.group1.Items.Add(this.lDb);
+            this.group1.Items.Add(this.lServer);
             this.group1.Items.Add(this.lConnectState);
             this.group1.Items.Add(this.separator1);
             this.group1.Items.Add(this.btnConnect);
             this.group1.Label = "Подключение";
             this.group1.Name = "group1";
             // 
-            // lServer
+            // DbTypeGallery
             // 
-            this.lServer.Label = "Сервер:";
-            this.lServer.Name = "lServer";
+            this.DbTypeGallery.ColumnCount = 1;
+            this.DbTypeGallery.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
+            this.DbTypeGallery.ItemImageSize = new System.Drawing.Size(96, 96);
+            ribbonDropDownItemImpl1.Image = global::gk.SQLConfigurator.Properties.Resources.sql_server_icon;
+            ribbonDropDownItemImpl1.Label = "SqlServer";
+            ribbonDropDownItemImpl2.Image = global::gk.SQLConfigurator.Properties.Resources.postgre_sql_icon;
+            ribbonDropDownItemImpl2.Label = "PostgreSql";
+            this.DbTypeGallery.Items.Add(ribbonDropDownItemImpl1);
+            this.DbTypeGallery.Items.Add(ribbonDropDownItemImpl2);
+            this.DbTypeGallery.Label = "Тип БД";
+            this.DbTypeGallery.Name = "DbTypeGallery";
+            this.DbTypeGallery.RowCount = 4;
+            this.DbTypeGallery.ShowImage = true;
+            this.DbTypeGallery.ShowItemSelection = true;
+            this.DbTypeGallery.Click += new Microsoft.Office.Tools.Ribbon.RibbonControlEventHandler(this.DbTypeGallery_Click);
             // 
             // lDb
             // 
             this.lDb.Label = "БД:";
             this.lDb.Name = "lDb";
+            // 
+            // lServer
+            // 
+            this.lServer.Label = "Сервер:";
+            this.lServer.Name = "lServer";
             // 
             // lConnectState
             // 
@@ -163,21 +185,21 @@ namespace gk.SQLConfigurator
             // 
             this.editorTypeSelect.ColumnCount = 1;
             this.editorTypeSelect.ControlSize = Microsoft.Office.Core.RibbonControlSize.RibbonControlSizeLarge;
-            ribbonDropDownItemImpl1.Image = global::gk.SQLConfigurator.Properties.Resources.database_go;
-            ribbonDropDownItemImpl1.Label = "Получить";
-            ribbonDropDownItemImpl2.Image = global::gk.SQLConfigurator.Properties.Resources.database_edit;
-            ribbonDropDownItemImpl2.Label = "Изменить";
-            ribbonDropDownItemImpl3.Image = ((System.Drawing.Image)(resources.GetObject("ribbonDropDownItemImpl3.Image")));
-            ribbonDropDownItemImpl3.Label = "Создать";
-            ribbonDropDownItemImpl4.Image = global::gk.SQLConfigurator.Properties.Resources.database_refresh;
-            ribbonDropDownItemImpl4.Label = "Создать/Изменить";
-            ribbonDropDownItemImpl5.Image = global::gk.SQLConfigurator.Properties.Resources.database_delete;
-            ribbonDropDownItemImpl5.Label = "Удалить";
-            this.editorTypeSelect.Items.Add(ribbonDropDownItemImpl1);
-            this.editorTypeSelect.Items.Add(ribbonDropDownItemImpl2);
+            ribbonDropDownItemImpl3.Image = global::gk.SQLConfigurator.Properties.Resources.database_go;
+            ribbonDropDownItemImpl3.Label = "Получить";
+            ribbonDropDownItemImpl4.Image = global::gk.SQLConfigurator.Properties.Resources.database_edit;
+            ribbonDropDownItemImpl4.Label = "Изменить";
+            ribbonDropDownItemImpl5.Image = ((System.Drawing.Image)(resources.GetObject("ribbonDropDownItemImpl5.Image")));
+            ribbonDropDownItemImpl5.Label = "Создать";
+            ribbonDropDownItemImpl6.Image = global::gk.SQLConfigurator.Properties.Resources.database_refresh;
+            ribbonDropDownItemImpl6.Label = "Создать/Изменить";
+            ribbonDropDownItemImpl7.Image = global::gk.SQLConfigurator.Properties.Resources.database_delete;
+            ribbonDropDownItemImpl7.Label = "Удалить";
             this.editorTypeSelect.Items.Add(ribbonDropDownItemImpl3);
             this.editorTypeSelect.Items.Add(ribbonDropDownItemImpl4);
             this.editorTypeSelect.Items.Add(ribbonDropDownItemImpl5);
+            this.editorTypeSelect.Items.Add(ribbonDropDownItemImpl6);
+            this.editorTypeSelect.Items.Add(ribbonDropDownItemImpl7);
             this.editorTypeSelect.Label = "Режим";
             this.editorTypeSelect.Name = "editorTypeSelect";
             this.editorTypeSelect.RowCount = 5;
@@ -247,6 +269,7 @@ namespace gk.SQLConfigurator
         internal Microsoft.Office.Tools.Ribbon.RibbonButton btnSetting;
         public Microsoft.Office.Tools.Ribbon.RibbonTab tab1;
         internal Microsoft.Office.Tools.Ribbon.RibbonGroup group3;
+        public Microsoft.Office.Tools.Ribbon.RibbonGallery DbTypeGallery;
     }
 
     partial class ThisRibbonCollection

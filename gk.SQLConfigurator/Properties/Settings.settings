@@ -11,14 +11,32 @@
     <Setting Name="EditorType" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
     </Setting>
-    <Setting Name="ConnectionString" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Data Source=192.168.36.151;Initial Catalog=I-LDS RNKursk;Integrated Security=False;User ID=sa;Password=;Connect Timeout=20</Value>
-    </Setting>
     <Setting Name="PanelName" Type="System.String" Scope="User">
       <Value Profile="(Default)">gk.SqlConfigurator</Value>
     </Setting>
     <Setting Name="UpdatePath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">\\localhost\Users\ITyulyakov\gk.SQLConfigurator\SQLItems — копия.xml</Value>
+      <Value Profile="(Default)">\\localhost\Users\ITyulyakov\gk.SQLConfigurator\NEWSQLItems.xml</Value>
+    </Setting>
+    <Setting Name="DatabaseType" Type="System.String" Scope="User">
+      <Value Profile="(Default)">SqlServer</Value>
+    </Setting>
+    <Setting Name="Server" Type="System.String" Scope="User">
+      <Value Profile="(Default)">192.168.40.96</Value>
+    </Setting>
+    <Setting Name="Database" Type="System.String" Scope="User">
+      <Value Profile="(Default)">I-LDS_BMZ</Value>
+    </Setting>
+    <Setting Name="Username" Type="System.String" Scope="User">
+      <Value Profile="(Default)">sa</Value>
+    </Setting>
+    <Setting Name="Password" Type="System.String" Scope="User">
+      <Value Profile="(Default)">1q2w3e$R</Value>
+    </Setting>
+    <Setting Name="WindowsAuth" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="Port" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">0</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -24,6 +24,11 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Threading;
 using System.Linq;
+using gk.SQLConfigurator.Providers;
+using System.Data.Common;
+using System.Data;
+using gk.SQLConfigurator.Utils;
+using Microsoft.Office.Interop.Excel;
 
 namespace gk.SQLConfigurator
 {
@@ -72,7 +77,7 @@ namespace gk.SQLConfigurator
         public bool StopExecute = false;
 
         Excel.Worksheet wSheet;
-        SqlConnection cnt;
+        IDbProvider provider;
         string query;
         bool SaveAsSql;
         bool Check;
@@ -199,16 +204,13 @@ namespace gk.SQLConfigurator
 
                         if (!SaveAsSql)
                         {
-                            SqlCommand cmd = new SqlCommand(sql, cnt);
-
                             try
                             {
                                 wSheet.Rows[i].Select();
                                 wSheet.Rows[i].Font.Color = System.Drawing.Color.Black;
                                 wSheet.Cells[i, 2].ClearComments();
-                                cmd.CommandTimeout = 360;
 
-                                int c = cmd.ExecuteNonQuery();
+                                provider.ExecuteNonQuery(sql);
                             }
                             catch (Exception ex)
                             {
@@ -246,15 +248,14 @@ namespace gk.SQLConfigurator
             }
         }
 
-        public static void EditObjectUniversal(Excel.Worksheet _wSheet, SqlConnection _cnt, string _ic, bool _SaveAsSql, bool _Check)
+        public static void EditObjectUniversal(Excel.Worksheet _wSheet, IDbProvider _cnt, string _ic, bool _SaveAsSql, bool _Check)
         {
             if (!Instance.SqlInfoEventHandled)
             {
                 Instance.SqlInfoEventHandled = true;
-                _cnt.InfoMessage += _cnt_InfoMessage;
             }
             Instance.StopExecute = false;
-            Instance.cnt = _cnt;
+            Instance.provider = _cnt;
             Instance.wSheet = _wSheet;
             Instance.query = _ic;
             Instance.SaveAsSql = _SaveAsSql;
@@ -273,8 +274,6 @@ namespace gk.SQLConfigurator
 
         private void GetObjectUniversal()
         {
-            SqlDataReader reader = null;
-
             try
             {
                 if (SaveAsSql)
@@ -298,97 +297,33 @@ namespace gk.SQLConfigurator
                 }
                 else
                 {
-                    SqlCommand command = new SqlCommand(query, cnt);
-                    reader = command.ExecuteReader();
+                    System.Data.DataTable table = provider.Execute(query);
 
-                    // Делаем шапку
-                    //var wSheet = Application.ActiveWorkbook.ActiveSheet;
+                    Excel.Worksheet sheet = (Excel.Worksheet)wSheet;
 
-                    int lLastCol = wSheet.Cells[1, wSheet.Columns.Count].End(Excel.XlDirection.xlToLeft).Column; // находим последнюю колонку
-                    int lLastRow = wSheet.Cells[wSheet.Rows.Count, 1].End(Excel.XlDirection.xlUp).Row; // Последнюю строку
-                    Excel.Worksheet s = wSheet;
-                    s.Range[s.Cells[1, 1], s.Cells[lLastRow, lLastCol]].Clear();
-                    object[] arr = new object[reader.FieldCount];
-                    //reader.g
-                    for (int j = 0, c = reader.FieldCount; j < c; j++)
-                    {
-                        arr[j] = reader.GetName(j);
-                    }
-
-                    wSheet.Range[wSheet.Cells[1, 1], wSheet.Cells[1, reader.FieldCount]].Value = arr;
-
-                    
-                    int i = 2;
-                    while (reader.Read())
-                    {
-                        //this.BeginInvoke(UpdateProgressbar, new object[] { 2, lLastRow, i });
-                        //Thread.Sleep(100);
-                        if (this.StopExecute)
-                        {
-                            reader?.Close();
-                            this.BeginInvoke(UserEndExecuteEvent);
-                            return;
-                        };
-                        try
-                        {
-                            for (int j = 0, c = reader.FieldCount; j < c; j++)
-                            {
-                                try
-                                {
-                                    //var res = reader[reader.GetName(j)];
-                                    var res = reader[reader.GetName(j)];
-                                    if (res.GetType() == typeof(byte[]))
-                                    {
-                                        arr[j] = "'0x" + BitConverter.ToString((byte[])res).Replace("-", "");
-                                    }
-                                    else if (res.GetType() == typeof(System.DBNull))
-                                    {
-                                        arr[j] = "'null";
-                                    }
-                                    else
-                                    {
-                                        arr[j] = "'" + res.ToString();
-                                    }
-                                }
-                                catch { }
-                            }
-                            wSheet.Range[wSheet.Cells[i, 1], wSheet.Cells[i, reader.FieldCount]].Value = arr;
-                        }
-                        catch (Exception ex)
-                        {
-                            this.BeginInvoke(ErrorInThread, new object[] { ex, "GetObjectUniversal" });
-                        }
-                        i++;
-                    }
-                    reader.Close();
-                    //wSheet.Columns.AutoFit();
-                    wSheet.Columns.WrapText = false;
-                    //wSheet.Columns.Font.Name = "Lucida Console";
-                    //l.WriteDebug("Что то прочитали");
+                    sheet.Fill(table);
                 }
-
             }
             catch (Exception exc)
             {
                 this.BeginInvoke(ErrorInThread, new object[] { exc, "GetObjectUniversal" });
                 this.BeginInvoke(DebugInThread, new object[] { query });
             }
-            reader?.Close();
+            
             this.BeginInvoke(EndExecuteEvent);
 
         }
 
-        public static void GetObjectUniversal(Excel.Worksheet _wSheet, SqlConnection _cnt, ItemChanger _ic, bool _SaveAsSql, bool _Check)
+        public static void GetObjectUniversal(Excel.Worksheet _wSheet, IDbProvider _provider, ItemChanger _ic, bool _SaveAsSql, bool _Check)
         {
             if (!Instance.SqlInfoEventHandled)
             {
                 Instance.SqlInfoEventHandled = true;
-                _cnt.InfoMessage += _cnt_InfoMessage;
             }
             Instance.StopExecute = false;
 
             Instance.wSheet = _wSheet;
-            Instance.cnt = _cnt;
+            Instance.provider = _provider;
             Instance.ic = _ic;
             Instance.SaveAsSql = _SaveAsSql;
             Instance.Check = _Check;
@@ -401,12 +336,15 @@ namespace gk.SQLConfigurator
             if (fSelectTests.DialogResult == DialogResult.OK)
             {
                 Instance.ic.GetSQLWhereString = ((sqlparam)fSelectTests.obj).WhereString;
-                Instance.query = string.Format(Instance.ic.GetSQL, Instance.ic.GetSQLWhereString.Replace('*', '%'));
+                if (!string.IsNullOrEmpty(Instance.ic.GetSQLWhereString))
+                    Instance.query = string.Format(Instance.ic.GetSQL, Instance.ic.GetSQLWhereString.Replace('*', '%'));
+                else
+                    Instance.query = Instance.ic.GetSQL;
+
                 Instance.t = new Thread(Instance.GetObjectUniversal);
                 Instance.t.Priority = ThreadPriority.Highest;
                 Instance.t.Start();
                 DialogService.ShowDialog(Instance);
-
             }
         }
 

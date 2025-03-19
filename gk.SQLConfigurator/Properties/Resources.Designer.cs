@@ -19,7 +19,7 @@ namespace gk.SQLConfigurator.Properties {
     // с помощью такого средства, как ResGen или Visual Studio.
     // Чтобы добавить или удалить член, измените файл .ResX и снова запустите ResGen
     // с параметром /str или перестройте свой проект VS.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -163,6 +163,16 @@ namespace gk.SQLConfigurator.Properties {
         /// <summary>
         ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap postgre_sql_icon {
+            get {
+                object obj = ResourceManager.GetObject("postgre_sql_icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap script_edit {
             get {
                 object obj = ResourceManager.GetObject("script_edit", resourceCulture);
@@ -197,6 +207,16 @@ namespace gk.SQLConfigurator.Properties {
             get {
                 object obj = ResourceManager.GetObject("SQL_Mode", resourceCulture);
                 return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Поиск локализованного ресурса типа System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap sql_server_icon {
+            get {
+                object obj = ResourceManager.GetObject("sql_server_icon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
