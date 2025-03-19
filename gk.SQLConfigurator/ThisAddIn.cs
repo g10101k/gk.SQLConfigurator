@@ -37,14 +37,9 @@ using System.Xml.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Configuration;
-using System;
-using System.Data;
-using System.Windows.Forms;
-using System.Data.SqlClient;
 using System.Net;
-using System.IO;
-
-
+using gk.SQLConfigurator.Providers;
+using gk.SQLConfigurator.Config;
 
 namespace gk.SQLConfigurator
 {
@@ -52,8 +47,6 @@ namespace gk.SQLConfigurator
     {
         private SQLConfiguratorRibbon ribbon;
         private object lc = new object();
-        private SqlConnection cnt;
-        private SqlConnectionStringBuilder cnsb;
         public static ItemChangerList ICList = new ItemChangerList();
         public static string ConfigDir
         {
@@ -70,6 +63,7 @@ namespace gk.SQLConfigurator
                 return "SQLItems.xml";
             }
         }
+
         public static string ConfigPath
         {
             get
@@ -77,9 +71,9 @@ namespace gk.SQLConfigurator
                 return ConfigDir + ConfigName;
             }
         }
+
         private void ThisAddIn_Startup(object sender, System.EventArgs e)
         {
-            cnt = new SqlConnection();
             ConnectToSql();
         }
 
@@ -89,6 +83,7 @@ namespace gk.SQLConfigurator
             {
                 if (!System.IO.Directory.Exists(ConfigDir))
                     System.IO.Directory.CreateDirectory(ConfigDir);
+
                 ICList = LoadItemChangerList(ConfigPath);
             }
             catch (Exception ex)
@@ -125,10 +120,6 @@ namespace gk.SQLConfigurator
         {
             try
             {
-                if (cnt?.State == ConnectionState.Open)
-                {
-                    cnt.Close();
-                }
                 SaveICL();
             }
             catch (Exception ex)
@@ -163,6 +154,27 @@ namespace gk.SQLConfigurator
 
         bool ConnectInProcess = false;
 
+        private void UpdateConnectionLabel(bool status, string server, string dbname)
+        {
+            string condition = status ? "Подключено" : "Отключенно";
+            ribbon.lConnectState.Label = $"Состояние: {condition}";
+            ribbon.lServer.Label = $"Сервер: {server}";
+            ribbon.lDb.Label = $"База данных: {dbname}";
+        }
+
+        private void StartAnimation()
+        {
+            int sleep = 300;
+            while (ConnectInProcess)
+            {
+                ribbon.btnConnect.Image = global::gk.SQLConfigurator.Properties.Resources.database_lightning;
+                Thread.Sleep(sleep);
+                ribbon.btnConnect.Image = global::gk.SQLConfigurator.Properties.Resources.database;
+                Thread.Sleep(sleep);
+            }
+            ribbon.btnConnect.Image = global::gk.SQLConfigurator.Properties.Resources.database;
+        }
+
         private void ConnectToSql()
         {
             System.Action action = () =>
@@ -170,77 +182,29 @@ namespace gk.SQLConfigurator
                 lock (lc)
                 {
                     ConnectInProcess = true;
-                    cnsb = new SqlConnectionStringBuilder(Properties.Settings.Default.ConnectionString);
-                    cnsb.AsynchronousProcessing = true;
-                    if (cnt.State == ConnectionState.Open)
-                        cnt.Close();
-                    cnt.ConnectionString = cnsb.ConnectionString;
-                    try
-                    {
-                        cnt.Open();
 
-                        if (cnt.State == ConnectionState.Open)
-                        {
-                            try
-                            {
-                                ribbon.lConnectState.Label = "Состояние: Подключено";
-                                ribbon.lServer.Label = string.Format("Сервер: {0}", cnsb.DataSource);
-                                ribbon.lDb.Label = string.Format("База данных: {0}", cnsb.InitialCatalog);
-                                SetBtnState(true);
-                            }
-                            catch (Exception ex)
-                            {
-                                ribbon.lConnectState.Label = "Состояние: Отключено";
-                                ribbon.lServer.Label = string.Format("Сервер: {0}", "");
-                                ribbon.lDb.Label = string.Format("База данных: {0}", "");
-                                Logger.Error("(connectToSql.action)", ex);
-                                SetBtnState(false);
-                            }
-                        }
-                        else
-                        {
-                            ribbon.lConnectState.Label = "Состояние: Отключено";
-                            ribbon.lServer.Label = string.Format("Сервер: {0}", "");
-                            ribbon.lDb.Label = string.Format("База данных: {0}", "");
-                            SetBtnState(false);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        ribbon.lConnectState.Label = "Состояние: Отключено";
-                        ribbon.lServer.Label = string.Format("Сервер: {0}", "");
-                        ribbon.lDb.Label = string.Format("База данных: {0}", "");
-                        Logger.Error("(connectToSql.action)", ex);
-                        SetBtnState(false);
-                    }
+                    IDbProvider dbProvider = ProviderFabric.GetProvider(
+                        ApplicationConfig.Instance.ConnectionCfg.DBType,
+                        ApplicationConfig.Instance.ConnectionCfg
+                    );
+
+                    bool commnadButtonState = dbProvider.CheckConnection();
+
+                    UpdateConnectionLabel(commnadButtonState, dbProvider.Server, dbProvider.DBName);
+
+                    SetBtnState(commnadButtonState);
                 }
                 ConnectInProcess = false;
-
             };
-            System.Action animation = () =>
-            {
-                int sleep = 300;
-                while (ConnectInProcess)
-                {
 
-                    ribbon.btnConnect.Image = global::gk.SQLConfigurator.Properties.Resources.database_lightning;
-                    Thread.Sleep(sleep);
-                    ribbon.btnConnect.Image = global::gk.SQLConfigurator.Properties.Resources.database;
-                    Thread.Sleep(sleep);
-                }
-                ribbon.btnConnect.Image = global::gk.SQLConfigurator.Properties.Resources.database;
-
-            };
             new Task(action).Start();
-            new Task(animation).Start();
+            new Task(StartAnimation).Start();
+
             return;
         }
 
-
-
         protected override Microsoft.Office.Core.IRibbonExtensibility CreateRibbonExtensibilityObject()
         {
-
             // Читаем настройки
             ReadICL();
             // Проверяем обнову
@@ -249,13 +213,23 @@ namespace gk.SQLConfigurator
             ribbon = new SQLConfiguratorRibbon();
             ribbon.Addin = this;
 
-            ribbon.BtnConnectSetings += ribbon_connectSetingsButtonClick;
+            ribbon.BtnConnectSetings     += ribbon_connectSetingsButtonClick;
             ribbon.BtnExecuteToDBClicked += ribbon_btnExcecuteToDB;
-            ribbon.BtSqlEditClicked += ribbon_btSqlEditClick;
-            ribbon.BtnSQLSaveCliked += ribbon_btnSQLSaveCliked;
-            ribbon.BtnSettingCliked += ribbon_btnSettingCliked;
+            ribbon.BtSqlEditClicked      += ribbon_btSqlEditClick;
+            ribbon.BtnSQLSaveCliked      += ribbon_btnSQLSaveCliked;
+            ribbon.BtnSettingCliked      += ribbon_btnSettingCliked;
+            ribbon.ChangeDbType          += ChangeDbType;
 
             return Globals.Factory.GetRibbonFactory().CreateRibbonManager(new IRibbonExtension[] { ribbon });
+        }
+
+        private void ChangeDbType(Enums.DatabaseType newType)
+        {
+            ConnectionConfig cfg = ApplicationConfig.Instance.ConnectionCfg;
+
+            cfg.DBType = newType;
+
+            ConnectToSql();
         }
 
         private void ribbon_btSqlEditClick()
@@ -311,17 +285,12 @@ namespace gk.SQLConfigurator
 
         private void ribbon_connectSetingsButtonClick()
         {
-            if (cnt == null)
-                ConnectToSql();
-            frmDbConnect f = new frmDbConnect(cnt, cnsb);
+            frmDbConnect f = new frmDbConnect();
             DialogService.ShowDialog(f);
 
             if (f.DialogResult == DialogResult.OK)
-            {
-                cnt = f.cnt;
-                cnsb = f.cnsb;
                 ConnectToSql();
-            }
+
             UpdateICConteiner();
             f.Dispose();
         }
@@ -333,31 +302,36 @@ namespace gk.SQLConfigurator
         /// <param name="Check">Проверка из формы редактирования</param>
         public void ExecuteAction(bool SaveAsSql, bool Check)
         {
-            if (cnt != null)
+
+            IDbProvider dbProvider = ProviderFabric.GetProvider(
+                ApplicationConfig.Instance.ConnectionCfg.DBType,
+                ApplicationConfig.Instance.ConnectionCfg
+            );
+
+            if (dbProvider != null || SaveAsSql)
             {
-                if (cnt.State == ConnectionState.Open || SaveAsSql)
+                if (dbProvider.CheckConnection() || SaveAsSql)
                 {
                     switch (ribbon.editorTypeSelect.SelectedItemIndex)
                     {
                         case 0: // Получить
-                            frmExec.GetObjectUniversal(Application.ActiveWorkbook.ActiveSheet, cnt, ribbon.cmbItemChanger.SelectedItem.Tag, SaveAsSql, Check);
+                            frmExec.GetObjectUniversal(Application.ActiveWorkbook.ActiveSheet, dbProvider, ribbon.cmbItemChanger.SelectedItem.Tag, SaveAsSql, Check);
                             break;
                         case 1: // Редактировать
-                            frmExec.EditObjectUniversal(Application.ActiveWorkbook.ActiveSheet, cnt, ((ItemChanger)ribbon.cmbItemChanger.SelectedItem.Tag).EditSql, SaveAsSql, Check);
+                            frmExec.EditObjectUniversal(Application.ActiveWorkbook.ActiveSheet, dbProvider, ((ItemChanger)ribbon.cmbItemChanger.SelectedItem.Tag).EditSql, SaveAsSql, Check);
                             break;
                         case 2: // Добавить
-                            frmExec.EditObjectUniversal(Application.ActiveWorkbook.ActiveSheet, cnt, ((ItemChanger)ribbon.cmbItemChanger.SelectedItem.Tag).CreateSql, SaveAsSql, Check);
+                            frmExec.EditObjectUniversal(Application.ActiveWorkbook.ActiveSheet, dbProvider, ((ItemChanger)ribbon.cmbItemChanger.SelectedItem.Tag).CreateSql, SaveAsSql, Check);
                             break;
                         case 3: // Добавить или Редактировать
-                            frmExec.EditObjectUniversal(Application.ActiveWorkbook.ActiveSheet, cnt, ((ItemChanger)ribbon.cmbItemChanger.SelectedItem.Tag).CreateoreditSql, SaveAsSql, Check);
+                            frmExec.EditObjectUniversal(Application.ActiveWorkbook.ActiveSheet, dbProvider, ((ItemChanger)ribbon.cmbItemChanger.SelectedItem.Tag).CreateoreditSql, SaveAsSql, Check);
                             break;
                         case 4: //Удалить
                             DialogResult dr = DialogService.ShowWarning("Вы уверены что хотите удалить выделенные записи?");
                             if (dr == DialogResult.OK)
-                                frmExec.EditObjectUniversal(Application.ActiveWorkbook.ActiveSheet, cnt, ((ItemChanger)ribbon.cmbItemChanger.SelectedItem.Tag).DeleteSql, SaveAsSql, Check);
+                                frmExec.EditObjectUniversal(Application.ActiveWorkbook.ActiveSheet, dbProvider, ((ItemChanger)ribbon.cmbItemChanger.SelectedItem.Tag).DeleteSql, SaveAsSql, Check);
                             break;
                         default: break;
-
                     }
                 }
                 else

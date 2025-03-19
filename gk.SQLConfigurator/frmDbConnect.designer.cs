@@ -55,11 +55,13 @@ namespace gk.SQLConfigurator
             this.txtPassword = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.chkdWindowsAuth = new System.Windows.Forms.CheckBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.txtPort = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(84, 185);
+            this.button2.Location = new System.Drawing.Point(84, 153);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 2;
@@ -69,7 +71,7 @@ namespace gk.SQLConfigurator
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(165, 185);
+            this.button4.Location = new System.Drawing.Point(165, 153);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(75, 23);
             this.button4.TabIndex = 3;
@@ -80,7 +82,7 @@ namespace gk.SQLConfigurator
             // database
             // 
             this.database.FormattingEnabled = true;
-            this.database.Location = new System.Drawing.Point(74, 113);
+            this.database.Location = new System.Drawing.Point(74, 126);
             this.database.Name = "database";
             this.database.Size = new System.Drawing.Size(166, 21);
             this.database.TabIndex = 4;
@@ -88,7 +90,7 @@ namespace gk.SQLConfigurator
             // 
             // txtServer
             // 
-            this.txtServer.Location = new System.Drawing.Point(74, 10);
+            this.txtServer.Location = new System.Drawing.Point(74, 6);
             this.txtServer.Name = "txtServer";
             this.txtServer.Size = new System.Drawing.Size(166, 20);
             this.txtServer.TabIndex = 5;
@@ -96,7 +98,7 @@ namespace gk.SQLConfigurator
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(27, 13);
+            this.label1.Location = new System.Drawing.Point(12, 9);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(41, 13);
             this.label1.TabIndex = 6;
@@ -104,7 +106,7 @@ namespace gk.SQLConfigurator
             // 
             // txtUser
             // 
-            this.txtUser.Location = new System.Drawing.Point(74, 36);
+            this.txtUser.Location = new System.Drawing.Point(74, 54);
             this.txtUser.Name = "txtUser";
             this.txtUser.Size = new System.Drawing.Size(166, 20);
             this.txtUser.TabIndex = 5;
@@ -112,7 +114,7 @@ namespace gk.SQLConfigurator
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(36, 39);
+            this.label2.Location = new System.Drawing.Point(12, 57);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(32, 13);
             this.label2.TabIndex = 6;
@@ -120,7 +122,7 @@ namespace gk.SQLConfigurator
             // 
             // txtPassword
             // 
-            this.txtPassword.Location = new System.Drawing.Point(74, 64);
+            this.txtPassword.Location = new System.Drawing.Point(74, 80);
             this.txtPassword.Name = "txtPassword";
             this.txtPassword.PasswordChar = '*';
             this.txtPassword.Size = new System.Drawing.Size(166, 20);
@@ -130,7 +132,7 @@ namespace gk.SQLConfigurator
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 64);
+            this.label3.Location = new System.Drawing.Point(12, 83);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(56, 13);
             this.label3.TabIndex = 6;
@@ -139,7 +141,7 @@ namespace gk.SQLConfigurator
             // chkdWindowsAuth
             // 
             this.chkdWindowsAuth.AutoSize = true;
-            this.chkdWindowsAuth.Location = new System.Drawing.Point(74, 90);
+            this.chkdWindowsAuth.Location = new System.Drawing.Point(74, 103);
             this.chkdWindowsAuth.Name = "chkdWindowsAuth";
             this.chkdWindowsAuth.Size = new System.Drawing.Size(105, 17);
             this.chkdWindowsAuth.TabIndex = 7;
@@ -147,11 +149,30 @@ namespace gk.SQLConfigurator
             this.chkdWindowsAuth.UseVisualStyleBackColor = true;
             this.chkdWindowsAuth.CheckedChanged += new System.EventHandler(this.chkdWindowsAuth_CheckedChanged);
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 32);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(29, 13);
+            this.label4.TabIndex = 9;
+            this.label4.Text = "Port:";
+            // 
+            // txtPort
+            // 
+            this.txtPort.Location = new System.Drawing.Point(74, 29);
+            this.txtPort.Name = "txtPort";
+            this.txtPort.Size = new System.Drawing.Size(166, 20);
+            this.txtPort.TabIndex = 8;
+            this.txtPort.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtPort_KeyPress);
+            // 
             // frmDbConnect
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(261, 226);
+            this.ClientSize = new System.Drawing.Size(248, 182);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.txtPort);
             this.Controls.Add(this.chkdWindowsAuth);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -181,5 +202,7 @@ namespace gk.SQLConfigurator
         private System.Windows.Forms.TextBox txtPassword;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.CheckBox chkdWindowsAuth;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox txtPort;
     }
 }

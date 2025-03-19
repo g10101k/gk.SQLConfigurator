@@ -164,4 +164,10 @@
     <value>Доступна новая верися файла конфигурации. 
 Обновить?</value>
   </data>
+  <data name="postgre_sql_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\postgre_sql_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="sql_server_icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\sql_server_icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
