@@ -19,53 +19,60 @@ using System;
 using System.Data;
 using System.Windows.Forms;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Net;
 using System.IO;
+using gk.SQLConfigurator.Providers;
+using gk.SQLConfigurator.Config;
+using System.Collections;
+using System.Collections.Generic;
+using gk.SQLConfigurator.Enums;
 
 
 namespace gk.SQLConfigurator
 {
     public partial class frmDbConnect : Form
     {
-        public SqlConnection cnt;
-        public SqlConnectionStringBuilder cnsb;
         public frmDbConnect()
         {
             InitializeComponent();
         }
 
-        public frmDbConnect(SqlConnection _cnt, SqlConnectionStringBuilder _cnsb)
-        {
-            cnt = _cnt;
-            cnsb = _cnsb;
-            InitializeComponent();
-        }
-
         private void frmSettings_Load(object sender, EventArgs e)
         {
-            // = Properties.Settings.Default.ConnectionString;
-            // if (cnt == null)
+            txtServer.Text          = ApplicationConfig.Instance.ConnectionCfg.Server;
+            txtUser.Text            = ApplicationConfig.Instance.ConnectionCfg.Username;
+            txtPassword.Text        = ApplicationConfig.Instance.ConnectionCfg.Password;
+            chkdWindowsAuth.Checked = ApplicationConfig.Instance.ConnectionCfg.WindowsAuth;
+            database.Text           = ApplicationConfig.Instance.ConnectionCfg.Database;
 
-            cnsb.ConnectTimeout = 5;
-            txtServer.Text = cnsb.DataSource;
-            txtUser.Text = cnsb.UserID;
-            txtPassword.Text = cnsb.Password;
-            chkdWindowsAuth.Checked = cnsb.IntegratedSecurity;
-            string db = cnsb.InitialCatalog;
-            //database_DropDown(null, null);
-            database.Text = db;
+            if (ApplicationConfig.Instance.ConnectionCfg.DBType == DatabaseType.SqlServer)
+            {
+                txtPort.Enabled = false;
+            }
+
+            if (ApplicationConfig.Instance.ConnectionCfg.DBType == DatabaseType.PostgreSql)
+            {
+                txtUser.Enabled         = true;
+                txtPassword.Enabled     = true;
+                chkdWindowsAuth.Enabled = false;
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            cnsb.ConnectTimeout = 60;
-            cnsb.DataSource = txtServer.Text;
-            cnsb.UserID = txtUser.Text;
-            cnsb.Password = txtPassword.Text;
-            cnsb.IntegratedSecurity = chkdWindowsAuth.Checked;
-            cnsb.InitialCatalog = database.Text;
-            Properties.Settings.Default.ConnectionString = cnsb.ConnectionString;
-            Properties.Settings.Default.Save();
+            
+            ApplicationConfig.Instance.ConnectionCfg.Server      = txtServer.Text;
+            ApplicationConfig.Instance.ConnectionCfg.Username    = txtUser.Text;
+            ApplicationConfig.Instance.ConnectionCfg.Password    = txtPassword.Text;
+            ApplicationConfig.Instance.ConnectionCfg.WindowsAuth = chkdWindowsAuth.Checked;
+            ApplicationConfig.Instance.ConnectionCfg.Database    = database.Text;
+            
+            if (!string.IsNullOrEmpty(txtPort.Text))
+                ApplicationConfig.Instance.ConnectionCfg.Port = int.Parse(txtPort.Text);
+
+            ApplicationConfig.Instance.Save();
+
             this.DialogResult = DialogResult.OK;
         }
 
@@ -76,35 +83,25 @@ namespace gk.SQLConfigurator
 
         private void database_DropDown(object sender, EventArgs e)
         {
-            cnsb = new SqlConnectionStringBuilder();
-            cnsb.ConnectTimeout = 60;
-            cnsb.DataSource = txtServer.Text;
-            if (chkdWindowsAuth.Checked)
-            {
-                cnsb.IntegratedSecurity = true;
-            }
-            else
-            {
-                cnsb.IntegratedSecurity = false;
-                cnsb.UserID = txtUser.Text;
-                cnsb.Password = txtPassword.Text;
-            }
-
-            cnt = new SqlConnection(cnsb.ConnectionString);
             try
             {
-                this.Enabled = false;
                 database.Items.Clear();
-                cnt.Open();
-                if (cnt.State == ConnectionState.Open)
+
+                ConnectionConfig cfg = new ConnectionConfig
                 {
-                    DataTable schemaTable = cnt.GetSchema("Databases");
-                    foreach (DataRow r in schemaTable.Rows)
-                    {
-                        database.Items.Add(r[0]);
-                    }
-                }
-                this.Enabled = true;
+                    DBType = ApplicationConfig.Instance.ConnectionCfg.DBType,
+                    Username = txtUser.Text,
+                    Password = txtPassword.Text,
+                    Server = txtServer.Text,
+                };
+
+                if (!string.IsNullOrEmpty(txtPort.Text))
+                    cfg.Port = int.Parse(txtPort.Text);
+
+                IDbProvider dbProvider = ProviderFabric.GetProvider(ApplicationConfig.Instance.ConnectionCfg.DBType, cfg);
+                IEnumerable<string> databaseList = dbProvider.GetDatabaseList();
+
+                database.Items.AddRange(databaseList.ToArray());
             }
             catch (Exception ex)
             {
@@ -125,6 +122,11 @@ namespace gk.SQLConfigurator
                 txtPassword.Enabled = true;
                 txtUser.Enabled = true;
             }
-        }       
+        }
+
+        private void txtPort_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = !char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar);
+        }
     }
 }
